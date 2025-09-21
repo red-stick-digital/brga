@@ -1,11 +1,26 @@
 {
   "name": "batonrougega",
   "version": "1.0.0",
-  "description": "Redone Baton Rouge Gamblers Anonymous Website",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
   },
-  "author": "Marshall R. Naquin",
-  "license": "ISC"
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "supabase-js": "^2.0.0",
+    "tailwindcss": "^3.0.0"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0",
+    "postcss": "^8.0.0",
+    "autoprefixer": "^10.0.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
