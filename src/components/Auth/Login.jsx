@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from '../../services/supabase';
+import supabase from '../../services/supabase';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ const Login = () => {
         setLoading(true);
         setError(null);
 
-        const { error } = await supabase.auth.signIn({
+        const { error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });

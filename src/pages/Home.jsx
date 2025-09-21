@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
     return (
@@ -7,12 +8,12 @@ const Home = () => {
             <p className="text-lg text-center mb-8">
                 Your one-stop solution for all things Baton Rouge. Explore our features and get started!
             </p>
-            <a href="/login" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            <Link to="/login" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                 Login
-            </a>
-            <a href="/signup" className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            </Link>
+            <Link to="/signup" className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
                 Sign Up
-            </a>
+            </Link>
         </div>
     );
 };

@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../services/supabase';
+import supabase from '../services/supabase';
 
 const useAuth = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const session = supabase.auth.session();
-        setUser(session?.user ?? null);
-        setLoading(false);
+        // Get initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+            setLoading(false);
+        });
 
-        const { data: subscription } = supabase.auth.onAuthStateChange((_, session) => {
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
             setUser(session?.user ?? null);
         });
 
@@ -21,18 +24,18 @@ const useAuth = () => {
 
     const login = async (email, password) => {
         setLoading(true);
-        const { user, error } = await supabase.auth.signIn({ email, password });
-        setUser(user);
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        setUser(data.user);
         setLoading(false);
-        return { user, error };
+        return { user: data.user, error };
     };
 
     const signup = async (email, password) => {
         setLoading(true);
-        const { user, error } = await supabase.auth.signUp({ email, password });
-        setUser(user);
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        setUser(data.user);
         setLoading(false);
-        return { user, error };
+        return { user: data.user, error };
     };
 
     const logout = async () => {
