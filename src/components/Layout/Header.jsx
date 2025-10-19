@@ -60,7 +60,7 @@ export default function Header() {
 
     return (
         <header
-            className={isHome ? `fixed top-0 left-0 right-0 z-20 transition-colors duration-300 ${isScrolled ? 'bg-black' : 'bg-transparent'}` : "bg-black"}
+            className={isHome ? `fixed top-0 left-0 right-0 z-20 transition-colors duration-300 ${isScrolled ? 'bg-black' : 'bg-transparent'} border-b border-white` : "bg-black"}
         >
             <nav aria-label="Global" className={`mx-auto flex w-full items-center justify-between p-6 lg:py-5 lg:px-0 ${isHome ? "relative z-10" : ""}`}>
                 <div className="flex items-center gap-x-12 lg:pl-[50px]">
@@ -71,13 +71,6 @@ export default function Header() {
                             <div>Gamblers Anonymous</div>
                         </div>
                     </Link>
-                    <div className="hidden lg:flex lg:gap-x-12 lg:flex-1 lg:pl-[80px]">
-                        {directLinks.map((item) => (
-                            <Link key={item.name} to={item.href} className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px]">
-                                {item.name}
-                            </Link>
-                        ))}
-                    </div>
                 </div>
                 <div className="flex lg:hidden">
                     <button
@@ -90,6 +83,11 @@ export default function Header() {
                     </button>
                 </div>
                 <div className="hidden lg:flex lg:items-center lg:gap-x-8 lg:pr-[50px]">
+                    {directLinks.map((item) => (
+                        <Link key={item.name} to={item.href} className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px] uppercase">
+                            {item.name}
+                        </Link>
+                    ))}
                     <div className="relative">
                         <button
                             type="button"

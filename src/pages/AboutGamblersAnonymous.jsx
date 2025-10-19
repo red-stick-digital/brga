@@ -18,14 +18,14 @@ const AboutGamblersAnonymous = () => {
 
             <div className="space-y-8">
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Mission</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Our Mission</h2>
                     <p className="text-gray-700">
                         {/* TODO: Add GA mission statement and history */}
                     </p>
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Principles</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Our Principles</h2>
                     <div className="space-y-4">
                         {/* TODO: Add core values and principles */}
                         <p className="text-gray-600">GA principles will be listed here</p>

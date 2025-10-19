@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import supabase from '../../services/supabase';
+import Button from '../common/Button';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -55,13 +56,9 @@ const Login = () => {
                         required
                     />
                 </div>
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                    {loading ? 'Logging in...' : 'Login'}
-                </button>
+                <Button type="submit" disabled={loading}>
+                    {loading ? 'LOGGING IN...' : 'LOGIN'}
+                </Button>
             </form>
         </div>
     );

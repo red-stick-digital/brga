@@ -20,7 +20,7 @@ const GAManon = () => {
             <h1 className="text-4xl font-bold text-gray-900 mb-8">Gam-Anon</h1>
 
             <div className="bg-purple-50 border-l-4 border-purple-400 p-6 mb-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">For Families and Friends</h2>
+                <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">For Families and Friends</h2>
                 <p className="text-gray-700">
                     Gam-Anon is a support group for the families and close friends of problem gamblers.
                 </p>
@@ -28,14 +28,14 @@ const GAManon = () => {
 
             <div className="space-y-8">
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">What is Gam-Anon?</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">What is Gam-Anon?</h2>
                     <p className="text-gray-700">
                         {/* TODO: Add information about Gam-Anon */}
                     </p>
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Gam-Anon Meetings</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Gam-Anon Meetings</h2>
                     <p className="text-gray-700">
                         {/* TODO: Add Gam-Anon meeting times and locations */}
                     </p>

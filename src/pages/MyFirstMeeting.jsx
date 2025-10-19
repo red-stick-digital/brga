@@ -17,14 +17,14 @@ const MyFirstMeeting = () => {
 
             <div className="grid gap-8 md:grid-cols-2">
                 <div className="bg-blue-50 p-6 rounded-lg">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">What to Expect</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">What to Expect</h2>
                     <p className="text-gray-600">
                         {/* TODO: Add information about what newcomers should expect at their first meeting */}
                     </p>
                 </div>
 
                 <div className="bg-blue-50 p-6 rounded-lg">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Preparation Tips</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Preparation Tips</h2>
                     <p className="text-gray-600">
                         {/* TODO: Add tips for preparing for first meeting */}
                     </p>

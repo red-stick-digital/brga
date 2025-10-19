@@ -18,7 +18,7 @@ const ContactUs = () => {
 
             <div className="grid gap-8 md:grid-cols-2">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Get In Touch</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Get In Touch</h2>
                     <form className="space-y-4">
                         {/* TODO: Add contact form with name, email, message fields */}
                         <p className="text-gray-600">Contact form will be added here</p>
@@ -26,7 +26,7 @@ const ContactUs = () => {
                 </div>
 
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Contact Information</h2>
                     <div className="space-y-4 text-gray-600">
                         {/* TODO: Add phone, email, address, and hours */}
                         <p>Contact details will be displayed here</p>

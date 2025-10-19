@@ -2,6 +2,7 @@
 
 import { Link } from 'react-router-dom'
 import Video from '../components/common/Video'
+import Button from '../components/common/Button'
 
 export default function Home() {
     const handleCallClick = () => {
@@ -12,22 +13,22 @@ export default function Home() {
         <div className="w-full">
             {/* Hero Section */}
             <div
-                className="relative w-full flex items-center justify-center"
+                className="relative w-full flex items-center justify-center pt-[250px]"
                 style={{
                     backgroundImage: 'url(/images/Home%20Hand%20Up.png)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
-                    height: '650px',
+                    height: '820px',
                 }}
             >
                 {/* Overlay for readability */}
                 <div className="absolute inset-0 bg-black bg-opacity-20"></div>
 
                 {/* Content */}
-                <div className="relative z-10 text-center px-6 max-w-4xl">
-                    <h1 className="font-league-spartan text-[64px] leading-[76.8px] font-normal text-white mb-8">
-                        Gambling Addiction? Compulsive Gambler? We are glad you are here.
+                <div className="relative z-10 text-center px-6 max-w-6xl">
+                    <h1 className="hero-h1 text-white mb-8">
+                        Gambling Addiction?<br />Compulsive Gambler? We are<br />glad you are here.
                     </h1>
 
                     <p className="font-helvetica text-[24px] leading-[36px] font-normal text-white mb-12">
@@ -39,76 +40,77 @@ export default function Home() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <Link
                             to="/meetings"
-                            className="px-8 py-4 bg-[#8BB7D1] text-black font-helvetica font-semibold rounded-md hover:bg-opacity-90 transition-all"
+                            className="px-8 py-4 min-w-[235px] bg-[#8BB7D1] text-black font-helvetica font-semibold rounded-md hover:bg-opacity-90 transition-all"
                         >
-                            Get Started Now
+                            GET STARTED NOW
                         </Link>
-                        <button
-                            onClick={handleCallClick}
-                            className="px-8 py-4 bg-[#8BB7D1] text-black font-helvetica font-semibold rounded-md hover:bg-opacity-90 transition-all"
-                        >
-                            Call Us Now
-                        </button>
+                        <Button onClick={handleCallClick}>
+                            CALL US NOW
+                        </Button>
                     </div>
                 </div>
             </div>
 
             {/* Video Section */}
-            <div className="w-3/4 mx-auto px-6 py-8">
+            <div className="w-[67.5%] mx-auto px-6 py-8">
                 <Video />
             </div>
 
             {/* Help for Gambling Section */}
             <div className="w-full bg-gray-100 py-16">
                 <div className="w-3/4 mx-auto px-6 text-center">
-                    <h2 className="font-league-spartan text-[48px] leading-[57.6px] font-bold text-[#6B92B0] mb-6">
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-6">
                         Need Help for Gambling?
                     </h2>
-                    <p className="font-helvetica text-[18px] leading-[28px] text-gray-700">
-                        If you've been wondering <span className="font-bold">"how do I stop gambling"</span> or feeling like <span className="font-bold">"I can't stop gambling,"</span> you are not alone. Many people in Baton Rouge and Hammond struggle with gambling addiction. We are here to offer <Link to="/helpforgambling" className="text-[#6B92B0] underline hover:text-blue-600">help for gambling</Link> through local <Link to="/meetings" className="text-[#6B92B0] underline hover:text-blue-600">Gamblers Anonymous meetings</Link> and the support of others who understand what you're going through. Whether you want to stop going to casinos, sports betting, video poker, racetracks, or any other form of gambling, we are here to help.
-                    </p>
+                    <div className="w-full lg:w-[805px] mx-auto px-6 lg:px-0">
+                        <p className="font-helvetica text-[18px] leading-[28px] text-gray-700">
+                            If you've been wondering <span className="font-bold">"how do I stop gambling"</span> or feeling like <span className="font-bold">"I can't stop gambling,"</span> you are not alone. Many people in Baton Rouge and Hammond struggle with gambling addiction. We are here to offer <Link to="/helpforgambling" className="text-[#6B92B0] underline hover:text-blue-600">help for gambling</Link> through local <Link to="/meetings" className="text-[#6B92B0] underline hover:text-blue-600">Gamblers Anonymous meetings</Link> and the support of others who understand what you're going through. Whether you want to stop going to casinos, sports betting, video poker, racetracks, or any other form of gambling, we are here to help.
+                        </p>
+                    </div>
                 </div>
             </div>
 
             {/* Welcome Section */}
             <div className="w-full bg-white py-20">
                 <div className="w-3/4 mx-auto px-6">
-                    <h2 className="font-league-spartan text-[48px] leading-[57.6px] font-bold text-[#6B92B0] text-center mb-16">
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] text-center mb-16">
                         Welcome to Baton Rouge Gamblers Anonymous
                     </h2>
 
                     {/* Cards Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
                         {/* Card 1: Our Story */}
-                        <div className="flex flex-col items-center text-center" style={{ width: '427px', height: '675px' }}>
+                        <div className="flex flex-col items-center text-center home-card">
                             <img
                                 src="/images/home three rocks.png"
                                 alt="Our Story"
-                                className="rounded-full object-cover mb-4"
-                                style={{ width: '378px', height: '378px' }}
+                                className="rounded-full object-cover mb-4 home-card-image"
                             />
-                            <h3 className="font-league-spartan text-[24px] font-bold text-gray-800 mb-3">
+                            <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                 Our Story
                             </h3>
-                            <p className="font-helvetica text-[16px] leading-[24px] text-gray-700">
-                                We are a group of compulsive gamblers in the Baton Rouge and Hammond area that share our experience strength and hope so that we may solve our common problem which is gambling addiction.
-                            </p>
+                            <div className="home-card-description">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] home-card-text">
+                                    We are a group of compulsive gamblers in the Baton Rouge and Hammond area that share our experience strength and hope so that we may solve our common problem which is gambling addiction.
+                                </p>
+                            </div>
                         </div>
 
                         {/* Card 2: Local Meetings */}
-                        <div className="flex flex-col items-center text-center" style={{ width: '427px', height: '675px' }}>
+                        <div className="flex flex-col items-center text-center home-card">
                             <img
                                 src="/images/home bonsai.png"
                                 alt="Local Meetings"
-                                className="rounded-full object-cover mb-4"
-                                style={{ width: '378px', height: '378px' }}
+                                className="rounded-full object-cover mb-4 home-card-image"
                             />
-                            <h3 className="font-league-spartan text-[24px] font-bold text-gray-800 mb-3">
+                            <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                 Local Meetings
                             </h3>
-                            <p className="font-helvetica text-[16px] leading-[24px] text-gray-700 mb-4">
-                                There are multiple meetings of recovery available throughout the week in our area.
-                            </p>
+                            <div className="home-card-description">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 home-card-text">
+                                    There are multiple meetings of recovery available throughout the week in our area.
+                                </p>
+                            </div>
                             <Link
                                 to="/meetings"
                                 className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
@@ -118,19 +120,20 @@ export default function Home() {
                         </div>
 
                         {/* Card 3: Am I a compulsive gambler? */}
-                        <div className="flex flex-col items-center text-center" style={{ width: '427px', height: '675px' }}>
+                        <div className="flex flex-col items-center text-center home-card">
                             <img
                                 src="/images/home head down.png"
                                 alt="Am I a compulsive gambler?"
-                                className="rounded-full object-cover mb-4"
-                                style={{ width: '378px', height: '378px' }}
+                                className="rounded-full object-cover mb-4 home-card-image"
                             />
-                            <h3 className="font-league-spartan text-[24px] font-bold text-gray-800 mb-3">
+                            <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                 Am I a compulsive gambler?
                             </h3>
-                            <p className="font-helvetica text-[16px] leading-[24px] text-gray-700 mb-4">
-                                Only you can decide that. Answering these 20 questions can help you make that decision.
-                            </p>
+                            <div className="home-card-description">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 home-card-text">
+                                    Only you can decide that. Answering these 20 questions can help you make that decision.
+                                </p>
+                            </div>
                             <Link
                                 to="/20questions"
                                 className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
@@ -140,16 +143,17 @@ export default function Home() {
                         </div>
 
                         {/* Card 4: Stop Now */}
-                        <div className="flex flex-col items-center text-center" style={{ width: '427px', height: '675px' }}>
+                        <div className="flex flex-col items-center text-center home-card">
                             <img
                                 src="/images/home slot machine.png"
                                 alt="Stop Now"
-                                className="rounded-full object-cover mb-4"
-                                style={{ width: '378px', height: '378px' }}
+                                className="rounded-full object-cover mb-4 home-card-image"
                             />
-                            <p className="font-helvetica text-[16px] leading-[24px] text-gray-700 mb-4">
-                                Whether you want to stop going to casinos, sports betting, video poker, racetracks or any other type of gambling we are here to help.
-                            </p>
+                            <div className="home-card-description">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 home-card-text">
+                                    Whether you want to stop going to casinos, sports betting, video poker, racetracks or any other type of gambling we are here to help.
+                                </p>
+                            </div>
                             <Link
                                 to="/meetings"
                                 className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
@@ -159,16 +163,17 @@ export default function Home() {
                         </div>
 
                         {/* Card 5: GA International */}
-                        <div className="flex flex-col items-center text-center" style={{ width: '427px', height: '675px' }}>
+                        <div className="flex flex-col items-center text-center home-card">
                             <img
                                 src="/images/home walking on rocks.png"
                                 alt="Gamblers Anonymous International"
-                                className="rounded-full object-cover mb-4"
-                                style={{ width: '378px', height: '378px' }}
+                                className="rounded-full object-cover mb-4 home-card-image"
                             />
-                            <p className="font-helvetica text-[16px] leading-[24px] text-gray-700 mb-4">
-                                Click below to be taken to the Gamblers Anonymous International Service Office website.
-                            </p>
+                            <div className="home-card-description">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 home-card-text">
+                                    Click below to be taken to the Gamblers Anonymous International Service Office website.
+                                </p>
+                            </div>
                             <a
                                 href="https://gamblersanonymous.org/"
                                 target="_blank"
@@ -183,24 +188,21 @@ export default function Home() {
             </div>
 
             {/* Someone's Gambling Affecting You Section */}
-            <div className="w-full flex items-center justify-center py-12" style={{ height: '312px' }}>
-                <div className="flex flex-col items-center justify-center text-center" style={{ width: '805px', height: '200px' }}>
-                    <p className="font-helvetica text-[18px] leading-[26px] text-gray-800 mb-6" style={{ width: '747px', height: '115px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="w-full flex items-center justify-center py-12 home-cta-section">
+                <div className="flex flex-col items-center justify-center text-center home-cta-container">
+                    <p className="font-helvetica font-normal mb-6 home-cta-text">
                         Are you concerned about someone else gambling in your life?
                     </p>
-                    <button
-                        className="bg-[#8BB7D1] text-black font-helvetica font-bold rounded hover:bg-opacity-90 transition-all"
-                        style={{ width: '507px', height: '19px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 0' }}
-                    >
-                        Is Someone's Gambling Affecting You? Click Here
-                    </button>
+                    <Button className="font-bold home-cta-button">
+                        IS SOMEONE'S GAMBLING AFFECTING YOU? CLICK HERE
+                    </Button>
                 </div>
             </div>
 
             {/* Contact Us Section */}
             <div className="w-full bg-white py-16">
                 <div className="w-3/4 mx-auto px-6 text-center">
-                    <h2 className="font-league-spartan text-[48px] leading-[57.6px] font-bold text-[#6B92B0] mb-8">
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-8">
                         Contact Us
                     </h2>
                     <p className="font-helvetica text-[18px] leading-[28px] text-gray-700 mb-4">
@@ -229,7 +231,7 @@ export default function Home() {
             {/* Connect With Us Section */}
             <div className="w-full bg-white py-16">
                 <div className="w-3/4 mx-auto px-6 text-center">
-                    <h2 className="font-league-spartan text-[48px] leading-[57.6px] font-bold text-[#6B92B0] mb-12">
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-12">
                         Connect With Us
                     </h2>
                     <div className="flex justify-center items-center gap-8">
@@ -243,7 +245,7 @@ export default function Home() {
                             <img
                                 src="/images/Facebook_Logo_Primary.png"
                                 alt="Facebook"
-                                style={{ width: '50px', height: '50px' }}
+                                className="social-icon"
                             />
                         </a>
 
@@ -255,13 +257,12 @@ export default function Home() {
                             className="hover:opacity-80 transition-opacity"
                         >
                             <div
-                                className="flex items-center justify-center bg-black rounded-full"
-                                style={{ width: '50px', height: '50px' }}
+                                className="flex items-center justify-center bg-black rounded-full social-icon"
                             >
                                 <img
                                     src="/images/logo-white.png"
                                     alt="X"
-                                    style={{ width: '30px', height: '30px' }}
+                                    className="social-icon-small"
                                 />
                             </div>
                         </a>

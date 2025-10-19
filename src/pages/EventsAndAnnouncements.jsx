@@ -17,7 +17,7 @@ const EventsAndAnnouncements = () => {
 
             <div className="space-y-8">
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Upcoming Events</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Upcoming Events</h2>
                     <div className="space-y-4">
                         {/* TODO: Add list of upcoming events with dates and details */}
                         <p className="text-gray-600">Upcoming events will be displayed here</p>
@@ -25,7 +25,7 @@ const EventsAndAnnouncements = () => {
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Announcements</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Announcements</h2>
                     <div className="space-y-4">
                         {/* TODO: Add important announcements */}
                         <p className="text-gray-600">Announcements will be displayed here</p>

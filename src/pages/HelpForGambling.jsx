@@ -24,7 +24,7 @@ const HelpForGambling = () => {
             </p>
 
             <div className="bg-red-50 border-l-4 border-red-400 p-6 mb-12">
-                <h2 className="text-2xl font-semibold text-red-900 mb-4">Need Help Right Now?</h2>
+                <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Need Help Right Now?</h2>
                 <p className="text-gray-700 mb-4">
                     {/* TODO: Add crisis hotline numbers and immediate resources */}
                 </p>
@@ -62,7 +62,7 @@ const HelpForGambling = () => {
             </div>
 
             <div className="bg-gray-50 p-8 rounded-lg">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Take the First Step</h2>
+                <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Take the First Step</h2>
                 <p className="text-gray-700 mb-4">
                     Recovery starts with a single decision. Here are your options:
                 </p>

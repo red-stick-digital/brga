@@ -15,7 +15,7 @@ const MembersOnly = () => {
             <h1 className="text-4xl font-bold text-gray-900 mb-8">Members Only</h1>
 
             <div className="bg-blue-50 border-l-4 border-blue-400 p-8 rounded mb-8">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Welcome to the Members Only Section</h2>
+                <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Welcome to the Members Only Section</h2>
                 <p className="text-gray-700 mb-6">
                     This section contains exclusive content for registered members of Gamblers Anonymous.
                 </p>

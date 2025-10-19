@@ -43,46 +43,102 @@ const Footer = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="flex flex-wrap justify-center items-center gap-6 text-sm font-semibold uppercase tracking-wide">
+                <nav className="flex flex-wrap justify-center items-center gap-6">
                     <Link
                         to="/meetings"
-                        className="hover:text-blue-400 transition-colors"
+                        className="box-border inline text-base font-normal h-auto w-auto text-center uppercase antialiased break-words cursor-pointer hover:text-blue-400 transition-colors"
+                        style={{
+                            color: 'rgb(247, 247, 247)',
+                            fontFamily: 'Helvetica, arial, sans-serif',
+                            letterSpacing: '1.136px',
+                            WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+                            WebkitFontSmoothing: 'antialiased',
+                            textSizeAdjust: '100%'
+                        }}
                     >
                         Meetings
                     </Link>
                     <Link
                         to="/eventsandannouncements"
-                        className="hover:text-blue-400 transition-colors"
+                        className="box-border inline text-base font-normal h-auto w-auto text-center uppercase antialiased break-words cursor-pointer hover:text-blue-400 transition-colors"
+                        style={{
+                            color: 'rgb(247, 247, 247)',
+                            fontFamily: 'Helvetica, arial, sans-serif',
+                            letterSpacing: '1.136px',
+                            WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+                            WebkitFontSmoothing: 'antialiased',
+                            textSizeAdjust: '100%'
+                        }}
                     >
                         Events & Announcements
                     </Link>
                     <Link
                         to="/12stepsandunityprogram"
-                        className="hover:text-blue-400 transition-colors"
+                        className="box-border inline text-base font-normal h-auto w-auto text-center uppercase antialiased break-words cursor-pointer hover:text-blue-400 transition-colors"
+                        style={{
+                            color: 'rgb(247, 247, 247)',
+                            fontFamily: 'Helvetica, arial, sans-serif',
+                            letterSpacing: '1.136px',
+                            WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+                            WebkitFontSmoothing: 'antialiased',
+                            textSizeAdjust: '100%'
+                        }}
                     >
                         12 Steps & Unity Program
                     </Link>
                     <Link
                         to="/gamanon"
-                        className="hover:text-blue-400 transition-colors"
+                        className="box-border inline text-base font-normal h-auto w-auto text-center uppercase antialiased break-words cursor-pointer hover:text-blue-400 transition-colors"
+                        style={{
+                            color: 'rgb(247, 247, 247)',
+                            fontFamily: 'Helvetica, arial, sans-serif',
+                            letterSpacing: '1.136px',
+                            WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+                            WebkitFontSmoothing: 'antialiased',
+                            textSizeAdjust: '100%'
+                        }}
                     >
                         Gam Anon
                     </Link>
                     <Link
                         to="/publicrelations"
-                        className="hover:text-blue-400 transition-colors"
+                        className="box-border inline text-base font-normal h-auto w-auto text-center uppercase antialiased break-words cursor-pointer hover:text-blue-400 transition-colors"
+                        style={{
+                            color: 'rgb(247, 247, 247)',
+                            fontFamily: 'Helvetica, arial, sans-serif',
+                            letterSpacing: '1.136px',
+                            WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+                            WebkitFontSmoothing: 'antialiased',
+                            textSizeAdjust: '100%'
+                        }}
                     >
                         Public Relations
                     </Link>
                     <Link
                         to="/faq"
-                        className="hover:text-blue-400 transition-colors"
+                        className="box-border inline text-base font-normal h-auto w-auto text-center uppercase antialiased break-words cursor-pointer hover:text-blue-400 transition-colors"
+                        style={{
+                            color: 'rgb(247, 247, 247)',
+                            fontFamily: 'Helvetica, arial, sans-serif',
+                            letterSpacing: '1.136px',
+                            WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+                            WebkitFontSmoothing: 'antialiased',
+                            textSizeAdjust: '100%'
+                        }}
                     >
                         FAQ
                     </Link>
                     <Link
                         to="/helpforgambling"
-                        className="hover:text-blue-400 transition-colors"
+                        className="box-border inline text-base font-normal h-auto w-auto text-center uppercase antialiased break-words cursor-pointer hover:text-blue-400 transition-colors"
+                        style={{
+                            color: 'rgb(247, 247, 247)',
+                            fontFamily: 'Helvetica, arial, sans-serif',
+                            letterSpacing: '1.136px',
+                            WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+                            WebkitFontSmoothing: 'antialiased',
+                            textSizeAdjust: '100%'
+                        }}
                     >
                         Help for Gambling
                     </Link>

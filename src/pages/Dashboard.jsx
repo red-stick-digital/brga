@@ -1,5 +1,6 @@
 import React from 'react';
 import useAuth from '../hooks/useAuth';
+import Button from '../components/common/Button';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -10,12 +11,9 @@ const Dashboard = () => {
             {user ? (
                 <div>
                     <p className="mt-4">Welcome, {user.email}!</p>
-                    <button
-                        onClick={logout}
-                        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                        Logout
-                    </button>
+                    <Button onClick={logout} className="mt-4">
+                        LOGOUT
+                    </Button>
                 </div>
             ) : (
                 <p className="mt-4">Please log in to see your dashboard.</p>

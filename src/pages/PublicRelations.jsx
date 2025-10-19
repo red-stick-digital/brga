@@ -18,14 +18,14 @@ const PublicRelations = () => {
 
             <div className="space-y-8">
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Media Inquiries</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Media Inquiries</h2>
                     <p className="text-gray-700">
                         {/* TODO: Add information for media contacts */}
                     </p>
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Press Releases</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Press Releases</h2>
                     <div className="space-y-4">
                         {/* TODO: Add press releases and news items */}
                         <p className="text-gray-600">Press releases will be displayed here</p>
@@ -33,7 +33,7 @@ const PublicRelations = () => {
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Speaking Engagements</h2>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Speaking Engagements</h2>
                     <p className="text-gray-700">
                         {/* TODO: Add information about speaking opportunities */}
                     </p>

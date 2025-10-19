@@ -2,4 +2,183 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom global styles can be added below */
+/* ===== TYPOGRAPHY ===== */
+
+/* Hero Section H1 */
+.hero-h1 {
+  font-family: 'League Spartan', arial, helvetica, sans-serif;
+  font-size: 77px;
+  font-weight: 700;
+  line-height: 75px;
+  letter-spacing: normal;
+}
+
+/* Page Main Heading - League Spartan */
+.page-heading {
+  color: #6B92B0;
+  font-family: 'League Spartan', arial, helvetica, sans-serif;
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 60px;
+  text-align: center;
+  letter-spacing: normal;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Section Day Heading - Helvetica */
+.section-heading {
+  color: rgb(109, 154, 181);
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 45px;
+  height: 45px;
+  display: block;
+  margin: 0;
+  box-sizing: border-box;
+  letter-spacing: normal;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Meeting Item Title */
+.meeting-title {
+  color: rgb(27, 27, 27);
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 30px;
+  margin: 0;
+  box-sizing: border-box;
+  letter-spacing: normal;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  flex: 1;
+  max-width: 65%;
+}
+
+/* Meeting Time Slot */
+.meeting-time {
+  color: rgb(27, 27, 27);
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 30px;
+  margin: 0 0 0 16px;
+  box-sizing: border-box;
+  letter-spacing: normal;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Special Note Text */
+.special-note {
+  color: rgb(94, 94, 94);
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 27px;
+  letter-spacing: normal;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  margin-top: 8px;
+  display: block;
+}
+
+/* ===== LAYOUT ===== */
+
+/* Content Container - 805px wide, centered */
+.content-container {
+  width: 805px;
+  max-width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin: 0 auto;
+}
+
+/* Meeting Header - Title + Time in a row */
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* ===== CARDS ===== */
+
+/* Home Page Card Container */
+.home-card {
+  width: 427px;
+  height: 675px;
+}
+
+/* Home Page Card Image */
+.home-card-image {
+  width: 378px;
+  height: 378px;
+}
+
+/* Home Page Card Description Box */
+.home-card-description {
+  width: 380px;
+  height: 150px;
+}
+
+/* Home Page Card Text */
+.home-card-text {
+  color: #5E5E5E;
+}
+
+/* Home Page Social Icons */
+.social-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.social-icon-small {
+  width: 30px;
+  height: 30px;
+}
+
+/* Info Box Sections */
+.info-box {
+  width: 805px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Home CTA Section */
+.home-cta-section {
+  height: 312px;
+}
+
+.home-cta-text {
+  width: 805px;
+  height: 120px;
+  font-size: 48px;
+  line-height: 60px;
+  color: rgb(21, 21, 21);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.home-cta-button {
+  width: 507px;
+  height: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* CTA Container */
+.home-cta-container {
+  width: 805px;
+  height: 200px;
+}
