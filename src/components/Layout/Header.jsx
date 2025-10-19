@@ -33,13 +33,13 @@ const directLinks = [
 
 const hamburgerLinks = [
     { name: 'About GA', href: '/aboutgamblersanonymous' },
-    { name: 'Help for Gambling', href: '/helpforgambling' },
     { name: 'Events & Announcements', href: '/eventsandannouncements' },
     { name: '12 Steps & Unity Program', href: '/12stepsandunityprogram' },
     { name: 'Gam-Anon', href: '/gamanon' },
     { name: 'Public Relations', href: '/publicrelations' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Members', href: '/membersonly' },
+    { name: 'Help for Gambling', href: '/helpforgambling' },
 ]
 
 export default function Header() {

@@ -4,6 +4,21 @@
 
 /* ===== TYPOGRAPHY ===== */
 
+/* Global Page H1 - Applied to all pages except home */
+h1:not(.hero-h1) {
+  color: #6B92B0;
+  font-family: 'League Spartan', arial, helvetica, sans-serif;
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 60px;
+  text-align: center;
+  letter-spacing: normal;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
 /* Hero Section H1 */
 .hero-h1 {
   font-family: 'League Spartan', arial, helvetica, sans-serif;
