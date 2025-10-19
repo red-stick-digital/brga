@@ -53,13 +53,10 @@ const TwentyQuestions = () => {
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">20 Questions</h1>
-            <h4 className="text-lg font-semibold text-gray-700 mb-8">
-                Gamblers Anonymous offers the following questions to help you decide if you are a compulsive gambler
-            </h4>
 
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8">
                 <p className="text-gray-700">
-                    These questions are designed to help you determine if you have a gambling problem. Answer each question honestly.
+                    Gamblers Anonymous offers the following questions to help you decide if you are a compulsive gambler.
                 </p>
             </div>
 

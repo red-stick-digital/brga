@@ -21,6 +21,8 @@ const ContactUs = () => {
         email: '',
         message: ''
     });
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [submitStatus, setSubmitStatus] = React.useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -30,10 +32,40 @@ const ContactUs = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Implement form submission logic
-        console.log('Form submitted:', formData);
+        setIsSubmitting(true);
+        setSubmitStatus('');
+
+        try {
+            // Send email using our API endpoint (dev server for local, Vercel serverless for production)
+            const apiUrl = import.meta.env.DEV ? 'http://localhost:3001/api/send-email' : '/api/send-email';
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    message: formData.message,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to send email');
+            }
+
+            setSubmitStatus('success');
+            setFormData({ name: '', email: '', message: '' });
+        } catch (error) {
+            console.error('Error sending email:', error);
+            setSubmitStatus('error');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -65,6 +97,23 @@ const ContactUs = () => {
                 </div>
             </div>
 
+            {/* Need Help Section */}
+            <div className="w-full bg-white py-20">
+                <div className="w-3/4 mx-auto px-6 text-center">
+                    <h1 className="font-league-spartan text-[72px] leading-[76px] font-bold text-[#6B92B0] mb-8">
+                        Need Help for Gambling?
+                    </h1>
+                    <p className="font-helvetica text-[20px] leading-[32px] text-gray-700 max-w-4xl mx-auto">
+                        If you've been thinking <strong>"I can't stop gambling"</strong> or searching for <strong>"how do I stop gambling,"</strong> reaching out for support is a{' '}
+                        <Link to="/my-first-meeting" className="text-[#6B92B0] font-semibold hover:underline">
+                            courageous first step
+                        </Link>
+                        . Whether you're in Baton Rouge, Hammond, or anywhere in Louisiana, we are here to offer{' '}
+                        <strong>help for gambling</strong> through local GA meetings and personal support. Call us any time — you don't have to face this alone.
+                    </p>
+                </div>
+            </div>
+
             {/* Contact Form and Information Section */}
             <div className="w-full bg-white py-20">
                 <div className="w-3/4 mx-auto px-6">
@@ -74,6 +123,19 @@ const ContactUs = () => {
                             <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-8">
                                 Send Us a Message
                             </h2>
+
+                            {/* Status Messages */}
+                            {submitStatus === 'success' && (
+                                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                                    Thank you for your message! We'll get back to you soon.
+                                </div>
+                            )}
+                            {submitStatus === 'error' && (
+                                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                                    Sorry, there was an error sending your message. Please try again or call us directly.
+                                </div>
+                            )}
+
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label htmlFor="name" className="block font-helvetica text-[16px] font-semibold text-gray-700 mb-2">
@@ -125,9 +187,13 @@ const ContactUs = () => {
 
                                 <button
                                     type="submit"
-                                    className="px-8 py-3 bg-[#8BB7D1] text-black font-helvetica font-bold rounded-md hover:bg-opacity-90 transition-all"
+                                    disabled={isSubmitting}
+                                    className={`px-8 py-3 font-helvetica font-bold rounded-md transition-all ${isSubmitting
+                                        ? 'bg-gray-400 cursor-not-allowed text-gray-600'
+                                        : 'bg-[#8BB7D1] text-black hover:bg-opacity-90'
+                                        }`}
                                 >
-                                    SEND MESSAGE
+                                    {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
                                 </button>
                             </form>
                         </div>

@@ -25,7 +25,7 @@ const MyFirstMeeting = () => {
             <section className="mb-10">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Seeking Help for Gambling?</h2>
                 <p className="text-gray-700 leading-relaxed">
-                    If you've been wondering "how do I stop gambling" or thinking "I can't stop gambling," coming to your first Gamblers Anonymous meeting is a big first step. Many of us felt the same way before attending our first meeting. You will find others who understand what you're going through and who can offer hope and support. Help for gambling is available — and you do not have to face this alone.
+                    If you've been wondering "how do I stop gambling" or thinking "I can't stop gambling," coming to your first <Link to="/meetings" className="text-blue-600 hover:text-blue-800 hover:underline">Gamblers Anonymous meeting</Link> is a big first step. Many of us felt the same way before attending our first meeting. You will find others who understand what you're going through and who can offer hope and support. <Link to="/contactus" className="text-blue-600 hover:text-blue-800 hover:underline">Help for gambling</Link> is available — and you do not have to face this alone.
                 </p>
             </section>
 

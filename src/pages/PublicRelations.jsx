@@ -18,24 +18,36 @@ const PublicRelations = () => {
 
             <div className="space-y-8">
                 <div>
-                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Media Inquiries</h2>
-                    <p className="text-gray-700">
-                        {/* TODO: Add information for media contacts */}
+                    <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                        Sharing stories of our addiction and recovery are vital for those in all stages of recovery: newcomers and old-timers alike. And, speaking about compulsive gambling and recovery brings awareness to the public at large.
+                    </p>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-[#6B92B0]">
+                    <h2 className="font-league-spartan text-2xl font-bold text-[#6B92B0] mb-4">The 12th Step of Our Recovery Program</h2>
+                    <p className="text-gray-800 font-semibold italic text-lg">
+                        "Having made an effort to practice these principles in all our affairs, we tried to carry this message to other compulsive gamblers."
                     </p>
                 </div>
 
                 <div>
-                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Press Releases</h2>
-                    <div className="space-y-4">
-                        {/* TODO: Add press releases and news items */}
-                        <p className="text-gray-600">Press releases will be displayed here</p>
-                    </div>
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Speaking Opportunities</h2>
+                    <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                        GA members carry the message by speaking at treatment centers, colleges, universities, prisons, churches, and many other facilities. Not only are we eager to speak with those that think they may have a gambling problem, we are also pleased to speak with professionals and service providers.
+                    </p>
                 </div>
 
                 <div>
-                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Speaking Engagements</h2>
-                    <p className="text-gray-700">
-                        {/* TODO: Add information about speaking opportunities */}
+                    <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-4">Request a Speaker</h2>
+                    <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                        To request someone to speak at your organization, please call our hotline at <span className="font-semibold text-[#6B92B0]">888-502-5610</span>. Press inquiries may also be directed to that number.
+                    </p>
+                </div>
+
+                <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-[#8BB7D1]">
+                    <h2 className="font-league-spartan text-2xl font-bold text-[#6B92B0] mb-4">Join Our PR Committee</h2>
+                    <p className="text-gray-700 text-lg leading-relaxed">
+                        If you are an active member of Gamblers Anonymous and would like to share your experience, strength, and hope, contact the PR Committee! We'll be delighted to add you into the rotation of speakers, answer any questions you may have, and support you in your story sharing efforts.
                     </p>
                 </div>
             </div>

@@ -105,3 +105,7 @@ npm run preview
 **Custom Fonts**: League Spartan and Helvetica
 **Color Scheme**: Blues (#8BB7D1, #6B92B0) with black backgrounds
 **Responsive Design**: Mobile-first approach with responsive components
+
+## Testing
+
+**targetFramework**: Playwright

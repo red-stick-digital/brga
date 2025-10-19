@@ -29,7 +29,14 @@ const Meetings = () => {
                                     7p - 8p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">8725 Jefferson Highway</p>
+                            <a
+                                href="https://www.google.com/maps/place/South+Baton+Rouge+Church+of+Christ/@30.4192982,-91.0927394,16z/data=!3m1!4b1!4m6!3m5!1s0x8626a488a4d875c7:0x6b3b292a874fbcab!8m2!3d30.4192982!4d-91.0927394!16s%2Fg%2F1vv2sls2?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                8725 Jefferson Highway
+                            </a>
                             <p className="text-gray-700">Baton Rouge, LA 70809</p>
                             <p className="text-gray-700">Education Building to the Right of the Church</p>
                         </div>
@@ -44,7 +51,14 @@ const Meetings = () => {
                                     7p - 8p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">8725 Jefferson Highway</p>
+                            <a
+                                href="https://www.google.com/maps/place/South+Baton+Rouge+Church+of+Christ/@30.4192982,-91.0927394,16z/data=!3m1!4b1!4m6!3m5!1s0x8626a488a4d875c7:0x6b3b292a874fbcab!8m2!3d30.4192982!4d-91.0927394!16s%2Fg%2F1vv2sls2?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                8725 Jefferson Highway
+                            </a>
                             <p className="text-gray-700">Baton Rouge, LA 70809</p>
                             <p className="text-gray-700">Education Building to the Right of the Church</p>
                         </div>
@@ -68,9 +82,23 @@ const Meetings = () => {
                                     7p - 8p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">9755 Goodwood Blvd.</p>
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.444005934036213%2C-91.0782889999624&query_place_id=ChIJ36anY2ijJoYRCQwfV_yk9T0"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                9755 Goodwood Blvd.
+                            </a>
                             <p className="text-gray-700">Baton Rouge, LA 70815</p>
-                            <p className="text-gray-700">Small Building on the Right Side of the Parking Lot - Click Here for Exact Location</p>
+                            <p className="text-gray-700">Small Building on the Right Side of the Parking Lot - <a
+                                href="https://www.google.com/maps/place/30%C2%B026'38.4%22N+91%C2%B004'41.9%22W/@30.4440276,-91.080457,17z/data=!4m4!3m3!8m2!3d30.4440091!4d-91.0783112?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                                Click Here for Exact Location
+                            </a></p>
                             <p className="special-note">
                                 2nd Tuesday of the Month - Intergroup Meeting at 6pm
                             </p>
@@ -95,9 +123,23 @@ const Meetings = () => {
                                     6:30p - 7:30p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">630 Richland Ave.</p>
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.44302736703997%2C-91.1489680607058&query_place_id=ChIJQw0s8EWhJoYR5AlpxIXW4y8"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                630 Richland Ave.
+                            </a>
                             <p className="text-gray-700">Baton Rouge, LA 70806</p>
-                            <p className="text-gray-700">Building on the Left Side of the Church, 1st Floor - Click Here for Exact Location</p>
+                            <p className="text-gray-700">Building on the Left Side of the Church, 1st Floor - <a
+                                href="https://www.google.com/maps/place/30%C2%B026'34.9%22N+91%C2%B008'56.3%22W/@30.4431072,-91.1501182,17.79z/data=!4m4!3m3!8m2!3d30.4430222!4d-91.148973?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                                Click Here for Exact Location
+                            </a></p>
                             <p className="special-note">
                                 1st Wednesday of the Month - Speaker Meeting
                             </p>
@@ -122,7 +164,14 @@ const Meetings = () => {
                                     12p - 1p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">8725 Jefferson Highway</p>
+                            <a
+                                href="https://www.google.com/maps/place/South+Baton+Rouge+Church+of+Christ/@30.4192982,-91.0927394,16z/data=!3m1!4b1!4m6!3m5!1s0x8626a488a4d875c7:0x6b3b292a874fbcab!8m2!3d30.4192982!4d-91.0927394!16s%2Fg%2F1vv2sls2?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                8725 Jefferson Highway
+                            </a>
                             <p className="text-gray-700">Baton Rouge, LA 70809</p>
                             <p className="text-gray-700">Education Building to the Right of the Church</p>
                         </div>
@@ -137,9 +186,23 @@ const Meetings = () => {
                                     7p - 8p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">10230 Mollylea Dr.</p>
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.45127722697914%2C-91.0723423962657&query_place_id=ChIJP1L7MEejJoYRsgyz4GNd5Mo"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                10230 Mollylea Dr.
+                            </a>
                             <p className="text-gray-700">Baton Rouge, LA 70815</p>
-                            <p className="text-gray-700">Community Ministries Building on the Back Side of the Grounds - Click Here for Exact Location</p>
+                            <p className="text-gray-700">Community Ministries Building on the Back Side of the Grounds - <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.451278851192694%2C-91.07234308493572"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                                Click Here for Exact Location
+                            </a></p>
                             <p className="special-note">
                                 1st Thursday of the Month - Step Meeting
                             </p>
@@ -155,7 +218,14 @@ const Meetings = () => {
                                     7p - 8p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">600 North Oaks Dr.</p>
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.509231042058477%2C-90.4633630131272&query_place_id=ChIJvRomRrkiJ4YRQw677QC5_TA"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                600 North Oaks Dr.
+                            </a>
                             <p className="text-gray-700">Hammond, LA 70401</p>
                         </div>
 
@@ -191,9 +261,23 @@ const Meetings = () => {
                                     12p - 1p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">10000 Blackwater Rd.</p>
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.542229312288875%2C-91.08537507770156&query_place_id=ChIJwb5cnNeZJoYRESJMNtaxJNs"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                10000 Blackwater Rd.
+                            </a>
                             <p className="text-gray-700">Baker, LA 70818</p>
-                            <p className="text-gray-700">Meeting Room Building Behind the Church - Click Here for Exact Location</p>
+                            <p className="text-gray-700">Meeting Room Building Behind the Church - <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.542250475778584%2C-91.08532410301632"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                                Click Here for Exact Location
+                            </a></p>
                             <p className="special-note">
                                 1st Friday of the Month - Step Meeting
                             </p>
@@ -218,9 +302,23 @@ const Meetings = () => {
                                     10a - 11a
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">536 Centerville St. NE</p>
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.486381376265832%2C-90.94755857393369&query_place_id=ChIJZ2jHU1--JoYRm8Cvzn0APFo"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                536 Centerville St. NE
+                            </a>
                             <p className="text-gray-700">Denham Springs, LA 70726</p>
-                            <p className="text-gray-700">Second Building on the Left - Up the Wheelchair Ramp in Back - Click Here for Exact Location</p>
+                            <p className="text-gray-700">Second Building on the Left - Up the Wheelchair Ramp in Back - <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.486299169615744%2C-90.9475544307773"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                                Click Here for Exact Location
+                            </a></p>
                         </div>
                     </div>
                 </div>
@@ -242,8 +340,22 @@ const Meetings = () => {
                                     7p - 8p
                                 </p>
                             </div>
-                            <p className="text-gray-700 mt-2">1027 N. Burnside Dr.</p>
-                            <p className="text-gray-700">Gonzales, LA 70737 - Click Here for Exact Location</p>
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.240825309924702%2C-90.92096583628728&query_place_id=ChIJV2_4lea1JoYRM3jjz6gecrs"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline mt-2 block"
+                            >
+                                1027 N. Burnside Dr.
+                            </a>
+                            <p className="text-gray-700">Gonzales, LA 70737 - <a
+                                href="https://www.google.com/maps/search/?api=1&query=30.24080090868117%2C-90.92102596603577"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                                Click Here for Exact Location
+                            </a></p>
                             <p className="special-note">
                                 3rd Sunday of the Month - Blue Book Meeting
                             </p>

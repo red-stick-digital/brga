@@ -78,122 +78,128 @@ export default function Home() {
                     </h2>
 
                     {/* Cards Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-12 justify-items-center">
                         {/* Card 1: Our Story */}
-                        <div className="flex flex-col items-center text-center home-card">
+                        <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                             <img
                                 src="/images/home three rocks.png"
                                 alt="Our Story"
-                                className="rounded-full object-cover mb-4 home-card-image"
+                                className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                             />
                             <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                 Our Story
                             </h3>
-                            <div className="home-card-description">
-                                <p className="font-helvetica font-light text-[20px] leading-[30px] home-card-text">
+                            <div className="w-full max-w-[380px] min-h-[150px] flex items-center">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] text-[#5E5E5E]">
                                     We are a group of compulsive gamblers in the Baton Rouge and Hammond area that share our experience strength and hope so that we may solve our common problem which is gambling addiction.
                                 </p>
                             </div>
                         </div>
 
                         {/* Card 2: Local Meetings */}
-                        <div className="flex flex-col items-center text-center home-card">
+                        <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                             <img
                                 src="/images/home bonsai.png"
                                 alt="Local Meetings"
-                                className="rounded-full object-cover mb-4 home-card-image"
+                                className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                             />
                             <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                 Local Meetings
                             </h3>
-                            <div className="home-card-description">
-                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 home-card-text">
+                            <div className="w-full max-w-[380px] min-h-[150px] flex flex-col justify-center">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 text-[#5E5E5E]">
                                     There are multiple meetings of recovery available throughout the week in our area.
                                 </p>
+                                <Link
+                                    to="/meetings"
+                                    className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
+                                >
+                                    LEARN MORE
+                                </Link>
                             </div>
-                            <Link
-                                to="/meetings"
-                                className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
-                            >
-                                LEARN MORE
-                            </Link>
                         </div>
 
                         {/* Card 3: Am I a compulsive gambler? */}
-                        <div className="flex flex-col items-center text-center home-card">
+                        <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                             <img
                                 src="/images/home head down.png"
                                 alt="Am I a compulsive gambler?"
-                                className="rounded-full object-cover mb-4 home-card-image"
+                                className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                             />
                             <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                 Am I a compulsive gambler?
                             </h3>
-                            <div className="home-card-description">
-                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 home-card-text">
+                            <div className="w-full max-w-[380px] min-h-[150px] flex flex-col justify-center">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 text-[#5E5E5E]">
                                     Only you can decide that. Answering these 20 questions can help you make that decision.
                                 </p>
+                                <Link
+                                    to="/20questions"
+                                    className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
+                                >
+                                    ANSWER NOW
+                                </Link>
                             </div>
-                            <Link
-                                to="/20questions"
-                                className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
-                            >
-                                ANSWER NOW
-                            </Link>
                         </div>
 
                         {/* Card 4: Stop Now */}
-                        <div className="flex flex-col items-center text-center home-card">
+                        <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                             <img
                                 src="/images/home slot machine.png"
                                 alt="Stop Now"
-                                className="rounded-full object-cover mb-4 home-card-image"
+                                className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                             />
-                            <div className="home-card-description">
-                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 home-card-text">
+                            <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
+                                Stop Now
+                            </h3>
+                            <div className="w-full max-w-[380px] min-h-[150px] flex flex-col justify-center">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 text-[#5E5E5E]">
                                     Whether you want to stop going to casinos, sports betting, video poker, racetracks or any other type of gambling we are here to help.
                                 </p>
+                                <Link
+                                    to="/meetings"
+                                    className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
+                                >
+                                    STOP NOW
+                                </Link>
                             </div>
-                            <Link
-                                to="/meetings"
-                                className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
-                            >
-                                STOP NOW
-                            </Link>
                         </div>
 
                         {/* Card 5: GA International */}
-                        <div className="flex flex-col items-center text-center home-card">
+                        <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                             <img
                                 src="/images/home walking on rocks.png"
                                 alt="Gamblers Anonymous International"
-                                className="rounded-full object-cover mb-4 home-card-image"
+                                className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                             />
-                            <div className="home-card-description">
-                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 home-card-text">
+                            <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
+                                GA International
+                            </h3>
+                            <div className="w-full max-w-[380px] min-h-[150px] flex flex-col justify-center">
+                                <p className="font-helvetica font-light text-[20px] leading-[30px] mb-4 text-[#5E5E5E]">
                                     Click below to be taken to the Gamblers Anonymous International Service Office website.
                                 </p>
+                                <a
+                                    href="https://gamblersanonymous.org/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
+                                >
+                                    GO NOW
+                                </a>
                             </div>
-                            <a
-                                href="https://gamblersanonymous.org/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-6 py-2 bg-[#8BB7D1] text-black font-helvetica font-bold text-sm rounded hover:bg-opacity-90 transition-all"
-                            >
-                                GO NOW
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Someone's Gambling Affecting You Section */}
-            <div className="w-full flex items-center justify-center py-12 home-cta-section">
-                <div className="flex flex-col items-center justify-center text-center home-cta-container">
-                    <p className="font-helvetica font-normal mb-6 home-cta-text">
+            <div className="w-full flex items-center justify-center py-12">
+                <div className="flex flex-col items-center justify-center text-center max-w-4xl px-6">
+                    <p className="font-helvetica font-normal text-[32px] sm:text-[40px] lg:text-[48px] leading-[1.25] text-[#151515] mb-8 text-center">
                         Are you concerned about someone else gambling in your life?
                     </p>
-                    <Button className="font-bold home-cta-button">
+                    <Button className="font-bold text-center whitespace-nowrap">
                         IS SOMEONE'S GAMBLING AFFECTING YOU? CLICK HERE
                     </Button>
                 </div>
