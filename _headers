@@ -1,0 +1,8 @@
+# Security Headers for Vercel
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://nrpwrxeypphbduvlozbr.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://nrpwrxeypphbduvlozbr.supabase.co wss://nrpwrxeypphbduvlozbr.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';

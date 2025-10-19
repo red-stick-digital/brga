@@ -14,6 +14,23 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'dist',
+      // Optimize build for production
+      minify: 'terser',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            supabase: ['@supabase/supabase-js'],
+            ui: ['@headlessui/react', '@heroicons/react']
+          }
+        }
+      },
+      // Generate source maps for debugging in production
+      sourcemap: mode !== 'production'
     },
+    // Optimize dependencies pre-bundling
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'react-router-dom', '@supabase/supabase-js']
+    }
   };
 });

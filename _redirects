@@ -1,0 +1,12 @@
+# Vercel redirects and rewrites for SPA
+# Handle React Router client-side routing
+
+# Redirect trailing slashes to clean URLs
+/*/ / 301!
+
+# Serve index.html for all routes (SPA fallback)
+/* /index.html 200
+
+# Security redirects
+/api/* /404 404
+/admin/* /404 404
