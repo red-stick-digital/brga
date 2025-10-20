@@ -380,7 +380,7 @@ const Meetings = () => {
 
                 <div className="flex flex-col gap-4">
                     <a
-                        href="/documents/meeting-list.pdf"
+                        href="/documents/meetinglist.pdf"
                         download
                         className="inline-block"
                     >
