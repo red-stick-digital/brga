@@ -11,9 +11,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Build outputs (will be rebuilt on Vercel)
-dist/
-
 # IDE files
 .vscode/
 .idea/
