@@ -68,6 +68,11 @@ class SessionSecurity {
      * Set up activity monitoring to detect user interaction
      */
     setupActivityMonitoring() {
+        // Only run in browser environment
+        if (typeof document === 'undefined') {
+            return;
+        }
+
         const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
 
         const activityHandler = () => {
@@ -87,6 +92,10 @@ class SessionSecurity {
      * Remove activity monitoring listeners
      */
     removeActivityListeners() {
+        if (typeof document === 'undefined') {
+            return;
+        }
+
         if (this.activityHandler && this.monitoredEvents) {
             this.monitoredEvents.forEach(event => {
                 document.removeEventListener(event, this.activityHandler, true);
@@ -129,11 +138,14 @@ class SessionSecurity {
     showSessionWarning() {
         console.warn('⚠️ Session expiring in 5 minutes');
 
-        // Dispatch custom event for UI components to handle
-        const event = new CustomEvent('session-warning', {
-            detail: { remainingTime: 5 * 60 * 1000 }
-        });
-        window.dispatchEvent(event);
+        // Only dispatch events in browser environment
+        if (typeof window !== 'undefined') {
+            // Dispatch custom event for UI components to handle
+            const event = new CustomEvent('session-warning', {
+                detail: { remainingTime: 5 * 60 * 1000 }
+            });
+            window.dispatchEvent(event);
+        }
     }
 
     /**
@@ -146,23 +158,27 @@ class SessionSecurity {
             // Aggressive logout
             await this.performSecureLogout();
 
-            // Dispatch logout event
-            const event = new CustomEvent('force-logout', {
-                detail: { reason }
-            });
-            window.dispatchEvent(event);
+            // Dispatch logout event (browser only)
+            if (typeof window !== 'undefined') {
+                const event = new CustomEvent('force-logout', {
+                    detail: { reason }
+                });
+                window.dispatchEvent(event);
 
-            // Clear all storage
-            this.clearAllStorage();
+                // Clear all storage
+                this.clearAllStorage();
 
-            // Redirect to login
-            window.location.href = '/login';
+                // Redirect to login
+                window.location.href = '/login';
+            }
 
         } catch (error) {
             console.error('❌ Force logout error:', error);
-            // Even if logout fails, clear storage and redirect
-            this.clearAllStorage();
-            window.location.href = '/login';
+            // Even if logout fails, clear storage and redirect (browser only)
+            if (typeof window !== 'undefined') {
+                this.clearAllStorage();
+                window.location.href = '/login';
+            }
         }
     }
 
@@ -185,6 +201,11 @@ class SessionSecurity {
      * Clear all possible storage locations
      */
     clearAllStorage() {
+        // Only run in browser environment
+        if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+            return;
+        }
+
         try {
             // Clear localStorage
             const localKeys = [];
@@ -204,21 +225,23 @@ class SessionSecurity {
             });
 
             // Clear sessionStorage
-            const sessionKeys = [];
-            for (let i = 0; i < sessionStorage.length; i++) {
-                sessionKeys.push(sessionStorage.key(i));
-            }
-            sessionKeys.forEach(key => {
-                if (key && (
-                    key.includes('supabase') ||
-                    key.includes('sb-') ||
-                    key.includes('auth') ||
-                    key.includes('session') ||
-                    key.includes('token')
-                )) {
-                    sessionStorage.removeItem(key);
+            if (typeof sessionStorage !== 'undefined') {
+                const sessionKeys = [];
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    sessionKeys.push(sessionStorage.key(i));
                 }
-            });
+                sessionKeys.forEach(key => {
+                    if (key && (
+                        key.includes('supabase') ||
+                        key.includes('sb-') ||
+                        key.includes('auth') ||
+                        key.includes('session') ||
+                        key.includes('token')
+                    )) {
+                        sessionStorage.removeItem(key);
+                    }
+                });
+            }
 
             console.log('🗑️ All storage cleared');
         } catch (error) {
@@ -233,9 +256,9 @@ class SessionSecurity {
         supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 this.cleanup();
-            } else if (event === 'SIGNED_IN' && session) {
-                this.initialize();
             }
+            // Remove the initialize() call to avoid circular reference
+            // The useAuth hook will handle calling initialize() on sign-in
         });
     }
 
