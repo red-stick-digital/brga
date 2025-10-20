@@ -4,6 +4,7 @@ import ApprovalCodesList from '../components/Admin/ApprovalCodesList';
 import GenerateApprovalCode from '../components/Admin/GenerateApprovalCode';
 import PendingMembersList from '../components/Admin/PendingMembersList';
 import EmailTestPanel from '../components/Admin/EmailTestPanel';
+import UserMigration from '../components/Admin/UserMigration';
 
 const AdminDashboard = () => {
     const { fetchMemberStats } = useApprovals();
@@ -30,6 +31,7 @@ const AdminDashboard = () => {
         { id: 'generate', label: 'Generate Codes', count: null },
         { id: 'pending', label: 'Pending Members', count: stats?.pending },
         { id: 'rejected', label: 'Rejected Members', count: stats?.rejected },
+        { id: 'migrate', label: 'User Migration', count: null },
         { id: 'email', label: 'Email Testing', count: null },
     ];
 
@@ -131,6 +133,10 @@ const AdminDashboard = () => {
                                 Rejected members functionality coming soon...
                             </div>
                         </div>
+                    )}
+
+                    {activeTab === 'migrate' && (
+                        <UserMigration />
                     )}
 
                     {activeTab === 'email' && (

@@ -5,188 +5,188 @@ import supabase from './supabase.js';
  * Handles both authentication emails (via Supabase) and custom emails (via API)
  */
 class EmailService {
-    constructor() {
-        this.apiBase = import.meta.env.DEV
-            ? 'http://localhost:3000/api'
-            : '/api';
+  constructor() {
+    this.apiBase = import.meta.env.DEV
+      ? 'http://localhost:3001/api'
+      : '/api';
+  }
+
+  /**
+   * Send a custom email via Resend API
+   * @param {Object} emailData - Email data object
+   * @param {string} emailData.to - Recipient email
+   * @param {string} emailData.subject - Email subject
+   * @param {string} emailData.html - HTML content
+   * @param {string} emailData.text - Plain text content (optional)
+   * @param {string} emailData.from - Sender info (optional)
+   */
+  async sendCustomEmail({ to, subject, html, text = null, from = null }) {
+    try {
+      const response = await fetch(`${this.apiBase}/send-custom-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to,
+          subject,
+          html,
+          text,
+          from
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error sending custom email:', error);
+      throw error;
     }
+  }
 
-    /**
-     * Send a custom email via Resend API
-     * @param {Object} emailData - Email data object
-     * @param {string} emailData.to - Recipient email
-     * @param {string} emailData.subject - Email subject
-     * @param {string} emailData.html - HTML content
-     * @param {string} emailData.text - Plain text content (optional)
-     * @param {string} emailData.from - Sender info (optional)
-     */
-    async sendCustomEmail({ to, subject, html, text = null, from = null }) {
-        try {
-            const response = await fetch(`${this.apiBase}/send-custom-email`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    to,
-                    subject,
-                    html,
-                    text,
-                    from
-                }),
-            });
+  /**
+   * Send contact form email (existing functionality)
+   * @param {Object} formData - Contact form data
+   */
+  async sendContactForm({ name, email, message }) {
+    try {
+      const response = await fetch(`${this.apiBase}/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-            return await response.json();
-        } catch (error) {
-            console.error('Error sending custom email:', error);
-            throw error;
-        }
+      return await response.json();
+    } catch (error) {
+      console.error('Error sending contact form:', error);
+      throw error;
     }
+  }
 
-    /**
-     * Send contact form email (existing functionality)
-     * @param {Object} formData - Contact form data
-     */
-    async sendContactForm({ name, email, message }) {
-        try {
-            const response = await fetch(`${this.apiBase}/send-email`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, email, message }),
-            });
+  /**
+   * Send speaker request email
+   * @param {Object} requestData - Speaker request data
+   */
+  async sendSpeakerRequest(requestData) {
+    try {
+      const response = await fetch(`${this.apiBase}/send-speaker-request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-            return await response.json();
-        } catch (error) {
-            console.error('Error sending contact form:', error);
-            throw error;
-        }
+      return await response.json();
+    } catch (error) {
+      console.error('Error sending speaker request:', error);
+      throw error;
     }
+  }
 
-    /**
-     * Send speaker request email
-     * @param {Object} requestData - Speaker request data
-     */
-    async sendSpeakerRequest(requestData) {
-        try {
-            const response = await fetch(`${this.apiBase}/send-speaker-request`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-            });
+  /**
+   * Send welcome email to new members
+   * @param {string} email - Member's email
+   * @param {string} name - Member's name
+   */
+  async sendWelcomeEmail(email, name) {
+    const subject = 'Welcome to Baton Rouge Gamblers Anonymous';
+    const html = this.getWelcomeEmailTemplate(name);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    return await this.sendCustomEmail({
+      to: email,
+      subject,
+      html
+    });
+  }
 
-            return await response.json();
-        } catch (error) {
-            console.error('Error sending speaker request:', error);
-            throw error;
-        }
+  /**
+   * Send meeting reminder email
+   * @param {string} email - Member's email
+   * @param {string} name - Member's name
+   * @param {Object} meetingInfo - Meeting details
+   */
+  async sendMeetingReminder(email, name, meetingInfo) {
+    const subject = `Meeting Reminder: ${meetingInfo.title}`;
+    const html = this.getMeetingReminderTemplate(name, meetingInfo);
+
+    return await this.sendCustomEmail({
+      to: email,
+      subject,
+      html
+    });
+  }
+
+  /**
+   * Send event announcement
+   * @param {Array} recipients - Array of email addresses
+   * @param {Object} eventData - Event details
+   */
+  async sendEventAnnouncement(recipients, eventData) {
+    const subject = `Event Announcement: ${eventData.title}`;
+    const html = this.getEventAnnouncementTemplate(eventData);
+
+    // Send to all recipients (consider batching for large lists)
+    const promises = recipients.map(email =>
+      this.sendCustomEmail({
+        to: email,
+        subject,
+        html
+      })
+    );
+
+    return await Promise.allSettled(promises);
+  }
+
+  /**
+   * Trigger Supabase authentication emails
+   * These use Supabase's built-in email system with your configured templates
+   */
+  async sendPasswordReset(email) {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+
+      if (error) throw error;
+      return { success: true };
+    } catch (error) {
+      console.error('Error sending password reset:', error);
+      throw error;
     }
+  }
 
-    /**
-     * Send welcome email to new members
-     * @param {string} email - Member's email
-     * @param {string} name - Member's name
-     */
-    async sendWelcomeEmail(email, name) {
-        const subject = 'Welcome to Baton Rouge Gamblers Anonymous';
-        const html = this.getWelcomeEmailTemplate(name);
+  async sendEmailConfirmation(email) {
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email
+      });
 
-        return await this.sendCustomEmail({
-            to: email,
-            subject,
-            html
-        });
+      if (error) throw error;
+      return { success: true };
+    } catch (error) {
+      console.error('Error sending email confirmation:', error);
+      throw error;
     }
+  }
 
-    /**
-     * Send meeting reminder email
-     * @param {string} email - Member's email
-     * @param {string} name - Member's name
-     * @param {Object} meetingInfo - Meeting details
-     */
-    async sendMeetingReminder(email, name, meetingInfo) {
-        const subject = `Meeting Reminder: ${meetingInfo.title}`;
-        const html = this.getMeetingReminderTemplate(name, meetingInfo);
-
-        return await this.sendCustomEmail({
-            to: email,
-            subject,
-            html
-        });
-    }
-
-    /**
-     * Send event announcement
-     * @param {Array} recipients - Array of email addresses
-     * @param {Object} eventData - Event details
-     */
-    async sendEventAnnouncement(recipients, eventData) {
-        const subject = `Event Announcement: ${eventData.title}`;
-        const html = this.getEventAnnouncementTemplate(eventData);
-
-        // Send to all recipients (consider batching for large lists)
-        const promises = recipients.map(email =>
-            this.sendCustomEmail({
-                to: email,
-                subject,
-                html
-            })
-        );
-
-        return await Promise.allSettled(promises);
-    }
-
-    /**
-     * Trigger Supabase authentication emails
-     * These use Supabase's built-in email system with your configured templates
-     */
-    async sendPasswordReset(email) {
-        try {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/auth/reset-password`,
-            });
-
-            if (error) throw error;
-            return { success: true };
-        } catch (error) {
-            console.error('Error sending password reset:', error);
-            throw error;
-        }
-    }
-
-    async sendEmailConfirmation(email) {
-        try {
-            const { error } = await supabase.auth.resend({
-                type: 'signup',
-                email: email
-            });
-
-            if (error) throw error;
-            return { success: true };
-        } catch (error) {
-            console.error('Error sending email confirmation:', error);
-            throw error;
-        }
-    }
-
-    // Email Templates
-    getWelcomeEmailTemplate(name) {
-        return `
+  // Email Templates
+  getWelcomeEmailTemplate(name) {
+    return `
       <!DOCTYPE html>
       <html>
         <head>
@@ -233,10 +233,10 @@ class EmailService {
         </body>
       </html>
     `;
-    }
+  }
 
-    getMeetingReminderTemplate(name, meetingInfo) {
-        return `
+  getMeetingReminderTemplate(name, meetingInfo) {
+    return `
       <!DOCTYPE html>
       <html>
         <head>
@@ -278,10 +278,10 @@ class EmailService {
         </body>
       </html>
     `;
-    }
+  }
 
-    getEventAnnouncementTemplate(eventData) {
-        return `
+  getEventAnnouncementTemplate(eventData) {
+    return `
       <!DOCTYPE html>
       <html>
         <head>
@@ -330,7 +330,7 @@ class EmailService {
         </body>
       </html>
     `;
-    }
+  }
 }
 
 // Export a singleton instance
