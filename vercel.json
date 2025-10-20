@@ -4,6 +4,26 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x",
+      "excludeFiles": [
+        "scripts/**",
+        "tests/**",
+        "playwright-report/**",
+        "test-results/**",
+        "docs/**",
+        "database/**",
+        "public/**",
+        "src/**",
+        "*.md",
+        "playwright.config.js",
+        "vite.config.js",
+        "tailwind.config.js",
+        "postcss.config.js"
+      ]
+    }
+  },
   "rewrites": [
     {
       "source": "/((?!api/).*)",

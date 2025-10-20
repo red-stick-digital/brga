@@ -35,3 +35,26 @@ dist/
 
 # Admin scripts (not needed in production)
 scripts/admin-migration/
+
+# Test files and reports
+tests/
+test-results/
+playwright-report/
+*.spec.js
+*.test.js
+
+# Documentation
+docs/
+*.md
+DEPLOYMENT_OPTIMIZATION.md
+MIGRATION_GUIDE.md
+SECURITY_ANALYSIS.md
+
+# Development tools
+playwright.config.js
+dev-server.js
+
+# Email test files
+email-test.html
+public/email-test*.html
+public/debug-email-panel.html
