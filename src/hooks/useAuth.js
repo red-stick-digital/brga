@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import supabase from '../services/supabase';
 import useApprovalCode from './useApprovalCode';
-import sessionSecurity from '../utils/sessionSecurity';
+// import sessionSecurity from '../utils/sessionSecurity';
 
 const useAuth = () => {
     const [user, setUser] = useState(null);
@@ -15,9 +15,9 @@ const useAuth = () => {
             setLoading(false);
 
             // Initialize session security if user is logged in
-            if (session?.user) {
-                sessionSecurity.initialize();
-            }
+            // if (session?.user) {
+            //     sessionSecurity.initialize();
+            // }
         });
 
         // Listen for auth changes
@@ -25,16 +25,16 @@ const useAuth = () => {
             setUser(session?.user ?? null);
 
             // Handle session security based on auth state
-            if (event === 'SIGNED_IN' && session?.user) {
-                sessionSecurity.initialize();
-            } else if (event === 'SIGNED_OUT') {
-                sessionSecurity.cleanup();
-            }
+            // if (event === 'SIGNED_IN' && session?.user) {
+            //     sessionSecurity.initialize();
+            // } else if (event === 'SIGNED_OUT') {
+            //     sessionSecurity.cleanup();
+            // }
         });
 
         return () => {
             subscription.unsubscribe();
-            sessionSecurity.cleanup();
+            // sessionSecurity.cleanup();
         };
     }, []);
 
@@ -207,7 +207,7 @@ const useAuth = () => {
             console.log('🔐 Secure logout process completed');
 
             // Clean up session security
-            sessionSecurity.cleanup();
+            // sessionSecurity.cleanup();
         }
     };
 
