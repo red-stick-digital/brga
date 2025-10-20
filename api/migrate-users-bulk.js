@@ -1,11 +1,14 @@
-const { createClient } = require('@supabase/supabase-js');
-const { Resend } = require('resend');
-const crypto = require('crypto');
+import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend';
+import crypto from 'crypto';
+import formidable from 'formidable';
+import fs from 'fs';
+import csv from 'csv-parser';
 
 // Initialize Supabase Admin client
 const supabaseAdmin = createClient(
     process.env.VITE_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY // This needs to be set in your environment
+    process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -95,26 +98,28 @@ This is an automated message from the Baton Rouge GA member portal.
 
 // Find or create home group
 const findOrCreateHomeGroup = async (homeGroupName) => {
-    if (!homeGroupName) return null;
+    if (!homeGroupName || homeGroupName.trim() === '') return null;
 
-    // First, try to find existing home group
+    const cleanName = homeGroupName.trim();
+
+    // First, try to find existing home group (case-insensitive)
     const { data: existingGroup, error: findError } = await supabaseAdmin
         .from('home_groups')
         .select('id')
-        .eq('name', homeGroupName)
+        .ilike('name', cleanName)
         .single();
 
     if (existingGroup) {
         return existingGroup.id;
     }
 
-    // If not found and it's a migration, create a placeholder home group
+    // If not found, create a placeholder home group
     const { data: newGroup, error: createError } = await supabaseAdmin
         .from('home_groups')
         .insert({
-            name: homeGroupName,
+            name: cleanName,
             start_time: '19:00:00', // Default 7 PM
-            street_1: 'TBD',
+            street_1: 'TBD - Please Update',
             city: 'Baton Rouge',
             state: 'LA',
             zip: '70801'
@@ -130,26 +135,76 @@ const findOrCreateHomeGroup = async (homeGroupName) => {
     return newGroup.id;
 };
 
+// Parse boolean values from CSV
+const parseBoolean = (value) => {
+    if (!value || value.trim() === '') return false;
+    const lowerValue = value.trim().toLowerCase();
+    return lowerValue === 'true' || lowerValue === '1' || lowerValue === 'yes';
+};
+
+// Validate and normalize user data
+const normalizeUserData = (rawData) => {
+    const normalized = {};
+
+    // Required fields
+    normalized.email = rawData.email?.trim().toLowerCase();
+    normalized.full_name = rawData.full_name?.trim();
+
+    // Optional fields
+    normalized.phone = rawData.phone?.trim() || null;
+    normalized.clean_date = rawData.clean_date?.trim() || null;
+    normalized.home_group_name = rawData.home_group_name?.trim() || null;
+
+    // Boolean fields
+    normalized.listed_in_directory = parseBoolean(rawData.listed_in_directory);
+    normalized.willing_to_sponsor = parseBoolean(rawData.willing_to_sponsor);
+
+    return normalized;
+};
+
 // Migrate a single user
 const migrateUser = async (userData) => {
     try {
+        const normalizedData = normalizeUserData(userData);
         const {
             email,
             full_name,
-            phone = null,
-            clean_date = null,
-            home_group_name = null,
-            listed_in_directory = false,
-            willing_to_sponsor = false
-        } = userData;
+            phone,
+            clean_date,
+            home_group_name,
+            listed_in_directory,
+            willing_to_sponsor
+        } = normalizedData;
 
         // Validate required fields
         if (!email || !full_name) {
             return {
                 success: false,
+                email: email || 'missing',
+                full_name: full_name || 'missing',
+                error: 'Email and full name are required'
+            };
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return {
+                success: false,
                 email,
                 full_name,
-                error: 'Email and full name are required'
+                error: 'Invalid email format'
+            };
+        }
+
+        // Check if user already exists
+        const { data: existingUser, error: checkError } = await supabaseAdmin.auth.admin.getUserByEmail(email);
+        if (existingUser.user) {
+            return {
+                success: false,
+                email,
+                full_name,
+                error: 'User with this email already exists'
             };
         }
 
@@ -217,6 +272,8 @@ const migrateUser = async (userData) => {
             const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
             if (dateRegex.test(clean_date)) {
                 memberProfileData.clean_date = clean_date;
+            } else {
+                console.warn(`Invalid date format for ${email}: ${clean_date}`);
             }
         }
 
@@ -259,67 +316,126 @@ const migrateUser = async (userData) => {
     }
 };
 
-module.exports = async function handler(req, res) {
+// Parse CSV file and return user data array
+const parseCSVFile = (filePath) => {
+    return new Promise((resolve, reject) => {
+        const users = [];
+        const requiredColumns = ['email', 'full_name'];
+        let headerChecked = false;
+
+        fs.createReadStream(filePath)
+            .pipe(csv())
+            .on('headers', (headers) => {
+                // Check for required columns
+                const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+                if (missingColumns.length > 0) {
+                    return reject(new Error(`Missing required columns: ${missingColumns.join(', ')}`));
+                }
+                headerChecked = true;
+            })
+            .on('data', (data) => {
+                if (headerChecked) {
+                    users.push(data);
+                }
+            })
+            .on('end', () => {
+                resolve(users);
+            })
+            .on('error', (error) => {
+                reject(error);
+            });
+    });
+};
+
+async function handler(req, res) {
     // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
-        // For now, skip auth check in development
-        // TODO: Implement proper admin authentication before production
-        if (process.env.NODE_ENV === 'production') {
-            const authHeader = req.headers.authorization;
-            if (!authHeader) {
-                return res.status(401).json({ error: 'Authentication required' });
+        // Parse form data (for file upload)
+        const form = formidable({
+            uploadDir: '/tmp',
+            keepExtensions: true,
+            maxFileSize: 10 * 1024 * 1024, // 10MB limit
+        });
+
+        const [fields, files] = await form.parse(req);
+
+        // Get the CSV file
+        const csvFile = Array.isArray(files.csv) ? files.csv[0] : files.csv;
+
+        if (!csvFile) {
+            return res.status(400).json({ error: 'No CSV file provided' });
+        }
+
+        // Validate file type
+        if (!csvFile.originalFilename?.toLowerCase().endsWith('.csv')) {
+            return res.status(400).json({ error: 'File must be a CSV' });
+        }
+
+        // Parse CSV file
+        let users;
+        try {
+            users = await parseCSVFile(csvFile.filepath);
+        } catch (parseError) {
+            console.error('CSV parsing error:', parseError);
+            return res.status(400).json({
+                success: false,
+                error: parseError.message || 'Failed to parse CSV file'
+            });
+        } finally {
+            // Clean up uploaded file
+            try {
+                fs.unlinkSync(csvFile.filepath);
+            } catch (cleanupError) {
+                console.warn('File cleanup error:', cleanupError);
             }
         }
 
-        const { users, migration_type } = req.body;
-
-        if (!users || !Array.isArray(users) || users.length === 0) {
+        if (!users || users.length === 0) {
             return res.status(400).json({
-                error: 'Users array is required and must contain at least one user'
+                success: false,
+                error: 'No valid user data found in CSV file'
             });
         }
 
-        // For single user migration (manual entry)
-        if (migration_type === 'manual' && users.length === 1) {
-            const result = await migrateUser(users[0]);
+        console.log(`Starting bulk migration of ${users.length} users`);
 
-            if (result.success) {
-                return res.status(200).json({
-                    success: true,
-                    message: result.message,
-                    temp_password: result.temp_password,
-                    user_id: result.user_id
-                });
-            } else {
-                return res.status(400).json({
-                    success: false,
-                    error: result.error
-                });
-            }
-        }
-
-        // For bulk migration
+        // Process users in batches to avoid overwhelming the system
         const results = [];
         let successful = 0;
         let failed = 0;
+        const batchSize = 5;
 
-        for (const userData of users) {
-            const result = await migrateUser(userData);
-            results.push(result);
+        for (let i = 0; i < users.length; i += batchSize) {
+            const batch = users.slice(i, i + batchSize);
 
-            if (result.success) {
-                successful++;
-            } else {
-                failed++;
+            // Process batch concurrently
+            const batchPromises = batch.map(userData => migrateUser(userData));
+            const batchResults = await Promise.all(batchPromises);
+
+            results.push(...batchResults);
+
+            // Count successes and failures
+            batchResults.forEach(result => {
+                if (result.success) {
+                    successful++;
+                } else {
+                    failed++;
+                }
+            });
+
+            console.log(`Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(users.length / batchSize)}`);
+
+            // Small delay between batches to prevent rate limiting
+            if (i + batchSize < users.length) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
             }
-
-            // Small delay to prevent rate limiting
-            await new Promise(resolve => setTimeout(resolve, 100));
         }
+
+        console.log(`Bulk migration completed: ${successful} successful, ${failed} failed`);
 
         return res.status(200).json({
             success: true,
@@ -338,4 +454,12 @@ module.exports = async function handler(req, res) {
             details: error.message
         });
     }
+}
+
+// Export handler with config
+export default handler;
+export const config = {
+    api: {
+        bodyParser: false,
+    },
 };
