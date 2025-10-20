@@ -1,0 +1,72 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation "Global" [ref=e4]:
+      - link "Gamblers Anonymous - Baton Rouge Baton Rouge Area Gamblers Anonymous" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: Gamblers Anonymous - Baton Rouge
+        - generic [ref=e8]:
+          - generic [ref=e9]: Baton Rouge Area
+          - generic [ref=e10]: Gamblers Anonymous
+      - generic [ref=e11]:
+        - link "Home" [ref=e12] [cursor=pointer]:
+          - /url: /
+        - link "Meetings" [ref=e13] [cursor=pointer]:
+          - /url: /meetings
+        - link "My First Meeting" [ref=e14] [cursor=pointer]:
+          - /url: /myfirstmeeting
+        - link "20 Questions" [ref=e15] [cursor=pointer]:
+          - /url: /20questions
+        - link "Contact Us" [ref=e16] [cursor=pointer]:
+          - /url: /contactus
+        - button "Open menu" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: Open menu
+          - img [ref=e20]
+        - link "Log in" [ref=e22] [cursor=pointer]:
+          - /url: /login
+          - text: Log in →
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - heading "Sign Up" [level=2] [ref=e25]
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - generic [ref=e28]: Approval Code
+          - textbox "Approval Code" [ref=e29]:
+            - /placeholder: word-word-word (e.g., fish-taco-burrito)
+            - text: two-words
+          - paragraph [ref=e30]: Enter the three-word approval code provided by an admin
+        - generic [ref=e31]:
+          - generic [ref=e32]: Email
+          - textbox "Email" [ref=e33]: format@example.com
+        - generic [ref=e34]:
+          - generic [ref=e35]: Password
+          - textbox "Password" [ref=e36]: password123
+        - paragraph [ref=e37]: "Invalid code format. Use format: word-word-word"
+        - button "SIGN UP" [active] [ref=e38] [cursor=pointer]
+  - contentinfo [ref=e39]:
+    - generic [ref=e40]:
+      - generic [ref=e41]:
+        - link [ref=e42] [cursor=pointer]:
+          - /url: https://www.facebook.com/profile.php?id=61556538624235#
+          - img [ref=e43]
+        - link [ref=e45] [cursor=pointer]:
+          - /url: https://x.com/BatonRougeGA
+          - img [ref=e46]
+      - navigation [ref=e48]:
+        - link "Meetings" [ref=e49] [cursor=pointer]:
+          - /url: /meetings
+        - link "Events & Announcements" [ref=e50] [cursor=pointer]:
+          - /url: /eventsandannouncements
+        - link "12 Steps & Unity Program" [ref=e51] [cursor=pointer]:
+          - /url: /12stepsandunityprogram
+        - link "Gam Anon" [ref=e52] [cursor=pointer]:
+          - /url: /gamanon
+        - link "Public Relations" [ref=e53] [cursor=pointer]:
+          - /url: /publicrelations
+        - link "FAQ" [ref=e54] [cursor=pointer]:
+          - /url: /faq
+        - link "Help for Gambling" [ref=e55] [cursor=pointer]:
+          - /url: /helpforgambling
+```
