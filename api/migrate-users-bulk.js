@@ -1,9 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
-import { Resend } from 'resend';
-import crypto from 'crypto';
-import formidable from 'formidable';
-import fs from 'fs';
-import csv from 'csv-parser';
+const { createClient } = require('@supabase/supabase-js');
+const { Resend } = require('resend');
+const crypto = require('crypto');
+const formidable = require('formidable');
+const fs = require('fs');
+const csv = require('csv-parser');
 
 // Initialize Supabase Admin client
 const supabaseAdmin = createClient(
@@ -12,13 +12,6 @@ const supabaseAdmin = createClient(
 );
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Disable body parser for file uploads
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
 
 // Generate a secure temporary password
 const generateTempPassword = () => {
@@ -354,7 +347,7 @@ const parseCSVFile = (filePath) => {
     });
 };
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -462,3 +455,11 @@ export default async function handler(req, res) {
         });
     }
 }
+
+// Export handler with config
+module.exports = handler;
+module.exports.config = {
+    api: {
+        bodyParser: false,
+    },
+};
