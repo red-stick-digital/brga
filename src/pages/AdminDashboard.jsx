@@ -3,6 +3,7 @@ import useApprovals from '../hooks/useApprovals';
 import ApprovalCodesList from '../components/Admin/ApprovalCodesList';
 import GenerateApprovalCode from '../components/Admin/GenerateApprovalCode';
 import PendingMembersList from '../components/Admin/PendingMembersList';
+import EmailTestPanel from '../components/Admin/EmailTestPanel';
 
 const AdminDashboard = () => {
     const { fetchMemberStats } = useApprovals();
@@ -29,6 +30,7 @@ const AdminDashboard = () => {
         { id: 'generate', label: 'Generate Codes', count: null },
         { id: 'pending', label: 'Pending Members', count: stats?.pending },
         { id: 'rejected', label: 'Rejected Members', count: stats?.rejected },
+        { id: 'email', label: 'Email Testing', count: null },
     ];
 
     const handleCodesGenerated = () => {
@@ -91,8 +93,8 @@ const AdminDashboard = () => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`${activeTab === tab.id
-                                        ? 'border-blue-500 text-blue-600'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    ? 'border-blue-500 text-blue-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                     } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
                             >
                                 {tab.label}
@@ -129,6 +131,10 @@ const AdminDashboard = () => {
                                 Rejected members functionality coming soon...
                             </div>
                         </div>
+                    )}
+
+                    {activeTab === 'email' && (
+                        <EmailTestPanel />
                     )}
                 </div>
             </div>
