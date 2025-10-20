@@ -22,6 +22,9 @@ Thumbs.db
 # Database files
 database/
 
+# Disabled/backup files
+.vercel-disabled/
+
 # Temporary files
 *.tmp
 *.temp
