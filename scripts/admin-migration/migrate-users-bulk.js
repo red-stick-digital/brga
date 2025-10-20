@@ -390,52 +390,37 @@ async function handler(req, res) {
             try {
                 fs.unlinkSync(csvFile.filepath);
             } catch (cleanupError) {
-                console.warn('File cleanup error:', cleanupError);
+                console.warn('Could not clean up uploaded file:', cleanupError);
             }
         }
 
-        if (!users || users.length === 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'No valid user data found in CSV file'
-            });
+        // Validate CSV content
+        if (users.length === 0) {
+            return res.status(400).json({ error: 'CSV file is empty or has no valid data rows' });
         }
 
-        console.log(`Starting bulk migration of ${users.length} users`);
+        if (users.length > 1000) {
+            return res.status(400).json({ error: 'CSV file contains too many users (max 1000)' });
+        }
 
-        // Process users in batches to avoid overwhelming the system
+        // Migrate users
         const results = [];
         let successful = 0;
         let failed = 0;
-        const batchSize = 5;
 
-        for (let i = 0; i < users.length; i += batchSize) {
-            const batch = users.slice(i, i + batchSize);
+        for (const userData of users) {
+            const result = await migrateUser(userData);
+            results.push(result);
 
-            // Process batch concurrently
-            const batchPromises = batch.map(userData => migrateUser(userData));
-            const batchResults = await Promise.all(batchPromises);
-
-            results.push(...batchResults);
-
-            // Count successes and failures
-            batchResults.forEach(result => {
-                if (result.success) {
-                    successful++;
-                } else {
-                    failed++;
-                }
-            });
-
-            console.log(`Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(users.length / batchSize)}`);
-
-            // Small delay between batches to prevent rate limiting
-            if (i + batchSize < users.length) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+            if (result.success) {
+                successful++;
+            } else {
+                failed++;
             }
-        }
 
-        console.log(`Bulk migration completed: ${successful} successful, ${failed} failed`);
+            // Small delay to prevent rate limiting
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
 
         return res.status(200).json({
             success: true,
@@ -456,10 +441,11 @@ async function handler(req, res) {
     }
 }
 
-// Export handler with config
-export default handler;
+export { handler as default, handler };
 export const config = {
     api: {
-        bodyParser: false,
+        bodyParser: {
+            sizeLimit: '10mb',
+        },
     },
 };

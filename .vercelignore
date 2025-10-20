@@ -32,3 +32,6 @@ server.log
 
 # Build output (Vercel handles this via outputDirectory)
 dist/
+
+# Admin scripts (not needed in production)
+scripts/admin-migration/
