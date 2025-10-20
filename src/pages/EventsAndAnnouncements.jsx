@@ -1,8 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import useAnnouncements from '../hooks/useAnnouncements';
 import useEvents from '../hooks/useEvents';
-import useUserRole from '../hooks/useUserRole';
 
 /**
  * Events and Announcements Page
@@ -16,7 +14,6 @@ import useUserRole from '../hooks/useUserRole';
 const EventsAndAnnouncements = () => {
     const { announcements, loading: announcementsLoading } = useAnnouncements();
     const { events, loading: eventsLoading, getUpcomingEvents } = useEvents();
-    const { canEdit } = useUserRole();
 
     const upcomingEvents = getUpcomingEvents();
 
@@ -51,16 +48,8 @@ const EventsAndAnnouncements = () => {
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex justify-between items-center mb-8">
+            <div className="mb-8">
                 <h1 className="text-4xl font-bold text-gray-900">Events and Announcements</h1>
-                {canEdit() && (
-                    <Link
-                        to="/admin/content"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium"
-                    >
-                        Manage Content
-                    </Link>
-                )}
             </div>
 
             <div className="space-y-12">
