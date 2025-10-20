@@ -21,6 +21,9 @@ import HelpForGambling from './pages/HelpForGambling';
 
 // Protected Pages
 import MembersOnlyPrivate from './pages/MembersOnlyPrivate';
+import MemberDashboard from './pages/MemberDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import MemberDirectory from './pages/MemberDirectory';
 
 // Auth Pages
 import Login from './components/Auth/Login';
@@ -67,6 +70,29 @@ const App = () => {
                 <MembersOnlyPrivate />
               </ProtectedRoute>
             }
+          />
+
+          <Route
+            path="/member/dashboard"
+            element={
+              <ProtectedRoute>
+                <MemberDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute requiredStatus={['admin', 'superadmin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/directory"
+            element={<MemberDirectory />}
           />
 
           {/* Auth Routes */}

@@ -12,14 +12,15 @@ Baton Rouge GA is a web application for Gamblers Anonymous in the Baton Rouge ar
 ## Structure
 
 - **src/**: Main source code directory
-  - **components/**: UI components (Auth, Layout, common)
-  - **pages/**: Page components (Home, Meetings, etc.)
-  - **hooks/**: Custom React hooks (useAuth, useEvents, etc.)
+  - **components/**: UI components (Auth, Admin, Layout, common)
+  - **pages/**: Page components (Home, Meetings, Dashboard, etc.)
+  - **hooks/**: Custom React hooks (useAuth, useEvents, useApprovalCode, etc.)
   - **services/**: External service integrations (Supabase)
-  - **styles/**: Global CSS and styling
+  - **styles/**: Global CSS and Tailwind styling
 - **public/**: Static assets (images, videos, documents)
 - **database/**: SQL schema and seed data for Supabase
-- **dist/**: Build output directory
+- **api/**: Serverless API endpoints (email services)
+- **tests/**: Playwright E2E tests
 
 ## Language & Runtime
 
@@ -38,13 +39,16 @@ Baton Rouge GA is a web application for Gamblers Anonymous in the Baton Rouge ar
 - Headless UI 2.2.8
 - Hero Icons 2.0.18
 - React Bootstrap 2.10.10
+- Resend 6.2.0 (Email service)
+- Date-fns 4.1.0
 
 **Development Dependencies**:
 
 - Vite 4.0.0
 - Tailwind CSS 3.0.0
 - PostCSS 8.0.0
-- Autoprefixer 10.0.0
+- Playwright 1.56.1
+- Express 5.1.0 (for dev API server)
 
 ## Build & Installation
 
@@ -52,8 +56,11 @@ Baton Rouge GA is a web application for Gamblers Anonymous in the Baton Rouge ar
 # Install dependencies
 npm install
 
-# Development server
+# Development server (frontend only)
 npm run dev
+
+# Development server (API + frontend)
+npm run dev:full
 
 # Production build
 npm run build
@@ -68,6 +75,7 @@ npm run preview
 
 - VITE_SUPABASE_URL: Supabase project URL
 - VITE_SUPABASE_ANON_KEY: Supabase anonymous key
+- RESEND_API_KEY: API key for email service
 - PORT: Development server port (default: 3000)
 
 ## Database
@@ -75,29 +83,33 @@ npm run preview
 **Provider**: Supabase
 **Schema**:
 
-- announcements: For site announcements
-- events: For GA events and meetings
-- user_roles: For user permissions (admin, editor, member)
+- announcements: Site announcements
+- events: GA events and meetings
+- user_roles: User permissions with approval status
+- member_profiles: Member information and preferences
+- home_groups: GA meeting groups
+- approval_codes: Signup approval system
 
 **Security**: Row-level security policies for protected data
 
 ## Authentication
 
-**Provider**: Supabase
+**Provider**: Supabase Auth
 **Implementation**: Custom useAuth hook
 **Methods**: signInWithPassword, signUp, signOut
-**Protected Routes**: ProtectedRoute component using React Router
+**Protected Routes**: ProtectedRoute component with role-based access
 
 ## Application Structure
 
 **Routing**: React Router with component-based routing
 **Layout**: Header and Footer components wrap main content
-**Pages**: Multiple pages for different sections (Home, Meetings, etc.)
+**Pages**: Multiple pages for different sections (public and protected)
 **Components**:
 
 - Auth: Login and SignUp components
+- Admin: Administrative tools and dashboards
 - Layout: Header and Footer
-- Common: Reusable UI components (Button, Video)
+- Common: Reusable UI components
 
 ## Styling
 
@@ -108,4 +120,13 @@ npm run preview
 
 ## Testing
 
-**targetFramework**: Playwright
+**Framework**: Playwright
+**Configuration**: Multi-browser testing (Chromium, Firefox, WebKit)
+**Test Location**: tests/e2e directory
+**Run Command**:
+
+```bash
+npm run test:e2e       # Run tests
+npm run test:e2e:ui    # Run tests with UI
+npm run test:e2e:debug # Run tests in debug mode
+```

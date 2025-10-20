@@ -1,0 +1,227 @@
+import { useState, useEffect } from 'react';
+import supabase from '../services/supabase';
+import useAuth from './useAuth';
+
+/**
+ * Custom hook for managing member profiles
+ * 
+ * Provides functionality to:
+ * - Fetch the current user's profile
+ * - Update the profile
+ * - Fetch home groups for selection
+ * - Handle loading and error states
+ */
+const useMemberProfile = () => {
+    const { user } = useAuth();
+    const [profile, setProfile] = useState(null);
+    const [homeGroups, setHomeGroups] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch the user's profile on component mount or when user changes
+    useEffect(() => {
+        if (user) {
+            fetchProfile();
+        } else {
+            setProfile(null);
+            setLoading(false);
+        }
+    }, [user]);
+
+    // Subscribe to real-time changes to the profile
+    useEffect(() => {
+        if (!user) return;
+
+        const profileSubscription = supabase
+            .channel('member_profiles_changes')
+            .on('postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'member_profiles',
+                    filter: `user_id=eq.${user.id}`
+                },
+                (payload) => {
+                    if (payload.new) {
+                        setProfile(prev => ({
+                            ...prev,
+                            ...payload.new
+                        }));
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(profileSubscription);
+        };
+    }, [user]);
+
+    /**
+     * Fetch the current user's profile
+     */
+    const fetchProfile = async () => {
+        if (!user) return;
+
+        try {
+            setLoading(true);
+            setError(null);
+
+            // First, check if profile exists
+            const { data: profileData, error: profileError } = await supabase
+                .from('member_profiles')
+                .select(`
+          *,
+          home_group:home_groups(*)
+        `)
+                .eq('user_id', user.id)
+                .single();
+
+            if (profileError && profileError.code !== 'PGRST116') { // PGRST116 = not found
+                throw profileError;
+            }
+
+            if (profileData) {
+                setProfile(profileData);
+            } else {
+                // Profile doesn't exist yet, create an empty one
+                setProfile({
+                    user_id: user.id,
+                    full_name: '',
+                    email: user.email,
+                    phone: '',
+                    clean_date: null,
+                    home_group_id: null,
+                    listed_in_directory: false,
+                    willing_to_sponsor: false
+                });
+            }
+        } catch (err) {
+            console.error('Error fetching profile:', err);
+            setError('Failed to load profile. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /**
+     * Update the user's profile
+     */
+    const updateProfile = async (profileData) => {
+        if (!user) return { success: false, error: 'User not authenticated' };
+
+        try {
+            setLoading(true);
+            setError(null);
+
+            // Check if profile exists
+            const { data: existingProfile, error: checkError } = await supabase
+                .from('member_profiles')
+                .select('id')
+                .eq('user_id', user.id)
+                .maybeSingle();
+
+            if (checkError) {
+                throw checkError;
+            }
+
+            let result;
+
+            if (existingProfile) {
+                // Update existing profile
+                result = await supabase
+                    .from('member_profiles')
+                    .update({
+                        full_name: profileData.full_name,
+                        phone: profileData.phone,
+                        email: profileData.email,
+                        clean_date: profileData.clean_date || null,
+                        home_group_id: profileData.home_group_id || null,
+                        listed_in_directory: profileData.listed_in_directory,
+                        willing_to_sponsor: profileData.willing_to_sponsor,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('user_id', user.id);
+            } else {
+                // Create new profile
+                result = await supabase
+                    .from('member_profiles')
+                    .insert({
+                        user_id: user.id,
+                        full_name: profileData.full_name,
+                        phone: profileData.phone,
+                        email: profileData.email,
+                        clean_date: profileData.clean_date || null,
+                        home_group_id: profileData.home_group_id || null,
+                        listed_in_directory: profileData.listed_in_directory,
+                        willing_to_sponsor: profileData.willing_to_sponsor
+                    });
+            }
+
+            if (result.error) {
+                throw result.error;
+            }
+
+            // Fetch the updated profile
+            await fetchProfile();
+
+            return { success: true };
+        } catch (err) {
+            console.error('Error updating profile:', err);
+            setError('Failed to update profile. Please try again later.');
+            return { success: false, error: err.message };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /**
+     * Fetch all home groups for selection
+     * Groups are sorted by day of week (Monday-Sunday)
+     */
+    const fetchHomeGroups = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('home_groups')
+                .select('*')
+                .order('day_of_week', { ascending: true, nullsFirst: false })
+                .order('start_time', { ascending: true });
+
+            if (error) {
+                throw error;
+            }
+
+            // Ensure proper sorting with fallback for missing day_of_week
+            const sortedData = (data || []).sort((a, b) => {
+                const dayA = a.day_of_week !== null && a.day_of_week !== undefined ? a.day_of_week : 0;
+                const dayB = b.day_of_week !== null && b.day_of_week !== undefined ? b.day_of_week : 0;
+
+                if (dayA !== dayB) {
+                    return dayA - dayB;
+                }
+
+                // Secondary sort by time
+                const timeA = a.start_time || '';
+                const timeB = b.start_time || '';
+                return timeA.localeCompare(timeB);
+            });
+
+            setHomeGroups(sortedData);
+        } catch (err) {
+            console.error('Error fetching home groups:', err);
+            setError('Failed to load home groups. Please try again later.');
+        }
+    };
+
+    return {
+        profile,
+        homeGroups,
+        loading,
+        error,
+        fetchProfile,
+        updateProfile,
+        fetchHomeGroups
+    };
+};
+
+export default useMemberProfile;

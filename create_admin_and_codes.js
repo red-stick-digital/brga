@@ -15,7 +15,7 @@ async function createAdminAndCodes() {
 
         // First create an admin user through auth
         const { data: authData, error: authError } = await supabase.auth.signUp({
-            email: 'admin@gmail.com',
+            email: 'admin@batonrougega.org',
             password: 'admin123456'
         });
 
@@ -26,7 +26,7 @@ async function createAdminAndCodes() {
 
                 // Try to find the existing user
                 const { data: session } = await supabase.auth.signInWithPassword({
-                    email: 'admin@gmail.com',
+                    email: 'admin@batonrougega.org',
                     password: 'admin123456'
                 });
 

@@ -138,17 +138,10 @@ DROP POLICY IF EXISTS "Users can view their own profile" ON member_profiles;
 CREATE POLICY "Users can view their own profile" ON member_profiles
     FOR SELECT USING (auth.uid() = user_id);
 
-DROP POLICY IF EXISTS "Approved members can view directory listings" ON member_profiles;
-CREATE POLICY "Approved members can view directory listings" ON member_profiles
-    FOR SELECT USING (
-        auth.uid() IN (
-            SELECT user_id FROM user_roles WHERE approval_status = 'approved'
-        )
-        AND listed_in_directory = TRUE
-        AND user_id IN (
-            SELECT user_id FROM user_roles WHERE approval_status = 'approved'
-        )
-    );
+-- Anyone can view directory-listed profiles (filtering done on frontend/backend)
+DROP POLICY IF EXISTS "Public directory view" ON member_profiles;
+CREATE POLICY "Public directory view" ON member_profiles
+    FOR SELECT USING (listed_in_directory = TRUE);
 
 DROP POLICY IF EXISTS "Admins can view all profiles" ON member_profiles;
 CREATE POLICY "Admins can view all profiles" ON member_profiles

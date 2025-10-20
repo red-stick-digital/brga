@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Dialog, DialogPanel } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import useAuth from '../../hooks/useAuth'
+import useUserRole from '../../hooks/useUserRole'
 
 /**
  * Navigation Structure
@@ -26,6 +28,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 const directLinks = [
     { name: 'Home', href: '/' },
     { name: 'Meetings', href: '/meetings' },
+    { name: 'Directory', href: '/directory' },
     { name: 'My First Meeting', href: '/myfirstmeeting' },
     { name: '20 Questions', href: '/20questions' },
     { name: 'Contact Us', href: '/contactus' },
@@ -45,9 +48,12 @@ const hamburgerLinks = [
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [desktopMenuOpen, setDesktopMenuOpen] = useState(false)
+    const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const location = useLocation()
     const isHome = location.pathname === '/'
+    const { user, logout } = useAuth()
+    const { role, loading: roleLoading } = useUserRole()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -57,6 +63,13 @@ export default function Header() {
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
+
+    const handleLogout = async (e) => {
+        e.preventDefault()
+        await logout()
+        setUserMenuOpen(false)
+        window.location.href = '/'
+    }
 
     return (
         <header
@@ -112,9 +125,48 @@ export default function Header() {
                             </div>
                         )}
                     </div>
-                    <Link to="/login" className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px]">
-                        Log in <span aria-hidden="true">&rarr;</span>
-                    </Link>
+                    {user ? (
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                className="flex items-center font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px]"
+                            >
+                                <UserCircleIcon className="h-6 w-6 mr-1" />
+                                <span>My Account</span>
+                            </button>
+                            {userMenuOpen && (
+                                <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-900 py-2 shadow-lg">
+                                    <Link
+                                        to="/member/dashboard"
+                                        onClick={() => setUserMenuOpen(false)}
+                                        className="block px-4 py-2 font-helvetica text-base font-normal text-[#F7F7F7] hover:bg-gray-800 tracking-[1.1px]"
+                                    >
+                                        Member Dashboard
+                                    </Link>
+                                    {!roleLoading && (role === 'admin' || role === 'superadmin') && (
+                                        <Link
+                                            to="/admin/dashboard"
+                                            onClick={() => setUserMenuOpen(false)}
+                                            className="block px-4 py-2 font-helvetica text-base font-normal text-[#F7F7F7] hover:bg-gray-800 tracking-[1.1px]"
+                                        >
+                                            Admin Dashboard
+                                        </Link>
+                                    )}
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full text-left px-4 py-2 font-helvetica text-base font-normal text-[#F7F7F7] hover:bg-gray-800 tracking-[1.1px]"
+                                    >
+                                        Log out
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <Link to="/login" className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px]">
+                            Log in <span aria-hidden="true">&rarr;</span>
+                        </Link>
+                    )}
                 </div>
             </nav>
             <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -162,13 +214,43 @@ export default function Header() {
                                 ))}
                             </div>
                             <div className="py-6">
-                                <Link
-                                    to="/login"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 block rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
-                                >
-                                    Log in
-                                </Link>
+                                {user ? (
+                                    <>
+                                        <Link
+                                            to="/member/dashboard"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 block rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
+                                        >
+                                            Member Dashboard
+                                        </Link>
+                                        {!roleLoading && (role === 'admin' || role === 'superadmin') && (
+                                            <Link
+                                                to="/admin/dashboard"
+                                                onClick={() => setMobileMenuOpen(false)}
+                                                className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 block rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
+                                            >
+                                                Admin Dashboard
+                                            </Link>
+                                        )}
+                                        <button
+                                            onClick={(e) => {
+                                                handleLogout(e);
+                                                setMobileMenuOpen(false);
+                                            }}
+                                            className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 w-full text-left rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
+                                        >
+                                            Log out
+                                        </button>
+                                    </>
+                                ) : (
+                                    <Link
+                                        to="/login"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 block rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
+                                    >
+                                        Log in
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </div>
