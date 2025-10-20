@@ -29,3 +29,6 @@ database/
 # Logs
 *.log
 server.log
+
+# Build output (Vercel handles this via outputDirectory)
+dist/
