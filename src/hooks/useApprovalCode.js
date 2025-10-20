@@ -70,6 +70,12 @@ const useApprovalCode = () => {
         setLoading(true);
         setError(null);
 
+        // If no code provided, skip the database update
+        if (!code || typeof code !== 'string' || code.trim() === '') {
+            setLoading(false);
+            return { success: true, data: null }; // Success because no code to mark as used
+        }
+
         const normalizedCode = code.trim().toLowerCase();
 
         try {

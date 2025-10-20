@@ -103,11 +103,7 @@ const useApprovalCodes = () => {
         try {
             let query = supabase
                 .from('approval_codes')
-                .select(`
-                    *,
-                    created_by_user:created_by(email),
-                    used_by_user:used_by(email)
-                `)
+                .select('*')
                 .order('created_at', { ascending: false });
 
             // Apply filters
@@ -122,9 +118,7 @@ const useApprovalCodes = () => {
             }
 
             if (filters.search) {
-                query = query.or(
-                    `code.ilike.%${filters.search}%,created_by_user.email.ilike.%${filters.search}%,used_by_user.email.ilike.%${filters.search}%`
-                );
+                query = query.ilike('code', `%${filters.search}%`);
             }
 
             const { data, error: fetchError } = await query;
@@ -133,9 +127,37 @@ const useApprovalCodes = () => {
                 throw fetchError;
             }
 
-            setCodes(data || []);
+            // Get unique user IDs from created_by and used_by fields
+            const userIds = [...new Set([
+                ...data.filter(code => code.created_by).map(code => code.created_by),
+                ...data.filter(code => code.used_by).map(code => code.used_by)
+            ])];
+
+            // Fetch user emails if we have user IDs
+            let userEmails = {};
+            if (userIds.length > 0) {
+                const { data: userData, error: userError } = await supabase
+                    .from('auth.users')
+                    .select('id, email')
+                    .in('id', userIds);
+
+                if (!userError && userData) {
+                    userData.forEach(user => {
+                        userEmails[user.id] = user.email;
+                    });
+                }
+            }
+
+            // Enrich the codes data with user information
+            const enrichedCodes = data.map(code => ({
+                ...code,
+                created_by_user: code.created_by ? { email: userEmails[code.created_by] } : null,
+                used_by_user: code.used_by ? { email: userEmails[code.used_by] } : null
+            }));
+
+            setCodes(enrichedCodes || []);
             setLoading(false);
-            return { success: true, codes: data || [] };
+            return { success: true, codes: enrichedCodes || [] };
 
         } catch (err) {
             console.error('Error fetching approval codes:', err);

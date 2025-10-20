@@ -12,7 +12,6 @@ import TwentyQuestions from './pages/TwentyQuestions';
 import ContactUs from './pages/ContactUs';
 import AboutGamblersAnonymous from './pages/AboutGamblersAnonymous';
 import EventsAndAnnouncements from './pages/EventsAndAnnouncements';
-import MembersOnly from './pages/MembersOnly';
 import TwelveStepsAndUnityProgram from './pages/TwelveStepsAndUnityProgram';
 import GAManon from './pages/GAManon';
 import PublicRelations from './pages/PublicRelations';
@@ -20,14 +19,14 @@ import FAQ from './pages/FAQ';
 import HelpForGambling from './pages/HelpForGambling';
 
 // Protected Pages
-import MembersOnlyPrivate from './pages/MembersOnlyPrivate';
+import AuthHome from './pages/AuthHome';
 import MemberDashboard from './pages/MemberDashboard';
 import AdminDashboard from './pages/AdminDashboard';
-import MemberDirectory from './pages/MemberDirectory';
 
 // Auth Pages
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
+import ResetPassword from './components/Auth/ResetPassword';
 
 // Admin Pages
 import AdminSetup from './components/Admin/AdminSetup';
@@ -55,7 +54,6 @@ const App = () => {
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/aboutgamblersanonymous" element={<AboutGamblersAnonymous />} />
           <Route path="/eventsandannouncements" element={<EventsAndAnnouncements />} />
-          <Route path="/membersonly" element={<MembersOnly />} />
           <Route path="/12stepsandunityprogram" element={<TwelveStepsAndUnityProgram />} />
           <Route path="/gamanon" element={<GAManon />} />
           <Route path="/publicrelations" element={<PublicRelations />} />
@@ -64,10 +62,10 @@ const App = () => {
 
           {/* Protected Routes - Requires Authentication */}
           <Route
-            path="/membersonlyprivate"
+            path="/authhome"
             element={
               <ProtectedRoute>
-                <MembersOnlyPrivate />
+                <AuthHome />
               </ProtectedRoute>
             }
           />
@@ -90,14 +88,10 @@ const App = () => {
             }
           />
 
-          <Route
-            path="/directory"
-            element={<MemberDirectory />}
-          />
-
           {/* Auth Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Admin Routes */}
           <Route path="/admin/setup" element={<AdminSetup />} />

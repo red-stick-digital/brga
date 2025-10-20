@@ -121,6 +121,7 @@ npm run preview
 ## Testing
 
 **Framework**: Playwright
+**targetFramework**: Playwright
 **Configuration**: Multi-browser testing (Chromium, Firefox, WebKit)
 **Test Location**: tests/e2e directory
 **Run Command**:

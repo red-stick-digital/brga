@@ -13,6 +13,7 @@ const useEvents = () => {
                 .from('events')
                 .select('*')
                 .eq('is_active', true)
+                .order('display_order', { nullsLast: true })
                 .order('event_date')
                 .order('start_time');
 

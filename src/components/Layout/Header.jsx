@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import useAuth from '../../hooks/useAuth'
@@ -28,7 +28,6 @@ import useUserRole from '../../hooks/useUserRole'
 const directLinks = [
     { name: 'Home', href: '/' },
     { name: 'Meetings', href: '/meetings' },
-    { name: 'Directory', href: '/directory' },
     { name: 'My First Meeting', href: '/myfirstmeeting' },
     { name: '20 Questions', href: '/20questions' },
     { name: 'Contact Us', href: '/contactus' },
@@ -41,7 +40,6 @@ const hamburgerLinks = [
     { name: 'Gam-Anon', href: '/gamanon' },
     { name: 'Public Relations', href: '/publicrelations' },
     { name: 'FAQ', href: '/faq' },
-    { name: 'Members', href: '/membersonly' },
     { name: 'Help for Gambling', href: '/helpforgambling' },
 ]
 
@@ -50,7 +48,9 @@ export default function Header() {
     const [desktopMenuOpen, setDesktopMenuOpen] = useState(false)
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
+    const [isLoggingOut, setIsLoggingOut] = useState(false)
     const location = useLocation()
+    const navigate = useNavigate()
     const isHome = location.pathname === '/'
     const { user, logout } = useAuth()
     const { role, loading: roleLoading } = useUserRole()
@@ -66,9 +66,32 @@ export default function Header() {
 
     const handleLogout = async (e) => {
         e.preventDefault()
-        await logout()
+
+        if (isLoggingOut) return // Prevent double-clicks
+
+        setIsLoggingOut(true)
         setUserMenuOpen(false)
-        window.location.href = '/'
+
+        try {
+            console.log('Header: 🔐 Starting secure logout...');
+
+            // Perform the logout
+            await logout()
+
+            console.log('Header: ✅ Logout completed successfully');
+
+            // Use React navigation instead of window.location for proper state cleanup
+            navigate('/', { replace: true })
+
+        } catch (error) {
+            console.error('Header: ❌ Error during logout:', error);
+
+            // Even if logout fails, navigate away for security
+            navigate('/', { replace: true })
+
+        } finally {
+            setIsLoggingOut(false)
+        }
     }
 
     return (
