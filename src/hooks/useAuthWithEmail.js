@@ -234,8 +234,13 @@ const useAuthWithEmail = () => {
 
     const sendPasswordReset = async (email) => {
         try {
+            // Get the origin safely, with fallback for server-side rendering
+            const origin = typeof window !== 'undefined'
+                ? window.location.origin
+                : 'https://batonrougega.vercel.app'; // fallback for build time
+
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/auth/reset-password`,
+                redirectTo: `${origin}/auth/reset-password`,
             });
 
             if (error) throw error;

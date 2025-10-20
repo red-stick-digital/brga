@@ -293,18 +293,22 @@ class SessionSecurity {
      * Add security event listener
      */
     addEventListener(event, callback) {
-        this.listeners.push({ event, callback });
-        window.addEventListener(event, callback);
+        if (typeof window !== 'undefined') {
+            this.listeners.push({ event, callback });
+            window.addEventListener(event, callback);
+        }
     }
 
     /**
      * Remove security event listener
      */
     removeEventListener(event, callback) {
-        window.removeEventListener(event, callback);
-        this.listeners = this.listeners.filter(
-            l => l.event !== event || l.callback !== callback
-        );
+        if (typeof window !== 'undefined') {
+            window.removeEventListener(event, callback);
+            this.listeners = this.listeners.filter(
+                l => l.event !== event || l.callback !== callback
+            );
+        }
     }
 }
 
