@@ -23,6 +23,7 @@ const ContactUs = () => {
     });
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [submitStatus, setSubmitStatus] = React.useState('');
+    const [errorMessage, setErrorMessage] = React.useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -36,10 +37,15 @@ const ContactUs = () => {
         e.preventDefault();
         setIsSubmitting(true);
         setSubmitStatus('');
+        setErrorMessage('');
+
+        console.log('Form submitted:', formData);
 
         try {
             // Send email using our API endpoint (dev server for local, Vercel serverless for production)
             const apiUrl = import.meta.env.DEV ? 'http://localhost:3001/api/send-email' : '/api/send-email';
+            console.log('Making request to:', apiUrl);
+
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -52,10 +58,23 @@ const ContactUs = () => {
                 }),
             });
 
-            const result = await response.json();
+            console.log('Response status:', response.status);
+            console.log('Response headers:', Object.fromEntries(response.headers));
+
+            let result;
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                result = await response.json();
+            } else {
+                const text = await response.text();
+                console.log('Non-JSON response:', text);
+                result = { error: 'Server returned non-JSON response: ' + text };
+            }
+
+            console.log('Response result:', result);
 
             if (!response.ok) {
-                throw new Error(result.error || 'Failed to send email');
+                throw new Error(result.error || `Server error: ${response.status} ${response.statusText}`);
             }
 
             setSubmitStatus('success');
@@ -63,6 +82,7 @@ const ContactUs = () => {
         } catch (error) {
             console.error('Error sending email:', error);
             setSubmitStatus('error');
+            setErrorMessage(error.message || 'An unexpected error occurred');
         } finally {
             setIsSubmitting(false);
         }
@@ -132,7 +152,9 @@ const ContactUs = () => {
                             )}
                             {submitStatus === 'error' && (
                                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                                    Sorry, there was an error sending your message. Please try again or call us directly.
+                                    <p className="font-semibold">Error sending message:</p>
+                                    <p>{errorMessage}</p>
+                                    <p className="mt-2 text-sm">Please try again or call us directly at 888-502-5610.</p>
                                 </div>
                             )}
 
