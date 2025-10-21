@@ -298,6 +298,7 @@ const useUserManagement = () => {
                 .eq('user_id', userId);
 
             if (updateError) {
+                console.error('❌ Database error:', updateError);
                 throw updateError;
             }
 
@@ -318,7 +319,7 @@ const useUserManagement = () => {
             return { success: true };
 
         } catch (err) {
-            console.error('Error requesting member deletion:', err);
+            console.error('❌ Error requesting member deletion:', err);
             setError(err.message || 'Failed to request member deletion');
             setLoading(false);
             return { success: false, error: err.message || 'Failed to request member deletion' };
@@ -336,23 +337,18 @@ const useUserManagement = () => {
                 .from('user_roles')
                 .update({
                     approval_status: 'deleted',
-                    notes: 'DELETED by superadmin',
-                    deletion_approved_at: new Date().toISOString()
+                    notes: 'DELETED by superadmin'
                 })
                 .eq('user_id', userId);
 
             if (updateError) {
+                console.error('❌ Database error:', updateError);
                 throw updateError;
             }
 
-            // Also disable the auth user
-            const { error: authError } = await supabase.auth.admin.updateUserById(userId, {
-                ban_duration: 'none' // This effectively disables the user
-            });
-
-            if (authError) {
-                console.warn('Could not disable auth user:', authError);
-            }
+            // Note: Auth user disabling would require admin/service credentials
+            // The soft delete via approval_status='deleted' is sufficient for our use case
+            // The member is now blocked from accessing the system via RLS policies
 
             // Remove from local state
             setMembers(prev => prev.filter(member => member.user_id !== userId));
@@ -361,7 +357,7 @@ const useUserManagement = () => {
             return { success: true };
 
         } catch (err) {
-            console.error('Error approving member deletion:', err);
+            console.error('❌ Error approving member deletion:', err);
             setError(err.message || 'Failed to approve member deletion');
             setLoading(false);
             return { success: false, error: err.message || 'Failed to approve member deletion' };

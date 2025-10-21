@@ -15,9 +15,9 @@ import ResetPasswordModal from './ResetPasswordModal';
 import DeleteMemberRequestModal from './DeleteMemberRequestModal';
 import SuperAdminDeleteModal from './SuperAdminDeleteModal';
 
-const MembersList = ({ members, loading }) => {
+const MembersList = ({ members, loading, onMemberDeleted }) => {
     const { user } = useAuth();
-    const { isSuperAdmin } = useUserRole();
+    const { isSuperAdmin, loading: roleLoading } = useUserRole();
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('name'); // 'name', 'email', 'created_at', 'status'
     const [sortOrder, setSortOrder] = useState('asc'); // 'asc', 'desc'
@@ -28,15 +28,22 @@ const MembersList = ({ members, loading }) => {
     const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
     const [showDeleteRequestModal, setShowDeleteRequestModal] = useState(false);
     const [showSuperAdminDeleteModal, setShowSuperAdminDeleteModal] = useState(false);
+    const [localMembers, setLocalMembers] = useState([]);
+
+    // Sync local state with passed members
+    React.useEffect(() => {
+        setLocalMembers(members);
+    }, [members]);
 
     // Filter and sort members
     const filteredAndSortedMembers = React.useMemo(() => {
-        let filtered = members;
+        // Use localMembers for rendering so deletions update immediately
+        let filtered = localMembers;
 
         // Apply search filter
         if (searchTerm.trim()) {
             const term = searchTerm.toLowerCase();
-            filtered = members.filter(member =>
+            filtered = localMembers.filter(member =>
                 (member.profile?.full_name || '').toLowerCase().includes(term) ||
                 (member.email || '').toLowerCase().includes(term) ||
                 (member.profile?.phone || '').includes(term)
@@ -75,7 +82,7 @@ const MembersList = ({ members, loading }) => {
         });
 
         return filtered;
-    }, [members, searchTerm, sortBy, sortOrder]);
+    }, [localMembers, searchTerm, sortBy, sortOrder]);
 
     const handleSort = (field) => {
         if (sortBy === field) {
@@ -345,6 +352,12 @@ const MembersList = ({ members, loading }) => {
                     onSuccess={() => {
                         setShowDeleteRequestModal(false);
                         setSelectedMember(null);
+                        // Remove from local display (moves to Pending Deletions)
+                        setLocalMembers(prev => prev.filter(m => m.user_id !== selectedMember.user_id));
+                        // Trigger parent refresh
+                        if (onMemberDeleted) {
+                            onMemberDeleted(selectedMember.user_id);
+                        }
                     }}
                 />
             )}
@@ -359,6 +372,11 @@ const MembersList = ({ members, loading }) => {
                     onSuccess={() => {
                         setShowSuperAdminDeleteModal(false);
                         setSelectedMember(null);
+                        // Immediately remove from local display
+                        setLocalMembers(prev => prev.filter(m => m.user_id !== selectedMember.user_id));
+                        if (onMemberDeleted) {
+                            onMemberDeleted(selectedMember.user_id);
+                        }
                     }}
                 />
             )}

@@ -32,28 +32,39 @@ const useMemberProfile = () => {
     useEffect(() => {
         if (!user) return;
 
-        const profileSubscription = supabase
-            .channel('member_profiles_changes')
-            .on('postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'member_profiles',
-                    filter: `user_id=eq.${user.id}`
-                },
-                (payload) => {
-                    if (payload.new) {
-                        setProfile(prev => ({
-                            ...prev,
-                            ...payload.new
-                        }));
+        let subscription;
+
+        const setupSubscription = async () => {
+            subscription = supabase
+                .channel(`member_profiles_changes_${user.id}`)
+                .on('postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'member_profiles',
+                        filter: `user_id=eq.${user.id}`
+                    },
+                    (payload) => {
+                        console.log('Profile subscription triggered:', payload);
+                        // Force update profile immediately
+                        if (payload.new) {
+                            setProfile(payload.new);
+                            // Then refresh to get related home_group data
+                            fetchProfile();
+                        }
                     }
-                }
-            )
-            .subscribe();
+                )
+                .subscribe((status) => {
+                    console.log('Subscription status:', status);
+                });
+        };
+
+        setupSubscription();
 
         return () => {
-            supabase.removeChannel(profileSubscription);
+            if (subscription) {
+                subscription.unsubscribe();
+            }
         };
     }, [user]);
 
@@ -177,30 +188,21 @@ const useMemberProfile = () => {
 
     /**
      * Fetch all home groups for selection
-     * Groups are sorted by day of week (Monday-Sunday)
+     * Groups are sorted by start_time
      */
     const fetchHomeGroups = async () => {
         try {
             const { data, error } = await supabase
                 .from('home_groups')
                 .select('*')
-                .order('day_of_week', { ascending: true, nullsFirst: false })
                 .order('start_time', { ascending: true });
 
             if (error) {
                 throw error;
             }
 
-            // Ensure proper sorting with fallback for missing day_of_week
+            // Sort by start time
             const sortedData = (data || []).sort((a, b) => {
-                const dayA = a.day_of_week !== null && a.day_of_week !== undefined ? a.day_of_week : 0;
-                const dayB = b.day_of_week !== null && b.day_of_week !== undefined ? b.day_of_week : 0;
-
-                if (dayA !== dayB) {
-                    return dayA - dayB;
-                }
-
-                // Secondary sort by time
                 const timeA = a.start_time || '';
                 const timeB = b.start_time || '';
                 return timeA.localeCompare(timeB);

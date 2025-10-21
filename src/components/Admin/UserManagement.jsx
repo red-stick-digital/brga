@@ -9,12 +9,22 @@ import PendingDeletionsList from './PendingDeletionsList';
 
 const UserManagement = () => {
     const { user } = useAuth();
-    const { isSuperAdmin } = useUserRole();
-    const { members, loading, error, getPendingDeletionsCount } = useUserManagement();
+    const { isSuperAdmin, loading: roleLoading } = useUserRole();
+    const { members, loading, error, getPendingDeletionsCount, fetchAllMembers } = useUserManagement();
     const [showAddMemberModal, setShowAddMemberModal] = useState(false);
     const [activeView, setActiveView] = useState('all'); // 'all', 'deletions'
+    const [refreshing, setRefreshing] = useState(false);
 
     const pendingDeletionsCount = getPendingDeletionsCount();
+
+    const handleMemberDeleted = async () => {
+        setRefreshing(true);
+        // Delay slightly to allow database to update
+        await new Promise(resolve => setTimeout(resolve, 500));
+        // Refresh the entire members list
+        await fetchAllMembers();
+        setRefreshing(false);
+    };
 
     if (loading && members.length === 0) {
         return (
@@ -66,7 +76,7 @@ const UserManagement = () => {
                         >
                             All Members
                             <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                {members.filter(m => m.approval_status !== 'pending_deletion').length}
+                                {members.filter(m => m.approval_status !== 'pending_deletion' && m.approval_status !== 'deleted').length}
                             </span>
                         </button>
 
@@ -101,14 +111,15 @@ const UserManagement = () => {
             <div className="p-6">
                 {activeView === 'all' ? (
                     <MembersList
-                        members={members.filter(m => m.approval_status !== 'pending_deletion')}
-                        loading={loading}
+                        members={members.filter(m => m.approval_status !== 'pending_deletion' && m.approval_status !== 'deleted')}
+                        loading={loading || refreshing}
+                        onMemberDeleted={handleMemberDeleted}
                     />
                 ) : (
                     isSuperAdmin() && (
                         <PendingDeletionsList
                             members={members.filter(m => m.approval_status === 'pending_deletion')}
-                            loading={loading}
+                            loading={loading || refreshing}
                         />
                     )
                 )}

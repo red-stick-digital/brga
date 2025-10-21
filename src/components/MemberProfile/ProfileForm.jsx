@@ -264,10 +264,7 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
                             <option value="">Select a home group</option>
                             {homeGroups
                                 .sort((a, b) => {
-                                    // Primary sort by day_of_week
-                                    const dayDiff = (a.day_of_week || 0) - (b.day_of_week || 0);
-                                    if (dayDiff !== 0) return dayDiff;
-                                    // Secondary sort by start_time
+                                    // Sort by start_time
                                     return (a.start_time || '').localeCompare(b.start_time || '');
                                 })
                                 .map(group => (
