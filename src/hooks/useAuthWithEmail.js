@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import supabase from '../services/supabase';
 import useApprovalCode from './useApprovalCode';
-// import sessionSecurity from '../utils/sessionSecurity';
+import sessionSecurity from '../utils/sessionSecurity';
 import emailService from '../services/emailService';
 
 /**
@@ -22,7 +22,7 @@ const useAuthWithEmail = () => {
 
             // Initialize session security if user is logged in
             if (session?.user) {
-                // sessionSecurity.initialize();
+                sessionSecurity.initialize();
             }
         });
 
@@ -32,15 +32,15 @@ const useAuthWithEmail = () => {
 
             // Handle session security based on auth state
             if (event === 'SIGNED_IN' && session?.user) {
-                // sessionSecurity.initialize();
+                sessionSecurity.initialize();
             } else if (event === 'SIGNED_OUT') {
-                // sessionSecurity.cleanup();
+                sessionSecurity.cleanup();
             }
         });
 
         return () => {
             subscription.unsubscribe();
-            // sessionSecurity.cleanup();
+            sessionSecurity.cleanup();
         };
     }, []);
 
@@ -228,7 +228,7 @@ const useAuthWithEmail = () => {
             console.log('🔐 Secure logout process completed');
 
             // Clean up session security
-            // sessionSecurity.cleanup();
+            sessionSecurity.cleanup();
         }
     };
 

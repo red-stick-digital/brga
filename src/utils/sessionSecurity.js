@@ -5,7 +5,7 @@
  * persistent login vulnerabilities and enforce proper session management.
  */
 
-import supabase from '../services/supabase';
+// Import supabase dynamically to avoid build-time execution
 
 // Session timeout configuration (in milliseconds)
 const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
@@ -187,6 +187,9 @@ class SessionSecurity {
      */
     async performSecureLogout() {
         try {
+            // Dynamic import to prevent build-time execution
+            const { default: supabase } = await import('../services/supabase');
+
             // Sign out from Supabase
             const { error } = await supabase.auth.signOut({ scope: 'global' });
             if (error) {
@@ -253,12 +256,17 @@ class SessionSecurity {
      * Monitor auth state changes
      */
     setupAuthStateMonitoring() {
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_OUT') {
-                this.cleanup();
-            }
-            // Remove the initialize() call to avoid circular reference
-            // The useAuth hook will handle calling initialize() on sign-in
+        // Dynamic import to prevent build-time execution
+        import('../services/supabase').then(({ default: supabase }) => {
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_OUT') {
+                    this.cleanup();
+                }
+                // Remove the initialize() call to avoid circular reference
+                // The useAuth hook will handle calling initialize() on sign-in
+            });
+        }).catch(error => {
+            console.error('Failed to setup auth state monitoring:', error);
         });
     }
 
@@ -274,6 +282,9 @@ class SessionSecurity {
      */
     async validateSession() {
         try {
+            // Dynamic import to prevent build-time execution
+            const { default: supabase } = await import('../services/supabase');
+
             const { data: { session }, error } = await supabase.auth.getSession();
 
             if (error || !session) {
@@ -312,7 +323,22 @@ class SessionSecurity {
     }
 }
 
-// Create singleton instance
-const sessionSecurity = new SessionSecurity();
+// Create singleton instance only in browser environment
+const createSessionSecurity = () => {
+    if (typeof window === 'undefined') {
+        // Return no-op implementation for server/build environment
+        return {
+            initialize: () => { },
+            cleanup: () => { },
+            updateActivity: () => { },
+            forceLogout: () => Promise.resolve(),
+            validateSession: () => Promise.resolve(true),
+            isSessionExpired: () => false,
+            addEventListener: () => { },
+            removeEventListener: () => { }
+        };
+    }
+    return new SessionSecurity();
+};
 
-export default sessionSecurity;
+export default createSessionSecurity();
