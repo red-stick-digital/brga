@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../components/common/Button';
+import SEO from '../components/common/SEO';
 
 /**
  * Twelve Steps and Unity Program Page
@@ -12,6 +13,44 @@ import Button from '../components/common/Button';
  * - Links to Meetings and 20 Questions
  */
 const TwelveStepsAndUnityProgram = () => {
+    // SEO data for Twelve Steps and Unity Program page
+    const seoData = {
+        title: "GA 12 Steps & Unity Program | Baton Rouge Gamblers Anonymous",
+        description: "Explore the GA 12 Steps and Unity Program used by Baton Rouge Gamblers Anonymous members to support lasting recovery from compulsive gambling.",
+        canonicalUrl: "/12stepsandunityprogram",
+        keywords: [
+            "gamblers anonymous 12 steps",
+            "GA unity program",
+            "gambling recovery steps",
+            "GA traditions",
+            "compulsive gambling recovery",
+            "gambling addiction program",
+            "GA spiritual principles",
+            "gambling recovery baton rouge"
+        ],
+        structuredData: {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "The 12 Steps and Unity Program of Gamblers Anonymous",
+            "description": "The spiritual principles that guide recovery in Gamblers Anonymous",
+            "author": {
+                "@type": "Organization",
+                "name": "Baton Rouge Gamblers Anonymous"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Baton Rouge Gamblers Anonymous",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://batonrougega.org/images/logo-white.png"
+                }
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://batonrougega.org/12stepsandunityprogram"
+            }
+        }
+    };
     const twelveSteps = [
         "We admitted we were powerless over gambling, that our lives had become unmanageable.",
         "Came to believe that a Power greater than ourselves could restore us to a normal way of thinking and living.",
@@ -43,50 +82,52 @@ const TwelveStepsAndUnityProgram = () => {
     ];
 
     return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <h1 className="text-4xl font-bold mb-6">The 12 Steps & Unity Program</h1>
+        <>
+            <SEO {...seoData} />
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <h1 className="text-4xl font-bold mb-6">The 12 Steps & Unity Program</h1>
 
-            <p className="text-lg mb-8 text-gray-700">
-                The Gamblers Anonymous recovery program is based on the following spiritual principles. Our fellowship is filled with people who have worked with other GA members to follow these steps, recover from gambling, and develop a better way of life.
-            </p>
+                <p className="text-lg mb-8 text-gray-700">
+                    The Gamblers Anonymous recovery program is based on the following spiritual principles. Our fellowship is filled with people who have worked with other GA members to follow these steps, recover from gambling, and develop a better way of life.
+                </p>
 
-            <div className="grid gap-12 md:grid-cols-2 mb-12">
-                <div>
-                    <h2 className="text-2xl font-semibold mb-6">Here are the steps which are a program of recovery:</h2>
-                    <ol className="space-y-4 text-gray-700">
-                        {twelveSteps.map((step, index) => (
-                            <li key={index} className="flex gap-3">
-                                <span className="font-semibold flex-shrink-0">{index + 1}.</span>
-                                <span>{step}</span>
-                            </li>
-                        ))}
-                    </ol>
+                <div className="grid gap-12 md:grid-cols-2 mb-12">
+                    <div>
+                        <h2 className="text-2xl font-semibold mb-6">Here are the steps which are a program of recovery:</h2>
+                        <ol className="space-y-4 text-gray-700">
+                            {twelveSteps.map((step, index) => (
+                                <li key={index} className="flex gap-3">
+                                    <span className="font-semibold flex-shrink-0">{index + 1}.</span>
+                                    <span>{step}</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
+
+                    <div>
+                        <h2 className="text-2xl font-semibold mb-6">The Unity Program</h2>
+                        <p className="text-gray-700 mb-4">In order to maintain unity our experience has shown that:</p>
+                        <ol className="space-y-4 text-gray-700">
+                            {unityProgram.map((tradition, index) => (
+                                <li key={index} className="flex gap-3">
+                                    <span className="font-semibold flex-shrink-0">{index + 1}.</span>
+                                    <span>{tradition}</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
                 </div>
 
-                <div>
-                    <h2 className="text-2xl font-semibold mb-6">The Unity Program</h2>
-                    <p className="text-gray-700 mb-4">In order to maintain unity our experience has shown that:</p>
-                    <ol className="space-y-4 text-gray-700">
-                        {unityProgram.map((tradition, index) => (
-                            <li key={index} className="flex gap-3">
-                                <span className="font-semibold flex-shrink-0">{index + 1}.</span>
-                                <span>{tradition}</span>
-                            </li>
-                        ))}
-                    </ol>
+                <div className="flex flex-col gap-4 mt-12">
+                    <Link to="/meetings" className="flex">
+                        <Button className="w-full">Get Started</Button>
+                    </Link>
+                    <Link to="/twentyquestions" className="flex">
+                        <Button className="w-full">Am I a Compulsive Gambler?</Button>
+                    </Link>
                 </div>
             </div>
-
-            <div className="flex flex-col gap-4 mt-12">
-                <Link to="/meetings" className="flex">
-                    <Button className="w-full">Get Started</Button>
-                </Link>
-                <Link to="/twentyquestions" className="flex">
-                    <Button className="w-full">Am I a Compulsive Gambler?</Button>
-                </Link>
-            </div>
-        </div>
-    );
+            );
 };
 
-export default TwelveStepsAndUnityProgram;
+            export default TwelveStepsAndUnityProgram;

@@ -1,0 +1,12 @@
+# Allow all web crawlers
+User-agent: *
+Allow: /
+
+# Disallow admin and member areas
+Disallow: /admin/
+Disallow: /member/
+Disallow: /authhome
+Disallow: /initial-setup
+
+# Sitemap location
+Sitemap: https://batonrougega.org/sitemap.xml

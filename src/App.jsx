@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -42,64 +43,66 @@ import InitialSetup from './pages/InitialSetup';
  */
 const App = () => {
   return (
-    <Router>
-      <Header />
-      <main className="flex-grow">
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/meetings" element={<Meetings />} />
-          <Route path="/myfirstmeeting" element={<MyFirstMeeting />} />
-          <Route path="/20questions" element={<TwentyQuestions />} />
-          <Route path="/contactus" element={<ContactUs />} />
-          <Route path="/aboutgamblersanonymous" element={<AboutGamblersAnonymous />} />
-          <Route path="/eventsandannouncements" element={<EventsAndAnnouncements />} />
-          <Route path="/12stepsandunityprogram" element={<TwelveStepsAndUnityProgram />} />
-          <Route path="/gamanon" element={<GAManon />} />
-          <Route path="/publicrelations" element={<PublicRelations />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/helpforgambling" element={<HelpForGambling />} />
+    <HelmetProvider>
+      <Router>
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/meetings" element={<Meetings />} />
+            <Route path="/myfirstmeeting" element={<MyFirstMeeting />} />
+            <Route path="/20questions" element={<TwentyQuestions />} />
+            <Route path="/contactus" element={<ContactUs />} />
+            <Route path="/aboutgamblersanonymous" element={<AboutGamblersAnonymous />} />
+            <Route path="/eventsandannouncements" element={<EventsAndAnnouncements />} />
+            <Route path="/12stepsandunityprogram" element={<TwelveStepsAndUnityProgram />} />
+            <Route path="/gamanon" element={<GAManon />} />
+            <Route path="/publicrelations" element={<PublicRelations />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/helpforgambling" element={<HelpForGambling />} />
 
-          {/* Protected Routes - Requires Authentication */}
-          <Route
-            path="/authhome"
-            element={
-              <ProtectedRoute>
-                <AuthHome />
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected Routes - Requires Authentication */}
+            <Route
+              path="/authhome"
+              element={
+                <ProtectedRoute>
+                  <AuthHome />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/member/dashboard"
-            element={
-              <ProtectedRoute>
-                <MemberDashboard />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/member/dashboard"
+              element={
+                <ProtectedRoute>
+                  <MemberDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute requiredStatus={['admin', 'superadmin']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute requiredStatus={['admin', 'superadmin']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Auth Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+            {/* Auth Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin/setup" element={<AdminSetup />} />
-          <Route path="/initial-setup" element={<InitialSetup />} />
-        </Routes>
-      </main>
-      <Footer />
-    </Router>
+            {/* Admin Routes */}
+            <Route path="/admin/setup" element={<AdminSetup />} />
+            <Route path="/initial-setup" element={<InitialSetup />} />
+          </Routes>
+        </main>
+        <Footer />
+      </Router>
+    </HelmetProvider>
   );
 };
 

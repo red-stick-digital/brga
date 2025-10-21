@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/common/Button';
+import SEO from '../components/common/SEO';
 
 /**
  * FAQ Page
@@ -16,6 +17,53 @@ import Button from '../components/common/Button';
 const FAQ = () => {
     const [openIndex, setOpenIndex] = useState(null);
     const navigate = useNavigate();
+
+    // SEO data for FAQ page
+    const seoData = {
+        title: "Help for Gambling | GA FAQ | How to Stop Gambling | Baton Rouge Gamblers Anonymous",
+        description: "Get answers about gambling addiction, how to stop gambling, finding help for gambling, and starting recovery through Baton Rouge Gamblers Anonymous meetings.",
+        canonicalUrl: "/faq",
+        keywords: [
+            "gambling addiction FAQ",
+            "how to stop gambling",
+            "help for gambling",
+            "gamblers anonymous questions",
+            "gambling problem help",
+            "GA meeting information",
+            "compulsive gambling recovery",
+            "gambling support baton rouge"
+        ],
+        structuredData: {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "What is Gamblers Anonymous?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Gamblers Anonymous is a fellowship of people who share their experience, strength, and hope with each other that they may solve their common problem and help others to recover from a gambling problem. The only requirement for membership is a desire to stop gambling."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How Do I Find a Gamblers Anonymous Meeting?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Gamblers Anonymous meetings are found in most states in the USA and in a growing number of other countries around the globe. You can find meetings in Baton Rouge and Hammond on our website or call our local hotline at 888-502-5610."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What Is Compulsive Gambling?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Compulsive gambling is an illness, progressive in nature, which can never be cured, but can be arrested. The Gamblers Anonymous concept is that compulsive gamblers are really very sick people who can recover if they will follow to the best of their ability a simple program that has proved successful for thousands of other people with a gambling problem."
+                    }
+                }
+            ]
+        }
+    };
 
     const faqs = [
         {
@@ -52,7 +100,10 @@ const FAQ = () => {
         {
             question: 'What does a compulsive gambler need to do in order to stop gambling?',
             answer: () => (
-                <p>We as compulsive gamblers need to have a desire to get well. We need to be willing to accept the fact that we are in the grip of a progressive illness. Our experience has shown that the Gamblers Anonymous program will always work for any person who has a desire to stop gambling. However, it will never work for the person who will not face squarely the facts about this illness.</p>
+                <>
+                    <p>We as compulsive gamblers need to have a desire to get well. We need to be willing to accept the fact that we are in the grip of a progressive illness. Our experience has shown that the Gamblers Anonymous program will always work for any person who has a desire to stop gambling. However, it will never work for the person who will not face squarely the facts about this illness.</p>
+                    <p className="mt-2">You can learn more about gambling addiction and recovery on our <Link to="/helpforgambling" className="text-blue-600 hover:text-blue-800 underline">Help for Gambling</Link> page.</p>
+                </>
             ),
         },
         {
@@ -70,7 +121,11 @@ const FAQ = () => {
         {
             question: 'Why can\'t a compulsive gambler simply use willpower to stop gambling?',
             answer: () => (
-                <p>We believe that most people, if they are honest, will recognize their lack of power to solve certain problems. When it comes to gambling, we have known many problem gamblers who could abstain for long stretches, but caught off guard and under the right set of circumstances, they started gambling without thought of the consequences. The defenses they relied upon, through willpower alone, gave way before some trivial reason for placing a bet. We have found that willpower and self-knowledge will not help in those mental blank spots, but adherence to spiritual principles seems to solve our problems. Most of us feel that a belief in a Power greater than ourselves is necessary in order for us to sustain a desire to refrain from gambling.</p>
+                <>
+                    <p>We believe that most people, if they are honest, will recognize their lack of power to solve certain problems. When it comes to gambling, we have known many problem gamblers who could abstain for long stretches, but caught off guard and under the right set of circumstances, they started gambling without thought of the consequences. The defenses they relied upon, through willpower alone, gave way before some trivial reason for placing a bet.</p>
+                    <p className="mt-2">We have found that willpower and self-knowledge will not help in those mental blank spots, but adherence to spiritual principles seems to solve our problems. Most of us feel that a belief in a Power greater than ourselves is necessary in order for us to sustain a desire to refrain from gambling.</p>
+                    <p className="mt-2">If you're struggling with gambling, our <Link to="/helpforgambling" className="text-blue-600 hover:text-blue-800 underline">Help for Gambling</Link> page provides additional information about recovery resources.</p>
+                </>
             ),
         },
         {
@@ -187,43 +242,46 @@ const FAQ = () => {
     ];
 
     return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h1>
-            <p className="text-center text-gray-600 mb-8">
-                Please reach us at <a href="tel:888-502-5610" className="text-blue-600 hover:text-blue-800 underline">888-502-5610</a> if you cannot find an answer to your question.
-            </p>
-
-            <div className="space-y-4">
-                {faqs.map((faq, index) => (
-                    <div key={index} className="border border-gray-300 rounded-lg">
-                        <button
-                            onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                            className="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 flex justify-between items-center"
-                        >
-                            {faq.question}
-                            <span className="text-xl">{openIndex === index ? '−' : '+'}</span>
-                        </button>
-
-                        {openIndex === index && (
-                            <div className="px-6 py-4 bg-gray-50 border-t border-gray-300 text-gray-700">
-                                {faq.answer()}
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </div>
-
-            <div className="mt-12 text-center">
-                <p className="text-gray-600">
-                    Don't see your question? Please reach us at <a href="tel:888-502-5610" className="text-blue-600 hover:text-blue-800 underline">888-502-5610</a> if you cannot find an answer to your question.
+        <>
+            <SEO {...seoData} />
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h1>
+                <p className="text-center text-gray-600 mb-8">
+                    Please reach us at <a href="tel:888-502-5610" className="text-blue-600 hover:text-blue-800 underline">888-502-5610</a> if you cannot find an answer to your question.
                 </p>
-            </div>
 
-            <div className="mt-16 text-center py-12 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">If you think you may be a compulsive gambler, please come to a Gamblers Anonymous meeting.</h2>
-                <Button onClick={() => navigate('/meetings')}>FIND A MEETING</Button>
+                <div className="space-y-4">
+                    {faqs.map((faq, index) => (
+                        <div key={index} className="border border-gray-300 rounded-lg">
+                            <button
+                                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                                className="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 flex justify-between items-center"
+                            >
+                                {faq.question}
+                                <span className="text-xl">{openIndex === index ? '−' : '+'}</span>
+                            </button>
+
+                            {openIndex === index && (
+                                <div className="px-6 py-4 bg-gray-50 border-t border-gray-300 text-gray-700">
+                                    {faq.answer()}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                <div className="mt-12 text-center">
+                    <p className="text-gray-600">
+                        Don't see your question? Please reach us at <a href="tel:888-502-5610" className="text-blue-600 hover:text-blue-800 underline">888-502-5610</a> if you cannot find an answer to your question.
+                    </p>
+                </div>
+
+                <div className="mt-16 text-center py-12 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-6">If you think you may be a compulsive gambler, please come to a Gamblers Anonymous meeting.</h2>
+                    <Button onClick={() => navigate('/meetings')}>FIND A MEETING</Button>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
