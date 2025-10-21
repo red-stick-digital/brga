@@ -94,7 +94,8 @@ const AboutGamblersAnonymous = () => {
                     </div>
                 </div>
             </div>
-            );
+        </>
+    );
 };
 
-            export default AboutGamblersAnonymous;
+export default AboutGamblersAnonymous;

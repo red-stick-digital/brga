@@ -275,7 +275,8 @@ const PublicRelations = () => {
                     </div>
                 </div>
             </div>
-            );
+        </>
+    );
 };
 
-            export default PublicRelations;
+export default PublicRelations;

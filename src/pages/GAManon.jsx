@@ -97,7 +97,8 @@ const GAManon = () => {
                     </a>
                 </div>
             </div>
-            );
+        </>
+    );
 };
 
-            export default GAManon;
+export default GAManon;

@@ -167,7 +167,8 @@ const MyFirstMeeting = () => {
                 </div>
 
             </div>
-            );
+        </>
+    );
 };
 
-            export default MyFirstMeeting;
+export default MyFirstMeeting;

@@ -127,7 +127,8 @@ const TwelveStepsAndUnityProgram = () => {
                     </Link>
                 </div>
             </div>
-            );
+        </>
+    );
 };
 
-            export default TwelveStepsAndUnityProgram;
+export default TwelveStepsAndUnityProgram;

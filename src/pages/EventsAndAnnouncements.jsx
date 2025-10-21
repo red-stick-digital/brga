@@ -245,7 +245,8 @@ const EventsAndAnnouncements = () => {
                     </p>
                 </div>
             </div>
-            );
+        </>
+    );
 };
 
-            export default EventsAndAnnouncements;
+export default EventsAndAnnouncements;
