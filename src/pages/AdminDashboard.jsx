@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import useApprovals from '../hooks/useApprovals';
+import useUserManagement from '../hooks/useUserManagement';
 import ApprovalCodesList from '../components/Admin/ApprovalCodesList';
 import GenerateApprovalCode from '../components/Admin/GenerateApprovalCode';
 import PendingMembersList from '../components/Admin/PendingMembersList';
 import EmailTestPanel from '../components/Admin/EmailTestPanel';
-import UserMigration from '../components/Admin/UserMigration';
+import UserManagement from '../components/Admin/UserManagement';
 
 const AdminDashboard = () => {
     const { fetchMemberStats } = useApprovals();
+    const { getPendingDeletionsCount } = useUserManagement();
     const [activeTab, setActiveTab] = useState('codes');
     const [stats, setStats] = useState(null);
     const [statsLoading, setStatsLoading] = useState(true);
@@ -26,12 +28,14 @@ const AdminDashboard = () => {
         loadStats();
     }, []);
 
+    const pendingDeletionsCount = getPendingDeletionsCount();
+
     const tabs = [
         { id: 'codes', label: 'Approval Codes', count: null },
         { id: 'generate', label: 'Generate Codes', count: null },
         { id: 'pending', label: 'Pending Members', count: stats?.pending },
         { id: 'rejected', label: 'Rejected Members', count: stats?.rejected },
-        { id: 'migrate', label: 'User Migration', count: null },
+        { id: 'users', label: 'User Management', count: pendingDeletionsCount > 0 ? pendingDeletionsCount : null },
         { id: 'email', label: 'Email Testing', count: null },
     ];
 
@@ -135,8 +139,8 @@ const AdminDashboard = () => {
                         </div>
                     )}
 
-                    {activeTab === 'migrate' && (
-                        <UserMigration />
+                    {activeTab === 'users' && (
+                        <UserManagement />
                     )}
 
                     {activeTab === 'email' && (

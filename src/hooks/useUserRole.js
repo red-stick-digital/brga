@@ -18,7 +18,7 @@ const useUserRole = () => {
             setLoading(true);
             const { data, error } = await supabase
                 .from('user_roles')
-                .select('role')
+                .select('role, approval_status')
                 .eq('user_id', user.id)
                 .single();
 
@@ -26,6 +26,7 @@ const useUserRole = () => {
                 throw error;
             }
 
+            // Use the actual role field from the database
             setRole(data?.role || 'member');
         } catch (error) {
             console.error('Error fetching user role:', error);
@@ -40,15 +41,19 @@ const useUserRole = () => {
     }, [user]);
 
     const isAdmin = () => role === 'admin';
-    const isEditor = () => role === 'editor' || role === 'admin';
+    const isSuperAdmin = () => role === 'superadmin';
+    const isEditor = () => role === 'editor' || role === 'admin' || role === 'superadmin';
     const canEdit = () => isEditor();
+    const canAdminister = () => isAdmin() || isSuperAdmin();
 
     return {
         role,
         loading,
         isAdmin,
+        isSuperAdmin,
         isEditor,
         canEdit,
+        canAdminister,
         refetch: fetchUserRole
     };
 };

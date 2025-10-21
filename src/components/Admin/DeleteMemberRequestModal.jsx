@@ -1,0 +1,179 @@
+import React, { useState } from 'react';
+import { XMarkIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import useUserManagement from '../../hooks/useUserManagement';
+import useAuth from '../../hooks/useAuth';
+
+const DeleteMemberRequestModal = ({ member, onClose, onSuccess }) => {
+    const { requestMemberDeletion } = useUserManagement();
+    const { user } = useAuth();
+
+    const [reason, setReason] = useState('');
+    const [requesting, setRequesting] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleRequestDeletion = async () => {
+        if (!reason.trim()) {
+            setError('Please provide a reason for deletion request');
+            return;
+        }
+
+        setRequesting(true);
+        setError('');
+
+        try {
+            const requestedBy = user?.user_metadata?.name || user?.email || 'Admin';
+            const result = await requestMemberDeletion(member.user_id, requestedBy, reason.trim());
+
+            if (result.success) {
+                onSuccess();
+            } else {
+                setError(result.error || 'Failed to request member deletion');
+            }
+        } catch (err) {
+            setError('Failed to request member deletion. Please try again.');
+        } finally {
+            setRequesting(false);
+        }
+    };
+
+    if (!member) {
+        return null;
+    }
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-gray-200">
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                            <TrashIcon className="h-6 w-6 mr-2 text-red-600" />
+                            Request Member Deletion
+                        </h3>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="text-gray-400 hover:text-gray-600 p-1"
+                            disabled={requesting}
+                        >
+                            <XMarkIcon className="h-6 w-6" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Content */}
+                <div className="px-6 py-4">
+                    {/* Error Display */}
+                    {error && (
+                        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                            {error}
+                        </div>
+                    )}
+
+                    {/* Warning Notice */}
+                    <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <ExclamationTriangleIcon className="h-5 w-5 text-red-600" />
+                            </div>
+                            <div className="ml-3">
+                                <h4 className="text-sm font-medium text-red-800">
+                                    Warning: Deletion Request
+                                </h4>
+                                <div className="mt-2 text-sm text-red-700">
+                                    <p>
+                                        This will create a deletion request for superadmin approval.
+                                        The member's account will be marked as "pending deletion" until
+                                        a superadmin reviews and approves or rejects this request.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Member Information */}
+                    <div className="mb-6">
+                        <h4 className="text-sm font-medium text-gray-800 mb-2">Member to Delete:</h4>
+                        <div className="bg-gray-50 p-3 rounded-md">
+                            <div className="text-sm text-gray-700">
+                                <div><strong>Name:</strong> {member.profile?.full_name || 'No name provided'}</div>
+                                <div><strong>Email:</strong> {member.email}</div>
+                                <div><strong>Status:</strong> {member.approval_status}</div>
+                                <div><strong>Home Group:</strong> {member.profile?.home_group?.name || 'None'}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Reason Input */}
+                    <div className="mb-6">
+                        <label htmlFor="deletion_reason" className="block text-sm font-medium text-gray-700 mb-2">
+                            Reason for Deletion Request *
+                        </label>
+                        <textarea
+                            id="deletion_reason"
+                            value={reason}
+                            onChange={(e) => {
+                                setReason(e.target.value);
+                                if (error && e.target.value.trim()) {
+                                    setError('');
+                                }
+                            }}
+                            rows={4}
+                            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                            placeholder="Please explain why this member should be deleted (e.g., violated community guidelines, requested account deletion, inactive account, etc.)"
+                            required
+                        />
+                        <p className="mt-1 text-xs text-gray-500">
+                            This reason will be included in the deletion request for superadmin review.
+                        </p>
+                    </div>
+
+                    {/* Process Information */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-6">
+                        <div className="text-sm text-blue-800">
+                            <strong>Next Steps:</strong>
+                            <ol className="mt-1 ml-4 list-decimal space-y-1">
+                                <li>Member will be marked as "pending deletion"</li>
+                                <li>Superadmin will receive notification to review request</li>
+                                <li>Member's access will be restricted during review</li>
+                                <li>Superadmin will approve or reject the deletion</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                        disabled={requesting}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleRequestDeletion}
+                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                        disabled={requesting || !reason.trim()}
+                    >
+                        {requesting ? (
+                            <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                Requesting...
+                            </>
+                        ) : (
+                            <>
+                                <TrashIcon className="h-4 w-4 mr-2" />
+                                Request Deletion
+                            </>
+                        )}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default DeleteMemberRequestModal;

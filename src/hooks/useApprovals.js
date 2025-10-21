@@ -13,33 +13,50 @@ const useApprovals = () => {
         setError(null);
 
         try {
-            const { data, error: fetchError } = await supabase
+            // First, fetch user_roles with pending status
+            const { data: rolesData, error: rolesError } = await supabase
                 .from('user_roles')
-                .select(`
-                    *,
-                    user:user_id (email),
-                    profile:user_id (
-                        full_name,
-                        phone,
-                        email,
-                        clean_date,
-                        home_group:home_group_id (
-                            name,
-                            start_time
-                        ),
-                        created_at
-                    )
-                `)
+                .select('*')
                 .eq('approval_status', 'pending')
                 .order('created_at', { ascending: false });
 
-            if (fetchError) {
-                throw fetchError;
+            if (rolesError) {
+                throw rolesError;
             }
 
-            setPendingMembers(data || []);
+            if (!rolesData || rolesData.length === 0) {
+                setPendingMembers([]);
+                setLoading(false);
+                return { success: true, members: [] };
+            }
+
+            // Then fetch the member profiles for these users
+            const userIds = rolesData.map(r => r.user_id);
+            const { data: profilesData, error: profilesError } = await supabase
+                .from('member_profiles')
+                .select(`
+                    *,
+                    home_group:home_group_id (
+                        name,
+                        start_time
+                    )
+                `)
+                .in('user_id', userIds);
+
+            if (profilesError) {
+                throw profilesError;
+            }
+
+            // Combine the data
+            const combinedData = rolesData.map(role => ({
+                ...role,
+                profile: profilesData?.find(p => p.user_id === role.user_id),
+                user: { email: profilesData?.find(p => p.user_id === role.user_id)?.email }
+            }));
+
+            setPendingMembers(combinedData);
             setLoading(false);
-            return { success: true, members: data || [] };
+            return { success: true, members: combinedData };
 
         } catch (err) {
             console.error('Error fetching pending members:', err);
@@ -55,33 +72,50 @@ const useApprovals = () => {
         setError(null);
 
         try {
-            const { data, error: fetchError } = await supabase
+            // First, fetch user_roles with rejected status
+            const { data: rolesData, error: rolesError } = await supabase
                 .from('user_roles')
-                .select(`
-                    *,
-                    user:user_id (email),
-                    profile:user_id (
-                        full_name,
-                        phone,
-                        email,
-                        clean_date,
-                        home_group:home_group_id (
-                            name,
-                            start_time
-                        ),
-                        created_at
-                    )
-                `)
+                .select('*')
                 .eq('approval_status', 'rejected')
                 .order('updated_at', { ascending: false });
 
-            if (fetchError) {
-                throw fetchError;
+            if (rolesError) {
+                throw rolesError;
             }
 
-            setRejectedMembers(data || []);
+            if (!rolesData || rolesData.length === 0) {
+                setRejectedMembers([]);
+                setLoading(false);
+                return { success: true, members: [] };
+            }
+
+            // Then fetch the member profiles for these users
+            const userIds = rolesData.map(r => r.user_id);
+            const { data: profilesData, error: profilesError } = await supabase
+                .from('member_profiles')
+                .select(`
+                    *,
+                    home_group:home_group_id (
+                        name,
+                        start_time
+                    )
+                `)
+                .in('user_id', userIds);
+
+            if (profilesError) {
+                throw profilesError;
+            }
+
+            // Combine the data
+            const combinedData = rolesData.map(role => ({
+                ...role,
+                profile: profilesData?.find(p => p.user_id === role.user_id),
+                user: { email: profilesData?.find(p => p.user_id === role.user_id)?.email }
+            }));
+
+            setRejectedMembers(combinedData);
             setLoading(false);
-            return { success: true, members: data || [] };
+            return { success: true, members: combinedData };
 
         } catch (err) {
             console.error('Error fetching rejected members:', err);
@@ -101,8 +135,7 @@ const useApprovals = () => {
                 .from('user_roles')
                 .update({
                     approval_status: 'approved',
-                    notes: notes,
-                    updated_at: new Date().toISOString()
+                    notes: notes
                 })
                 .eq('user_id', userId);
 
@@ -135,8 +168,7 @@ const useApprovals = () => {
                 .update({
                     approval_status: 'rejected',
                     rejection_reason: reason,
-                    notes: reason,
-                    updated_at: new Date().toISOString()
+                    notes: reason
                 })
                 .eq('user_id', userId);
 
@@ -176,7 +208,7 @@ const useApprovals = () => {
             const { data, error: fetchError } = await supabase
                 .from('user_roles')
                 .select('approval_status')
-                .neq('role', 'superadmin'); // Exclude superadmins from stats
+                .not('approval_status', 'in', '(pending_deletion,deleted)'); // Only exclude deleted/pending deletion users
 
             if (fetchError) {
                 throw fetchError;
@@ -188,7 +220,8 @@ const useApprovals = () => {
                 approved: data?.filter(u => u.approval_status === 'approved').length || 0,
                 rejected: data?.filter(u => u.approval_status === 'rejected').length || 0,
                 editors: data?.filter(u => u.approval_status === 'editor').length || 0,
-                admins: data?.filter(u => u.approval_status === 'admin').length || 0
+                admins: data?.filter(u => u.approval_status === 'admin').length || 0,
+                superadmins: data?.filter(u => u.approval_status === 'superadmin').length || 0
             };
 
             setLoading(false);

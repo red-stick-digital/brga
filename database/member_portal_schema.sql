@@ -57,7 +57,21 @@ CREATE TABLE approval_codes (
 -- 4. EXTEND USER_ROLES TABLE
 -- ============================================================================
 -- Add approval_status if it doesn't exist
-ALTER TABLE user_roles ADD COLUMN IF NOT EXISTS approval_status TEXT DEFAULT 'pending' CHECK (approval_status IN ('pending', 'approved', 'rejected', 'editor', 'admin', 'superadmin'));
+ALTER TABLE user_roles ADD COLUMN IF NOT EXISTS approval_status TEXT DEFAULT 'pending' CHECK (approval_status IN ('pending', 'approved', 'rejected', 'editor', 'admin', 'superadmin', 'pending_deletion', 'deleted'));
+
+-- Add notes column for approval decisions
+ALTER TABLE user_roles ADD COLUMN IF NOT EXISTS notes TEXT;
+
+-- Add rejection_reason column for rejected members
+ALTER TABLE user_roles ADD COLUMN IF NOT EXISTS rejection_reason TEXT;
+
+-- Add updated_at column for tracking changes
+ALTER TABLE user_roles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+-- Add deletion tracking columns
+ALTER TABLE user_roles ADD COLUMN IF NOT EXISTS deletion_requested_by TEXT;
+ALTER TABLE user_roles ADD COLUMN IF NOT EXISTS deletion_requested_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE user_roles ADD COLUMN IF NOT EXISTS deletion_approved_at TIMESTAMP WITH TIME ZONE;
 
 -- ============================================================================
 -- 5. CREATE INDEXES
@@ -69,7 +83,32 @@ CREATE INDEX IF NOT EXISTS idx_approval_codes_used_by ON approval_codes(used_by)
 CREATE INDEX IF NOT EXISTS idx_user_roles_approval_status ON user_roles(approval_status);
 
 -- ============================================================================
--- 6. UPDATE TRIGGERS FOR TIMESTAMPS
+-- 6. HELPER FUNCTIONS FOR RLS
+-- ============================================================================
+-- Check if user is an admin (breaks RLS recursion)
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM user_roles
+        WHERE user_id = auth.uid() AND role IN ('admin', 'editor', 'superadmin')
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Check if user is a superadmin (breaks RLS recursion)
+CREATE OR REPLACE FUNCTION is_superadmin()
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM user_roles
+        WHERE user_id = auth.uid() AND role = 'superadmin'
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ============================================================================
+-- 7. UPDATE TRIGGERS FOR TIMESTAMPS
 -- ============================================================================
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -85,6 +124,10 @@ CREATE TRIGGER update_home_groups_updated_at BEFORE UPDATE ON home_groups
 
 DROP TRIGGER IF EXISTS update_member_profiles_updated_at ON member_profiles;
 CREATE TRIGGER update_member_profiles_updated_at BEFORE UPDATE ON member_profiles
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_user_roles_updated_at ON user_roles;
+CREATE TRIGGER update_user_roles_updated_at BEFORE UPDATE ON user_roles
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================================================
@@ -106,30 +149,15 @@ CREATE POLICY "Anyone can view active home groups" ON home_groups
 
 DROP POLICY IF EXISTS "Only admins can insert home groups" ON home_groups;
 CREATE POLICY "Only admins can insert home groups" ON home_groups
-    FOR INSERT WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role IN ('admin', 'editor', 'superadmin')
-        )
-    );
+    FOR INSERT WITH CHECK (is_admin());
 
 DROP POLICY IF EXISTS "Only admins can update home groups" ON home_groups;
 CREATE POLICY "Only admins can update home groups" ON home_groups
-    FOR UPDATE USING (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role IN ('admin', 'editor', 'superadmin')
-        )
-    );
+    FOR UPDATE USING (is_admin());
 
 DROP POLICY IF EXISTS "Only admins can delete home groups" ON home_groups;
 CREATE POLICY "Only admins can delete home groups" ON home_groups
-    FOR DELETE USING (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role IN ('admin', 'superadmin')
-        )
-    );
+    FOR DELETE USING (is_superadmin());
 
 -- ============================================================================
 -- MEMBER_PROFILES POLICIES
@@ -145,16 +173,15 @@ CREATE POLICY "Public directory view" ON member_profiles
 
 DROP POLICY IF EXISTS "Admins can view all profiles" ON member_profiles;
 CREATE POLICY "Admins can view all profiles" ON member_profiles
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role IN ('admin', 'editor', 'superadmin')
-        )
-    );
+    FOR SELECT USING (is_admin());
 
 DROP POLICY IF EXISTS "Users can create their own profile" ON member_profiles;
 CREATE POLICY "Users can create their own profile" ON member_profiles
     FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Admins can create any profile" ON member_profiles;
+CREATE POLICY "Admins can create any profile" ON member_profiles
+    FOR INSERT WITH CHECK (is_admin());
 
 DROP POLICY IF EXISTS "Users can update their own profile" ON member_profiles;
 CREATE POLICY "Users can update their own profile" ON member_profiles
@@ -162,33 +189,18 @@ CREATE POLICY "Users can update their own profile" ON member_profiles
 
 DROP POLICY IF EXISTS "Admins can update any profile" ON member_profiles;
 CREATE POLICY "Admins can update any profile" ON member_profiles
-    FOR UPDATE USING (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role IN ('admin', 'editor', 'superadmin')
-        )
-    );
+    FOR UPDATE USING (is_admin());
 
 -- ============================================================================
 -- APPROVAL_CODES POLICIES
 -- ============================================================================
 DROP POLICY IF EXISTS "Only admins can view codes" ON approval_codes;
 CREATE POLICY "Only admins can view codes" ON approval_codes
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role IN ('admin', 'superadmin')
-        )
-    );
+    FOR SELECT USING (is_superadmin());
 
 DROP POLICY IF EXISTS "Only admins can create codes" ON approval_codes;
 CREATE POLICY "Only admins can create codes" ON approval_codes
-    FOR INSERT WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role IN ('admin', 'superadmin')
-        )
-    );
+    FOR INSERT WITH CHECK (is_superadmin());
 
 DROP POLICY IF EXISTS "Anyone can use a valid code" ON approval_codes;
 CREATE POLICY "Anyone can use a valid code" ON approval_codes
@@ -204,27 +216,12 @@ CREATE POLICY "Users can view their own role" ON user_roles
 
 DROP POLICY IF EXISTS "Admins can view all roles" ON user_roles;
 CREATE POLICY "Admins can view all roles" ON user_roles
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM user_roles ur
-            WHERE ur.user_id = auth.uid() AND ur.role IN ('admin', 'superadmin')
-        )
-    );
+    FOR SELECT USING (is_superadmin());
 
 DROP POLICY IF EXISTS "Superadmins can update roles" ON user_roles;
 CREATE POLICY "Superadmins can update roles" ON user_roles
-    FOR UPDATE USING (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role = 'superadmin'
-        )
-    );
+    FOR UPDATE USING (is_superadmin());
 
 DROP POLICY IF EXISTS "Superadmins can insert roles" ON user_roles;
 CREATE POLICY "Superadmins can insert roles" ON user_roles
-    FOR INSERT WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM user_roles
-            WHERE user_id = auth.uid() AND role = 'superadmin'
-        )
-    );
+    FOR INSERT WITH CHECK (is_superadmin());
