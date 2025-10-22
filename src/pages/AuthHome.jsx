@@ -9,12 +9,12 @@ import { format } from 'date-fns';
 const AuthHome = () => {
     const { user } = useAuth();
     const { role, loading: roleLoading, approvalStatus } = useUserRole();
-    const { events, loading: eventsLoading, error: eventsError, fetchEvents } = useEvents();
-    const { announcements, loading: announcementsLoading, error: announcementsError, fetchAnnouncements } = useAnnouncements();
+    const { events, loading: eventsLoading, error: eventsError, refetch: refetchEvents } = useEvents();
+    const { announcements, loading: announcementsLoading, error: announcementsError, refetch: refetchAnnouncements } = useAnnouncements();
 
     useEffect(() => {
-        fetchEvents();
-        fetchAnnouncements();
+        refetchEvents();
+        refetchAnnouncements();
     }, []);
 
     // Check if user is pending approval
