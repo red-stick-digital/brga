@@ -22,6 +22,19 @@ const AuthHome = () => {
     const isApproved = approvalStatus === 'approved';
     const isAdmin = role === 'admin' || role === 'superadmin';
 
+    // DEBUG LOGGING
+    console.log('🔍 AuthHome Debug:', {
+        user: user?.email,
+        role,
+        approvalStatus,
+        roleLoading,
+        isPending,
+        isApproved,
+        isAdmin,
+        eventsCount: events?.length,
+        announcementsCount: announcements?.length
+    });
+
     // Show loading state while role is being fetched
     if (roleLoading) {
         return (
@@ -99,6 +112,13 @@ const AuthHome = () => {
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* DEBUG INFO */}
+                <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 rounded">
+                    <p className="font-mono text-xs">
+                        DEBUG: role={role} | status={approvalStatus} | loading={roleLoading.toString()} | user={user?.email}
+                    </p>
+                </div>
+
                 {/* Welcome Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">
