@@ -94,6 +94,7 @@
 ## ISSUES ENCOUNTERED
 
 ### Issue #1: Approval Code Validation Failing (cherry-turtle-apple)
+
 - **Date**: 2025-10-22
 - **Root Cause**: Row-Level Security policy too restrictive
 - **Fix Applied**: Need to run SQL in Supabase:
@@ -105,9 +106,10 @@
 - **Status**: SQL ready, needs manual execution in Supabase dashboard
 
 ### Issue #2: Profile Display Preferences Not Saving
+
 - **Date**: 2025-10-22
 - **Root Cause**: Defensive code + missing columns
-- **Fix Applied**: 
+- **Fix Applied**:
   1. Code updated to remove defensive checks
   2. Need to run migration SQL in Supabase:
   ```sql
@@ -119,6 +121,7 @@
 - **Status**: Code fixed, SQL ready for execution
 
 ### Issue #3: Email Verification Investigation
+
 - **Date**: 2025-10-22
 - **Status**: Need to verify Supabase email configuration
 - **Checklist**:
@@ -126,7 +129,7 @@
   - [ ] Verify Site URL and Redirect URLs are configured
   - [ ] Test if SMTP is configured (Resend or built-in)
   - [ ] Check if `auth/callback` route is working properly
-- **Notes**: 
+- **Notes**:
   - Auth callback route exists at `/auth/callback` in App.jsx
   - Redirect URL properly configured in `redirectUrls.js`
   - Resend API key available: `re_XxDKFExG_CQZb8nwACsi1B7c6a43Ap4cp`
