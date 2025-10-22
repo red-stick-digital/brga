@@ -96,43 +96,54 @@
 ### Issue #1: Approval Code Validation Failing (cherry-turtle-apple)
 
 - **Date**: 2025-10-22
-- **Root Cause**: Row-Level Security policy too restrictive
-- **Fix Applied**: Need to run SQL in Supabase:
-  ```sql
-  DROP POLICY IF EXISTS "Only admins can view codes" ON approval_codes;
-  CREATE POLICY "Anyone can validate approval codes" ON approval_codes
-      FOR SELECT USING (true);
-  ```
-- **Status**: SQL ready, needs manual execution in Supabase dashboard
+- **Root Cause**: Row-Level Security policy too restrictive on SELECT
+- **Initial Fix**: Changed SELECT policy to allow anonymous validation
+- **Status**: ✅ RESOLVED - Users can now validate approval codes
+
+### Issue #1b: "Failed to process approval code" Error After Signup
+
+- **Date**: 2025-10-22
+- **Root Cause**: UPDATE policy's WITH CHECK clause was too restrictive
+  - Original: `WITH CHECK (used_by = auth.uid() AND used_at IS NOT NULL)`
+  - Problem: New users don't have established auth context immediately after signup
+- **Fix Required**: Update the UPDATE policy in Supabase SQL Editor:
+
+```sql
+DROP POLICY IF EXISTS "Anyone can use a valid code" ON approval_codes;
+CREATE POLICY "Anyone can use a valid code" ON approval_codes
+    FOR UPDATE
+    USING (used_by IS NULL)
+    WITH CHECK (used_by IS NOT NULL AND used_at IS NOT NULL);
+```
+
+- **File**: `database/fix_approval_codes_policy.sql` (updated)
+- **Status**: ⏳ PENDING - SQL ready, needs execution in Supabase dashboard
 
 ### Issue #2: Profile Display Preferences Not Saving
 
 - **Date**: 2025-10-22
 - **Root Cause**: Defensive code + missing columns
 - **Fix Applied**:
-  1. Code updated to remove defensive checks
-  2. Need to run migration SQL in Supabase:
-  ```sql
-  ALTER TABLE member_profiles
-  ADD COLUMN IF NOT EXISTS share_phone_in_directory BOOLEAN DEFAULT FALSE,
-  ADD COLUMN IF NOT EXISTS share_email_in_directory BOOLEAN DEFAULT FALSE,
-  ADD COLUMN IF NOT EXISTS officer_position TEXT;
-  ```
-- **Status**: Code fixed, SQL ready for execution
+  1. ✅ Code updated to remove defensive checks
+  2. Migration SQL for columns (if not already added):
 
-### Issue #3: Email Verification Investigation
+```sql
+ALTER TABLE member_profiles
+ADD COLUMN IF NOT EXISTS share_phone_in_directory BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS share_email_in_directory BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS officer_position TEXT;
+```
+
+- **Status**: ✅ RESOLVED - Profile updates now persist correctly
+
+### Issue #3: Email Verification
 
 - **Date**: 2025-10-22
-- **Status**: Need to verify Supabase email configuration
-- **Checklist**:
-  - [ ] Check if email confirmation is enabled in Supabase Auth settings
-  - [ ] Verify Site URL and Redirect URLs are configured
-  - [ ] Test if SMTP is configured (Resend or built-in)
-  - [ ] Check if `auth/callback` route is working properly
+- **Status**: ✅ RESOLVED - Emails are being sent and received successfully
 - **Notes**:
   - Auth callback route exists at `/auth/callback` in App.jsx
   - Redirect URL properly configured in `redirectUrls.js`
-  - Resend API key available: `re_XxDKFExG_CQZb8nwACsi1B7c6a43Ap4cp`
+  - Email confirmation is working in Supabase
 
 ---
 

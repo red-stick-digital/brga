@@ -1,6 +1,6 @@
 -- Fix approval codes RLS policy to allow anonymous users to validate codes during signup
 -- AND allow newly created users to mark codes as used
--- This is necessary for the signup process to work correctly
+-- Version 2: Fixes the "Failed to process approval code" error
 
 -- Drop the restrictive SELECT policy and create a new one that allows validation
 DROP POLICY IF EXISTS "Only admins can view codes" ON approval_codes;

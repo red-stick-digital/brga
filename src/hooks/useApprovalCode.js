@@ -85,6 +85,22 @@ const useApprovalCode = () => {
         const normalizedCode = code.trim().toLowerCase();
 
         try {
+            // First verify the code exists and is unused
+            const { data: existingCode, error: checkError } = await supabase
+                .from('approval_codes')
+                .select('*')
+                .eq('code', normalizedCode)
+                .is('used_by', null)
+                .single();
+
+            if (checkError || !existingCode) {
+                console.error('Code verification failed:', checkError);
+                setError('This approval code has already been used or does not exist');
+                setLoading(false);
+                return { success: false, error: 'This approval code has already been used or does not exist' };
+            }
+
+            // Now update the code to mark it as used
             const { data, error: updateError } = await supabase
                 .from('approval_codes')
                 .update({
@@ -92,7 +108,8 @@ const useApprovalCode = () => {
                     used_at: new Date().toISOString()
                 })
                 .eq('code', normalizedCode)
-                .eq('used_by', null) // Only update if not already used
+                .is('used_by', null)
+                .select()
                 .single();
 
             if (updateError) {
@@ -102,6 +119,7 @@ const useApprovalCode = () => {
                 return { success: false, error: 'Failed to process approval code' };
             }
 
+            console.log('✅ Successfully marked approval code as used:', data);
             setLoading(false);
             return { success: true, data };
 
