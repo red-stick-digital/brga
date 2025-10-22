@@ -53,8 +53,8 @@ const SignUp = () => {
             setError(signupError.message);
         } else {
             const message = userApprovalCode.trim()
-                ? 'Sign up successful! Your account is pending approval. Please check your email for confirmation.'
-                : 'Sign up successful! Your account is pending approval. An admin will review your request. Please check your email for confirmation.';
+                ? 'Sign up successful! Your account has been approved. Please check your email to confirm your address.'
+                : 'Sign up successful! Your account is pending admin approval. Please check your email to confirm your address.';
             setSuccess(message);
         }
 

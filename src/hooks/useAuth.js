@@ -68,24 +68,34 @@ const useAuth = () => {
             const newUser = data.user;
 
             if (newUser) {
-                // Mark the approval code as used
-                const codeResult = await markCodeAsUsed(approvalCode, newUser.id);
+                // Determine approval status based on whether they used a code
+                let approvalStatus = 'pending';
+                let hasValidCode = false;
 
-                if (!codeResult.success) {
-                    // If we can't mark the code as used, we should clean up the user account
-                    // However, Supabase doesn't provide a way to delete users from client side
-                    // So we'll just return the error and let admin handle cleanup if needed
-                    setLoading(false);
-                    return { user: null, error: { message: codeResult.error } };
+                // If an approval code was provided, try to mark it as used
+                if (approvalCode && approvalCode.trim()) {
+                    const codeResult = await markCodeAsUsed(approvalCode, newUser.id);
+
+                    if (!codeResult.success) {
+                        // If we can't mark the code as used, return error
+                        setLoading(false);
+                        return { user: null, error: { message: codeResult.error } };
+                    }
+
+                    // Code was successfully used - user gets approved status
+                    approvalStatus = 'approved';
+                    hasValidCode = true;
                 }
 
-                // Create user_roles entry with 'pending' status
+                // Create user_roles entry
+                // - 'approved' if they used a valid approval code
+                // - 'pending' if they signed up without a code (requires admin approval)
                 const { error: roleError } = await supabase
                     .from('user_roles')
                     .insert({
                         user_id: newUser.id,
                         role: 'member',
-                        approval_status: 'pending'
+                        approval_status: approvalStatus
                     });
 
                 if (roleError) {
@@ -93,6 +103,11 @@ const useAuth = () => {
                     // Continue anyway - the user was created successfully
                     // Admin can manually add role if needed
                 }
+
+                console.log(`✅ User created with status: ${approvalStatus}`, {
+                    hasValidCode,
+                    userId: newUser.id
+                });
             }
 
             setUser(newUser);
