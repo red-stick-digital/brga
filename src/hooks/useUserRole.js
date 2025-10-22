@@ -4,12 +4,14 @@ import useAuth from './useAuth';
 
 const useUserRole = () => {
     const [role, setRole] = useState('member');
+    const [approvalStatus, setApprovalStatus] = useState(null);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
 
     const fetchUserRole = async () => {
         if (!user) {
             setRole('member');
+            setApprovalStatus(null);
             setLoading(false);
             return;
         }
@@ -28,9 +30,11 @@ const useUserRole = () => {
 
             // Use the actual role field from the database
             setRole(data?.role || 'member');
+            setApprovalStatus(data?.approval_status || null);
         } catch (error) {
             console.error('Error fetching user role:', error);
             setRole('member');
+            setApprovalStatus(null);
         } finally {
             setLoading(false);
         }
@@ -48,6 +52,7 @@ const useUserRole = () => {
 
     return {
         role,
+        approvalStatus,
         loading,
         isAdmin,
         isSuperAdmin,

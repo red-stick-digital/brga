@@ -22,8 +22,20 @@ const AuthHome = () => {
     const isApproved = approvalStatus === 'approved';
     const isAdmin = role === 'admin' || role === 'superadmin';
 
+    // Show loading state while role is being fetched
+    if (roleLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
     // Pending status screen
-    if (!roleLoading && isPending) {
+    if (isPending) {
         return (
             <div className="min-h-screen bg-gray-50 py-12">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -189,9 +201,8 @@ const AuthHome = () => {
                             {announcements.map((announcement) => (
                                 <div
                                     key={announcement.id}
-                                    className={`bg-white shadow rounded-lg p-6 ${
-                                        announcement.type === 'urgent' ? 'border-l-4 border-red-500' : ''
-                                    }`}
+                                    className={`bg-white shadow rounded-lg p-6 ${announcement.type === 'urgent' ? 'border-l-4 border-red-500' : ''
+                                        }`}
                                 >
                                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                                         {announcement.title}
