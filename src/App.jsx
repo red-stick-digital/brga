@@ -23,7 +23,7 @@ import HelpForGambling from './pages/HelpForGambling';
 // Protected Pages
 import AuthHome from './pages/AuthHome';
 import MemberDirectory from './pages/MemberDirectory';
-import MemberDashboard from './pages/MemberDashboard';
+import MemberProfile from './pages/MemberProfile';
 import AdminDashboard from './pages/AdminDashboard';
 
 // Auth Pages
@@ -86,10 +86,10 @@ const App = () => {
             />
 
             <Route
-              path="/member/dashboard"
+              path="/member/profile"
               element={
                 <ProtectedRoute>
-                  <MemberDashboard />
+                  <MemberProfile />
                 </ProtectedRoute>
               }
             />

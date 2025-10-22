@@ -104,11 +104,13 @@
 - ✅ [2025-10-22] **Phase 4 COMPLETE**: Navigation system updates
   - Decision: Implement secondary navigation bar for logged-in users (Option A)
   - Architecture: New MemberNav component below primary header
-  - Primary Header: Simplified to show only "Login" or "Logout" (far right)
+  - Primary Header: Simplified to show only "Login" when logged out (no logout button)
   - Secondary Nav (MemberNav): Home | Directory | Profile | Admin (conditional) | Logout
   - Removed: "My Account" dropdown, member/admin dashboard links from primary header
   - Implementation: MemberNav.jsx component conditionally renders based on auth state
-  - Mobile: Primary header mobile menu shows only Login/Logout for auth users
+  - Mobile: Primary header mobile menu shows only Login for non-authenticated users
+  - UX: Hamburger menu auto-closes on mouse leave (desktop)
+  - Route Migration: /member/dashboard → /member/profile (MemberDashboard.jsx → MemberProfile.jsx)
 
 ## ISSUES ENCOUNTERED
 

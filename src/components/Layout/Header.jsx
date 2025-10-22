@@ -132,7 +132,10 @@ export default function Header() {
                             <Bars3Icon aria-hidden="true" className="size-6" />
                         </button>
                         {desktopMenuOpen && (
-                            <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-900 py-2 shadow-lg">
+                            <div 
+                                className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-900 py-2 shadow-lg"
+                                onMouseLeave={() => setDesktopMenuOpen(false)}
+                            >
                                 {hamburgerLinks.map((item) => (
                                     <Link
                                         key={item.name}
@@ -146,15 +149,7 @@ export default function Header() {
                             </div>
                         )}
                     </div>
-                    {user ? (
-                        <button
-                            onClick={handleLogout}
-                            disabled={isLoggingOut}
-                            className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px] uppercase disabled:opacity-50"
-                        >
-                            {isLoggingOut ? 'Logging out...' : 'Logout'}
-                        </button>
-                    ) : (
+                    {!user && (
                         <Link to="/login" className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px] uppercase">
                             Login <span aria-hidden="true">&rarr;</span>
                         </Link>
@@ -206,18 +201,7 @@ export default function Header() {
                                 ))}
                             </div>
                             <div className="py-6">
-                                {user ? (
-                                    <button
-                                        onClick={(e) => {
-                                            handleLogout(e);
-                                            setMobileMenuOpen(false);
-                                        }}
-                                        disabled={isLoggingOut}
-                                        className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 w-full text-left rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px] uppercase disabled:opacity-50"
-                                    >
-                                        {isLoggingOut ? 'Logging out...' : 'Logout'}
-                                    </button>
-                                ) : (
+                                {!user && (
                                     <Link
                                         to="/login"
                                         onClick={() => setMobileMenuOpen(false)}

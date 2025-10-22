@@ -5,12 +5,12 @@ import useMemberProfile from '../hooks/useMemberProfile';
 import useAuth from '../hooks/useAuth';
 
 /**
- * MemberDashboard Component
+ * MemberProfile Component
  * 
- * Dashboard for members to view and edit their profile information
+ * Profile page for members to view and edit their profile information
  * Shows profile completion status and home group assignments
  */
-const MemberDashboard = () => {
+const MemberProfile = () => {
     const { user } = useAuth();
     const { profile, loading, error } = useMemberProfile();
     const [isEditing, setIsEditing] = useState(false);
@@ -55,7 +55,7 @@ const MemberDashboard = () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="bg-white shadow-md rounded-lg p-6">
-                <h1 className="text-2xl font-bold text-blue-600 mb-4">Member Dashboard</h1>
+                <h1 className="text-2xl font-bold text-blue-600 mb-4">Member Profile</h1>
 
                 {/* Profile Completion Status */}
                 <div className="mb-6">
@@ -87,4 +87,4 @@ const MemberDashboard = () => {
     );
 };
 
-export default MemberDashboard;
+export default MemberProfile;

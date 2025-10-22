@@ -35,6 +35,7 @@ const MemberNav = () => {
         { name: 'Directory', href: '/memberdirectory', show: true },
         { name: 'Profile', href: '/member/profile', show: true },
         { name: 'Admin', href: '/admin/dashboard', show: isAdmin },
+        { name: 'Logout', href: '#', show: true, isLogout: true },
     ];
 
     const isActive = (href) => location.pathname === href;
@@ -42,33 +43,34 @@ const MemberNav = () => {
     return (
         <nav className="bg-blue-600 shadow-md">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-12">
+                <div className="flex items-center h-12">
                     {/* Navigation Links */}
                     <div className="flex space-x-1">
-                        {navLinks.map((link) => 
+                        {navLinks.map((link) =>
                             link.show ? (
-                                <Link
-                                    key={link.name}
-                                    to={link.href}
-                                    className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
-                                        isActive(link.href)
-                                            ? 'bg-white text-blue-600'
-                                            : 'text-white hover:bg-blue-700'
-                                    }`}
-                                >
-                                    {link.name}
-                                </Link>
+                                link.isLogout ? (
+                                    <button
+                                        key={link.name}
+                                        onClick={handleLogout}
+                                        className="px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 rounded-md transition-colors"
+                                    >
+                                        {link.name}
+                                    </button>
+                                ) : (
+                                    <Link
+                                        key={link.name}
+                                        to={link.href}
+                                        className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${isActive(link.href)
+                                                ? 'bg-white text-blue-600'
+                                                : 'text-white hover:bg-blue-700'
+                                            }`}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                )
                             ) : null
                         )}
                     </div>
-
-                    {/* Logout Button */}
-                    <button
-                        onClick={handleLogout}
-                        className="px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 rounded-md transition-colors"
-                    >
-                        Logout
-                    </button>
                 </div>
             </div>
         </nav>
