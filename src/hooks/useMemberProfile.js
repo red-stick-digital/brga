@@ -144,7 +144,7 @@ const useMemberProfile = () => {
             let result;
 
             if (existingProfile) {
-                // Update existing profile - exclude fields that might not exist in the live database
+                // Update existing profile with all fields
                 const updateData = {
                     first_name: profileData.first_name,
                     middle_initial: profileData.middle_initial || null,
@@ -154,36 +154,21 @@ const useMemberProfile = () => {
                     clean_date: profileData.clean_date || null,
                     home_group_id: profileData.home_group_id || null,
                     listed_in_directory: profileData.listed_in_directory,
-                    willing_to_sponsor: profileData.willing_to_sponsor
+                    willing_to_sponsor: profileData.willing_to_sponsor,
+                    share_phone_in_directory: profileData.share_phone_in_directory || false,
+                    share_email_in_directory: profileData.share_email_in_directory || false,
+                    officer_position: profileData.officer_position || null,
+                    updated_at: new Date().toISOString()
                 };
 
-                // Only include these fields if they exist in the schema
-                // These were added in later migrations and might not exist in all environments
-                try {
-                    // Test if these columns exist by attempting a small query first
-                    const testResult = await supabase
-                        .from('member_profiles')
-                        .select('share_phone_in_directory, share_email_in_directory, officer_position')
-                        .eq('user_id', user.id)
-                        .limit(1);
-
-                    if (!testResult.error) {
-                        updateData.share_phone_in_directory = profileData.share_phone_in_directory || false;
-                        updateData.share_email_in_directory = profileData.share_email_in_directory || false;
-                        updateData.officer_position = profileData.officer_position || null;
-                    }
-                } catch (testError) {
-                    console.log('Some profile fields may not exist in database schema, continuing with basic fields only');
-                }
-
-                updateData.updated_at = new Date().toISOString();
+                console.log('Updating profile with data:', updateData);
 
                 result = await supabase
                     .from('member_profiles')
                     .update(updateData)
                     .eq('user_id', user.id);
             } else {
-                // Create new profile with basic fields only
+                // Create new profile with all fields
                 const insertData = {
                     user_id: user.id,
                     first_name: profileData.first_name,
@@ -194,24 +179,13 @@ const useMemberProfile = () => {
                     clean_date: profileData.clean_date || null,
                     home_group_id: profileData.home_group_id || null,
                     listed_in_directory: profileData.listed_in_directory,
-                    willing_to_sponsor: profileData.willing_to_sponsor
+                    willing_to_sponsor: profileData.willing_to_sponsor,
+                    share_phone_in_directory: profileData.share_phone_in_directory || false,
+                    share_email_in_directory: profileData.share_email_in_directory || false,
+                    officer_position: profileData.officer_position || null
                 };
 
-                // Try to include additional fields if they exist
-                try {
-                    const testResult = await supabase
-                        .from('member_profiles')
-                        .select('share_phone_in_directory, share_email_in_directory, officer_position')
-                        .limit(1);
-
-                    if (!testResult.error) {
-                        insertData.share_phone_in_directory = profileData.share_phone_in_directory || false;
-                        insertData.share_email_in_directory = profileData.share_email_in_directory || false;
-                        insertData.officer_position = profileData.officer_position || null;
-                    }
-                } catch (testError) {
-                    console.log('Some profile fields may not exist in database schema, creating with basic fields only');
-                }
+                console.log('Creating new profile with data:', insertData);
 
                 result = await supabase
                     .from('member_profiles')

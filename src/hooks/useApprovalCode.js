@@ -25,15 +25,21 @@ const useApprovalCode = () => {
 
         const normalizedCode = code.trim().toLowerCase();
 
+        console.log('🔍 Validating approval code:', normalizedCode);
+
         try {
             // Check if code exists and is valid
+            console.log('🔍 Querying approval_codes table for code:', normalizedCode);
             const { data: codeData, error: fetchError } = await supabase
                 .from('approval_codes')
                 .select('*')
                 .eq('code', normalizedCode)
-                .single();
+                .maybeSingle(); // Use maybeSingle instead of single to handle no results gracefully
+
+            console.log('📊 Query result:', { codeData, fetchError });
 
             if (fetchError || !codeData) {
+                console.log('❌ Code validation failed:', fetchError?.message || 'Code not found');
                 setError('Invalid approval code');
                 setLoading(false);
                 return { valid: false, error: 'Invalid approval code' };
