@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import supabase from '../services/supabase';
+import { getNameSortKey, formatMemberName } from '../utils/nameUtils';
 
 const useDirectory = () => {
     const [loading, setLoading] = useState(false);
@@ -25,7 +26,8 @@ const useDirectory = () => {
                 .from('member_profiles')
                 .select('*')
                 .eq('listed_in_directory', true)
-                .order('full_name', { ascending: true });
+                .order('last_name', { ascending: true, nullsLast: true })
+                .order('first_name', { ascending: true, nullsLast: true });
 
             if (profileError) {
                 throw profileError;
@@ -81,7 +83,7 @@ const useDirectory = () => {
             // Filter to only approved members
             const approvedMembers = enrichedMembers.filter(member =>
                 member.user_role?.approval_status === 'approved' &&
-                member.full_name
+                (member.first_name || member.last_name)
             );
 
             setMembers(approvedMembers);
@@ -139,10 +141,13 @@ const useDirectory = () => {
         // Apply search query
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(member =>
-                member.full_name?.toLowerCase().includes(query) ||
-                member.home_group?.name?.toLowerCase().includes(query)
-            );
+            filtered = filtered.filter(member => {
+                const nameMatch = member.first_name?.toLowerCase().includes(query) ||
+                    member.last_name?.toLowerCase().includes(query) ||
+                    formatMemberName(member).toLowerCase().includes(query);
+                const homeGroupMatch = member.home_group?.name?.toLowerCase().includes(query);
+                return nameMatch || homeGroupMatch;
+            });
         }
 
         // Apply home group filter
@@ -161,7 +166,7 @@ const useDirectory = () => {
         filtered.sort((a, b) => {
             switch (sortBy) {
                 case 'name':
-                    return (a.full_name || '').localeCompare(b.full_name || '');
+                    return getNameSortKey(a).localeCompare(getNameSortKey(b));
                 case 'clean_date':
                     // Sort by clean date (oldest first = longest sober)
                     if (!a.clean_date && !b.clean_date) return 0;

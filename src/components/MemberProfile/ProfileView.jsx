@@ -1,6 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import useUserRole from '../../hooks/useUserRole';
+import { formatMemberName } from '../../utils/nameUtils';
 
 /**
  * ProfileView Component
@@ -82,8 +83,8 @@ const ProfileView = ({ profile, onEdit }) => {
                     <h3 className="text-lg font-medium text-gray-700 mb-2">Personal Information</h3>
                     <div className="bg-gray-50 p-4 rounded-md">
                         <div className="mb-3">
-                            <p className="text-sm text-gray-500">Full Name</p>
-                            <p className="font-medium">{profile.full_name || 'Not specified'}</p>
+                            <p className="text-sm text-gray-500">Name</p>
+                            <p className="font-medium">{formatMemberName(profile) || 'Not specified'}</p>
                         </div>
                         <div className="mb-3">
                             <p className="text-sm text-gray-500">Email</p>

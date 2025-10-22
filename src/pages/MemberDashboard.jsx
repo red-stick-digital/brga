@@ -45,7 +45,7 @@ const MemberDashboard = () => {
     const calculateCompletion = () => {
         if (!profile) return 0;
 
-        const fields = ['full_name', 'phone', 'email', 'clean_date', 'home_group_id'];
+        const fields = ['first_name', 'last_name', 'phone', 'email', 'clean_date', 'home_group_id'];
         const completedFields = fields.filter(field => profile[field] !== null && profile[field] !== undefined && profile[field] !== '');
         return Math.round((completedFields.length / fields.length) * 100);
     };

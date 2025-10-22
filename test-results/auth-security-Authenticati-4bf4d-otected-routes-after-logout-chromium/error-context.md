@@ -1,0 +1,136 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation "Global" [ref=e4]:
+      - link "Gamblers Anonymous - Baton Rouge Baton Rouge Area Gamblers Anonymous" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: Gamblers Anonymous - Baton Rouge
+        - generic [ref=e8]:
+          - generic [ref=e9]: Baton Rouge Area
+          - generic [ref=e10]: Gamblers Anonymous
+      - generic [ref=e11]:
+        - link "Home" [ref=e12] [cursor=pointer]:
+          - /url: /
+        - link "Meetings" [ref=e13] [cursor=pointer]:
+          - /url: /meetings
+        - link "My First Meeting" [ref=e14] [cursor=pointer]:
+          - /url: /myfirstmeeting
+        - link "20 Questions" [ref=e15] [cursor=pointer]:
+          - /url: /20questions
+        - link "Contact Us" [ref=e16] [cursor=pointer]:
+          - /url: /contactus
+        - button "Open menu" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: Open menu
+          - img [ref=e20]
+        - link "Log in" [ref=e22] [cursor=pointer]:
+          - /url: /login
+          - text: Log in →
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - generic [ref=e27]:
+        - heading "Gambling Addiction? Compulsive Gambler? We are glad you are here." [level=1] [ref=e28]:
+          - text: Gambling Addiction?
+          - text: Compulsive Gambler? We are
+          - text: glad you are here.
+        - paragraph [ref=e29]:
+          - text: If you need immediate help in quitting gambling, please call us at
+          - text: 888-502-5610
+        - generic [ref=e30]:
+          - link "GET STARTED NOW" [ref=e31] [cursor=pointer]:
+            - /url: /meetings
+          - button "CALL US NOW" [ref=e32] [cursor=pointer]
+      - generic [ref=e35]: Your browser does not support the video tag.
+      - generic [ref=e37]:
+        - heading "Need Help for Gambling?" [level=2] [ref=e38]
+        - paragraph [ref=e40]:
+          - text: If you've been wondering "how do I stop gambling" or feeling like "I can't stop gambling," you are not alone. Many people in Baton Rouge and Hammond struggle with gambling addiction. We are here to offer
+          - link "help for gambling" [ref=e41] [cursor=pointer]:
+            - /url: /helpforgambling
+          - text: through local
+          - link "Gamblers Anonymous meetings" [ref=e42] [cursor=pointer]:
+            - /url: /meetings
+          - text: and the support of others who understand what you're going through. Whether you want to stop going to casinos, sports betting, video poker, racetracks, or any other form of gambling, we are here to help.
+      - generic [ref=e44]:
+        - heading "Welcome to Baton Rouge Gamblers Anonymous" [level=2] [ref=e45]
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - img "Rocks that represent the first three steps of a twelve step program." [ref=e48]
+            - heading "Our Story" [level=3] [ref=e49]
+            - paragraph [ref=e51]: We are a group of compulsive gamblers in the Baton Rouge and Hammond area that share our experience strength and hope so that we may solve our common problem which is gambling addiction.
+          - generic [ref=e52]:
+            - img "A bonsai tree that invokes hope to be able to stop gambling." [ref=e53]
+            - heading "Local Meetings" [level=3] [ref=e54]
+            - generic [ref=e55]:
+              - paragraph [ref=e56]: There are multiple meetings of recovery available throughout the week in our area.
+              - link "LEARN MORE" [ref=e57] [cursor=pointer]:
+                - /url: /meetings
+          - generic [ref=e58]:
+            - img "A sad woman crying because she wants to stop gambling." [ref=e59]
+            - heading "Am I a compulsive gambler?" [level=3] [ref=e60]
+            - generic [ref=e61]:
+              - paragraph [ref=e62]: Only you can decide that. Answering these 20 questions can help you make that decision.
+              - link "ANSWER NOW" [ref=e63] [cursor=pointer]:
+                - /url: /20questions
+          - generic [ref=e64]:
+            - img "A group of people addicted to gambling staring at a slot machine in a casino." [ref=e65]
+            - heading "Stop Now" [level=3] [ref=e66]
+            - generic [ref=e67]:
+              - paragraph [ref=e68]: Whether you want to stop going to casinos, sports betting, video poker, racetracks or any other type of gambling we are here to help.
+              - link "STOP NOW" [ref=e69] [cursor=pointer]:
+                - /url: /meetings
+          - generic [ref=e70]:
+            - img "A person walking on the rocks taking steps to improve their life." [ref=e71]
+            - heading "GA International" [level=3] [ref=e72]
+            - generic [ref=e73]:
+              - paragraph [ref=e74]: Click below to be taken to the Gamblers Anonymous International Service Office website.
+              - link "GO NOW" [ref=e75] [cursor=pointer]:
+                - /url: https://gamblersanonymous.org/
+      - generic [ref=e77]:
+        - paragraph [ref=e78]: Are you concerned about someone else gambling in your life?
+        - button "IS SOMEONE'S GAMBLING AFFECTING YOU? CLICK HERE" [ref=e79] [cursor=pointer]
+      - generic [ref=e81]:
+        - heading "Contact Us" [level=2] [ref=e82]
+        - paragraph [ref=e83]: We hope to see you at a meeting soon!
+        - paragraph [ref=e84]: Baton Rouge Area Gamblers Anonymous
+        - paragraph [ref=e85]: Baton Rouge, Louisiana 70820, United States
+        - paragraph [ref=e86]:
+          - link "888-502-5610" [ref=e87] [cursor=pointer]:
+            - /url: tel:888-502-5610
+        - paragraph [ref=e88]: Hours
+        - paragraph [ref=e89]: A local compulsive gambler is available to answer your phone call 24 hours a day, 7 days a week.
+      - generic [ref=e91]:
+        - heading "Connect With Us" [level=2] [ref=e92]
+        - generic [ref=e93]:
+          - link "Facebook" [ref=e94] [cursor=pointer]:
+            - /url: https://www.facebook.com/profile.php?id=61556538624235#
+            - img "Facebook" [ref=e95]
+          - link "X" [ref=e96] [cursor=pointer]:
+            - /url: https://x.com/BatonRougeGA
+            - img "X" [ref=e98]
+  - contentinfo [ref=e99]:
+    - generic [ref=e100]:
+      - generic [ref=e101]:
+        - link [ref=e102] [cursor=pointer]:
+          - /url: https://www.facebook.com/profile.php?id=61556538624235#
+          - img [ref=e103]
+        - link [ref=e105] [cursor=pointer]:
+          - /url: https://x.com/BatonRougeGA
+          - img [ref=e106]
+      - navigation [ref=e108]:
+        - link "Meetings" [ref=e109] [cursor=pointer]:
+          - /url: /meetings
+        - link "Events & Announcements" [ref=e110] [cursor=pointer]:
+          - /url: /eventsandannouncements
+        - link "12 Steps & Unity Program" [ref=e111] [cursor=pointer]:
+          - /url: /12stepsandunityprogram
+        - link "Gam Anon" [ref=e112] [cursor=pointer]:
+          - /url: /gamanon
+        - link "Public Relations" [ref=e113] [cursor=pointer]:
+          - /url: /publicrelations
+        - link "FAQ" [ref=e114] [cursor=pointer]:
+          - /url: /faq
+        - link "Help for Gambling" [ref=e115] [cursor=pointer]:
+          - /url: /helpforgambling
+```

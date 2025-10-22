@@ -4,27 +4,27 @@
 - generic [ref=e2]:
   - banner [ref=e3]:
     - navigation "Global" [ref=e4]:
-      - link "Gamblers Anonymous - Baton Rouge Baton Rouge Area Gamblers Anonymous" [ref=e6]:
+      - link "Gamblers Anonymous - Baton Rouge Baton Rouge Area Gamblers Anonymous" [ref=e6] [cursor=pointer]:
         - /url: /
         - generic [ref=e7]: Gamblers Anonymous - Baton Rouge
         - generic [ref=e8]:
           - generic [ref=e9]: Baton Rouge Area
           - generic [ref=e10]: Gamblers Anonymous
       - generic [ref=e11]:
-        - link "Home" [ref=e12]:
+        - link "Home" [ref=e12] [cursor=pointer]:
           - /url: /
-        - link "Meetings" [ref=e13]:
+        - link "Meetings" [ref=e13] [cursor=pointer]:
           - /url: /meetings
-        - link "My First Meeting" [ref=e14]:
+        - link "My First Meeting" [ref=e14] [cursor=pointer]:
           - /url: /myfirstmeeting
-        - link "20 Questions" [ref=e15]:
+        - link "20 Questions" [ref=e15] [cursor=pointer]:
           - /url: /20questions
-        - link "Contact Us" [ref=e16]:
+        - link "Contact Us" [ref=e16] [cursor=pointer]:
           - /url: /contactus
         - button "Open menu" [ref=e18] [cursor=pointer]:
           - generic [ref=e19]: Open menu
           - img [ref=e20]
-        - link "Log in" [ref=e22]:
+        - link "Log in" [ref=e22] [cursor=pointer]:
           - /url: /login
           - text: Log in →
   - main [ref=e23]:
@@ -43,15 +43,15 @@
           - button "Forgot Password?" [ref=e37] [cursor=pointer]
           - generic [ref=e38]:
             - paragraph [ref=e39]: Don't have an account?
-            - link "Sign Up" [ref=e40]:
+            - link "Sign Up" [ref=e40] [cursor=pointer]:
               - /url: /signup
   - contentinfo [ref=e41]:
     - generic [ref=e42]:
       - generic [ref=e43]:
-        - link [ref=e44]:
+        - link [ref=e44] [cursor=pointer]:
           - /url: https://www.facebook.com/profile.php?id=61556538624235#
           - img [ref=e45]
-        - link [ref=e47]:
+        - link [ref=e47] [cursor=pointer]:
           - /url: https://x.com/BatonRougeGA
           - img [ref=e48]
       - navigation [ref=e50]:

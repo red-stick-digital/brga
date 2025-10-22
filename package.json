@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:local": "cp .env.local .env && vite",
     "dev:api": "node dev-server.js",
     "dev:full": "npm run dev:api & npm run dev",
+    "dev:full:local": "cp .env.local .env && npm run dev:api & npm run dev",
     "build": "vite build",
     "preview": "vite preview",
     "test:e2e": "playwright test",

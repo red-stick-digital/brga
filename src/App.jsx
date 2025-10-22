@@ -28,6 +28,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
 import ResetPassword from './components/Auth/ResetPassword';
+import AuthCallback from './pages/AuthCallback';
 
 // Admin Pages
 import AdminSetup from './components/Admin/AdminSetup';
@@ -94,6 +95,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
 
             {/* Admin Routes */}
             <Route path="/admin/setup" element={<AdminSetup />} />

@@ -146,7 +146,9 @@ const useMemberProfile = () => {
                 result = await supabase
                     .from('member_profiles')
                     .update({
-                        full_name: profileData.full_name,
+                        first_name: profileData.first_name,
+                        middle_initial: profileData.middle_initial || null,
+                        last_name: profileData.last_name,
                         phone: profileData.phone,
                         email: profileData.email,
                         clean_date: profileData.clean_date || null,
@@ -165,7 +167,9 @@ const useMemberProfile = () => {
                     .from('member_profiles')
                     .insert({
                         user_id: user.id,
-                        full_name: profileData.full_name,
+                        first_name: profileData.first_name,
+                        middle_initial: profileData.middle_initial || null,
+                        last_name: profileData.last_name,
                         phone: profileData.phone,
                         email: profileData.email,
                         clean_date: profileData.clean_date || null,

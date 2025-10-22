@@ -73,7 +73,9 @@ test.describe('EditMemberPanel Functionality', () => {
         await expect(page.locator('text=Profile Information')).toBeVisible();
 
         // Verify form fields are present and populated
-        await expect(page.locator('#full_name')).toBeVisible();
+        await expect(page.locator('#first_name')).toBeVisible();
+        await expect(page.locator('#last_name')).toBeVisible();
+        await expect(page.locator('#middle_initial')).toBeVisible();
         await expect(page.locator('#phone')).toBeVisible();
         await expect(page.locator('#clean_date')).toBeVisible();
         await expect(page.locator('#home_group_id')).toBeVisible();
@@ -127,11 +129,22 @@ test.describe('EditMemberPanel Functionality', () => {
         await editButton.click();
         await expect(page.locator('text=Edit Member:')).toBeVisible();
 
-        // Test editing full name
-        const fullNameField = page.locator('#full_name');
-        await fullNameField.clear();
-        await fullNameField.fill('Test User - Edited Name');
-        await expect(fullNameField).toHaveValue('Test User - Edited Name');
+        // Test editing name fields
+        const firstNameField = page.locator('#first_name');
+        const lastNameField = page.locator('#last_name');
+        const middleInitialField = page.locator('#middle_initial');
+
+        await firstNameField.clear();
+        await firstNameField.fill('TestFirst');
+        await expect(firstNameField).toHaveValue('TestFirst');
+
+        await lastNameField.clear();
+        await lastNameField.fill('TestLast');
+        await expect(lastNameField).toHaveValue('TestLast');
+
+        await middleInitialField.clear();
+        await middleInitialField.fill('M');
+        await expect(middleInitialField).toHaveValue('M');
 
         // Test editing phone number
         const phoneField = page.locator('#phone');
@@ -174,11 +187,15 @@ test.describe('EditMemberPanel Functionality', () => {
 
         // Edit the name with a timestamp to ensure uniqueness
         const timestamp = Date.now();
-        const newName = `Updated Name - ${timestamp}`;
+        const newFirstName = `Updated-${timestamp}`;
+        const newLastName = `TestLast-${timestamp}`;
 
-        const fullNameField = page.locator('#full_name');
-        await fullNameField.clear();
-        await fullNameField.fill(newName);
+        const firstNameField = page.locator('#first_name');
+        const lastNameField = page.locator('#last_name');
+        await firstNameField.clear();
+        await firstNameField.fill(newFirstName);
+        await lastNameField.clear();
+        await lastNameField.fill(newLastName);
 
         // Select a home group if options are available
         const homeGroupSelect = page.locator('#home_group_id');
@@ -260,7 +277,7 @@ test.describe('EditMemberPanel Functionality', () => {
         await expect(profileTab).toHaveClass(/border-blue-500 text-blue-600/);
 
         // Verify profile fields are visible
-        await expect(page.locator('#full_name')).toBeVisible();
+        await expect(page.locator('#first_name')).toBeVisible();
 
         // Click Member Info tab
         const infoTab = page.locator('text=Member Info');
@@ -277,7 +294,7 @@ test.describe('EditMemberPanel Functionality', () => {
         // Go back to Profile tab
         await profileTab.click();
         await expect(profileTab).toHaveClass(/border-blue-500 text-blue-600/);
-        await expect(page.locator('#full_name')).toBeVisible();
+        await expect(page.locator('#first_name')).toBeVisible();
     });
 
     test('Modal closes correctly without saving changes', async ({ page }) => {
@@ -288,10 +305,10 @@ test.describe('EditMemberPanel Functionality', () => {
         await expect(page.locator('text=Edit Member:')).toBeVisible();
 
         // Make some changes but don't save
-        const fullNameField = page.locator('#full_name');
-        const originalValue = await fullNameField.inputValue();
-        await fullNameField.clear();
-        await fullNameField.fill('Temporary Change');
+        const firstNameField = page.locator('#first_name');
+        const originalValue = await firstNameField.inputValue();
+        await firstNameField.clear();
+        await firstNameField.fill('TemporaryChange');
 
         // Close modal using X button
         const closeButton = page.locator('button').filter({ has: page.locator('svg') }).first();
@@ -304,7 +321,7 @@ test.describe('EditMemberPanel Functionality', () => {
         await expect(page.locator('table')).toBeVisible();
         const memberRow = page.locator('tbody tr').first();
         // The name should not have the temporary change
-        await expect(memberRow.locator('td').first()).not.toContainText('Temporary Change');
+        await expect(memberRow.locator('td').first()).not.toContainText('TemporaryChange');
     });
 
     test('Form validation prevents saving with empty required fields', async ({ page }) => {
@@ -314,25 +331,30 @@ test.describe('EditMemberPanel Functionality', () => {
         await editButton.click();
         await expect(page.locator('text=Edit Member:')).toBeVisible();
 
-        // Clear required field (full name)
-        const fullNameField = page.locator('#full_name');
-        await fullNameField.clear();
+        // Clear required fields (first name and last name)
+        const firstNameField = page.locator('#first_name');
+        const lastNameField = page.locator('#last_name');
+        await firstNameField.clear();
+        await lastNameField.clear();
 
         // Try to save
         const saveButton = page.locator('text=Save Profile Changes');
         await saveButton.click();
 
-        // Verify validation error appears
-        await expect(page.locator('text=Full name is required')).toBeVisible();
+        // Verify validation errors appear
+        await expect(page.locator('text=First name is required')).toBeVisible();
+        await expect(page.locator('text=Last name is required')).toBeVisible();
 
         // Verify modal doesn't close (save failed)
         await expect(page.locator('text=Edit Member:')).toBeVisible();
 
-        // Fill in the required field
-        await fullNameField.fill('Valid Name');
+        // Fill in the required fields
+        await firstNameField.fill('ValidFirst');
+        await lastNameField.fill('ValidLast');
 
-        // Verify error clears when user starts typing
-        await expect(page.locator('text=Full name is required')).not.toBeVisible();
+        // Verify errors clear when user starts typing
+        await expect(page.locator('text=First name is required')).not.toBeVisible();
+        await expect(page.locator('text=Last name is required')).not.toBeVisible();
     });
 
     test('Future clean date validation works correctly', async ({ page }) => {
@@ -379,8 +401,8 @@ test.describe('EditMemberPanel Functionality', () => {
         await expect(page.locator('text=Edit Member:')).toBeVisible();
 
         // Make a small change
-        const fullNameField = page.locator('#full_name');
-        await fullNameField.fill(await fullNameField.inputValue() + ' - Test');
+        const firstNameField = page.locator('#first_name');
+        await firstNameField.fill(await firstNameField.inputValue() + ' Test');
 
         // Click save and immediately check loading state
         const saveButton = page.locator('text=Save Profile Changes');

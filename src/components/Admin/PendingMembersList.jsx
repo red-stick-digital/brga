@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useApprovals from '../../hooks/useApprovals';
+import { formatMemberName } from '../../utils/nameUtils';
 
 const PendingMembersList = () => {
     const {
@@ -143,7 +144,7 @@ const PendingMembersList = () => {
                                         <div className="flex items-center gap-4 mb-4">
                                             <div>
                                                 <h4 className="text-lg font-medium text-gray-800">
-                                                    {member.profile?.full_name || 'Name not provided'}
+                                                    {formatMemberName(member.profile) || 'Name not provided'}
                                                 </h4>
                                                 <p className="text-sm text-gray-600">
                                                     {member.user?.email}

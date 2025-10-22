@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { formatMemberName } from '../../utils/nameUtils';
 
 const DirectoryMemberCard = ({ member, calculateSobriety }) => {
     const { user } = useAuth();
@@ -29,7 +30,7 @@ const DirectoryMemberCard = ({ member, calculateSobriety }) => {
             <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                 <div className="mt-3">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">
-                        Contact {member.full_name}
+                        Contact {formatMemberName(member)}
                     </h3>
 
                     <div className="mb-4 p-4 bg-blue-50 rounded-md">
@@ -81,7 +82,7 @@ const DirectoryMemberCard = ({ member, calculateSobriety }) => {
                 <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-900">
-                            {member.full_name}
+                            {formatMemberName(member)}
                         </h3>
                         {member.officer_position && (
                             <p className="text-xs font-medium text-blue-600 mt-1">

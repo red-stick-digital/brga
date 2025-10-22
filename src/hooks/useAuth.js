@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import supabase from '../services/supabase';
 import useApprovalCode from './useApprovalCode';
 import sessionSecurity from '../utils/sessionSecurity';
+import { getConfirmationRedirectUrl } from '../utils/redirectUrls';
 
 const useAuth = () => {
     const [user, setUser] = useState(null);
@@ -53,7 +54,10 @@ const useAuth = () => {
             // Create the user account first
             const { data, error: signupError } = await supabase.auth.signUp({
                 email,
-                password
+                password,
+                options: {
+                    emailRedirectTo: getConfirmationRedirectUrl()
+                }
             });
 
             if (signupError) {

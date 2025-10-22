@@ -1,0 +1,73 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation "Global" [ref=e4]:
+      - link "Gamblers Anonymous - Baton Rouge Baton Rouge Area Gamblers Anonymous" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: Gamblers Anonymous - Baton Rouge
+        - generic [ref=e8]:
+          - generic [ref=e9]: Baton Rouge Area
+          - generic [ref=e10]: Gamblers Anonymous
+      - generic [ref=e11]:
+        - link "Home" [ref=e12] [cursor=pointer]:
+          - /url: /
+        - link "Meetings" [ref=e13] [cursor=pointer]:
+          - /url: /meetings
+        - link "My First Meeting" [ref=e14] [cursor=pointer]:
+          - /url: /myfirstmeeting
+        - link "20 Questions" [ref=e15] [cursor=pointer]:
+          - /url: /20questions
+        - link "Contact Us" [ref=e16] [cursor=pointer]:
+          - /url: /contactus
+        - button "Open menu" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: Open menu
+          - img [ref=e20]
+        - link "Log in" [ref=e22] [cursor=pointer]:
+          - /url: /login
+          - text: Log in →
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - heading "Login" [level=1] [ref=e25]
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - paragraph [ref=e29]: Failed to fetch
+          - generic [ref=e30]:
+            - generic [ref=e31]: Email
+            - textbox "Email" [ref=e32]: test-security@example.com
+          - generic [ref=e33]:
+            - generic [ref=e34]: Password
+            - textbox "Password" [ref=e35]: SecurePassword123!
+          - button "LOGIN" [ref=e37] [cursor=pointer]
+        - generic [ref=e38]:
+          - button "Forgot Password?" [ref=e39] [cursor=pointer]
+          - generic [ref=e40]:
+            - paragraph [ref=e41]: Don't have an account?
+            - link "Sign Up" [ref=e42] [cursor=pointer]:
+              - /url: /signup
+  - contentinfo [ref=e43]:
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - link [ref=e46] [cursor=pointer]:
+          - /url: https://www.facebook.com/profile.php?id=61556538624235#
+          - img [ref=e47]
+        - link [ref=e49] [cursor=pointer]:
+          - /url: https://x.com/BatonRougeGA
+          - img [ref=e50]
+      - navigation [ref=e52]:
+        - link "Meetings" [ref=e53] [cursor=pointer]:
+          - /url: /meetings
+        - link "Events & Announcements" [ref=e54] [cursor=pointer]:
+          - /url: /eventsandannouncements
+        - link "12 Steps & Unity Program" [ref=e55] [cursor=pointer]:
+          - /url: /12stepsandunityprogram
+        - link "Gam Anon" [ref=e56] [cursor=pointer]:
+          - /url: /gamanon
+        - link "Public Relations" [ref=e57] [cursor=pointer]:
+          - /url: /publicrelations
+        - link "FAQ" [ref=e58] [cursor=pointer]:
+          - /url: /faq
+        - link "Help for Gambling" [ref=e59] [cursor=pointer]:
+          - /url: /helpforgambling
+```

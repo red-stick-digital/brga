@@ -10,7 +10,9 @@ import useMemberProfile from '../../hooks/useMemberProfile';
 const ProfileForm = ({ profile, onCancel, onSuccess }) => {
     const { updateProfile, loading, error, homeGroups, fetchHomeGroups } = useMemberProfile();
     const [formData, setFormData] = useState({
-        full_name: '',
+        first_name: '',
+        middle_initial: '',
+        last_name: '',
         phone: '',
         email: '',
         clean_date: '',
@@ -46,7 +48,9 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
             }
 
             setFormData({
-                full_name: profile.full_name || '',
+                first_name: profile.first_name || '',
+                middle_initial: profile.middle_initial || '',
+                last_name: profile.last_name || '',
                 phone: formattedPhone,
                 email: profile.email || '',
                 clean_date: profile.clean_date ? new Date(profile.clean_date).toISOString().split('T')[0] : '',
@@ -93,8 +97,16 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
     const validateForm = () => {
         const errors = {};
 
-        if (!formData.full_name.trim()) {
-            errors.full_name = 'Full name is required';
+        if (!formData.first_name.trim()) {
+            errors.first_name = 'First name is required';
+        }
+
+        if (!formData.last_name.trim()) {
+            errors.last_name = 'Last name is required';
+        }
+
+        if (formData.middle_initial && formData.middle_initial.length > 1) {
+            errors.middle_initial = 'Middle initial should be a single character';
         }
 
         if (!formData.email.trim()) {
@@ -180,24 +192,64 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
                 <div className="bg-gray-50 p-4 rounded-md">
                     <h3 className="text-lg font-medium text-gray-700 mb-4">Personal Information</h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
-                                Full Name <span className="text-red-500">*</span>
+                            <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                First Name <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
-                                id="full_name"
-                                name="full_name"
-                                value={formData.full_name}
+                                id="first_name"
+                                name="first_name"
+                                value={formData.first_name}
                                 onChange={handleChange}
-                                className={`w-full px-3 py-2 border ${formErrors.full_name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                                className={`w-full px-3 py-2 border ${formErrors.first_name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                                 required
                             />
-                            {formErrors.full_name && (
-                                <p className="mt-1 text-sm text-red-600">{formErrors.full_name}</p>
+                            {formErrors.first_name && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.first_name}</p>
                             )}
                         </div>
+
+                        <div>
+                            <label htmlFor="middle_initial" className="block text-sm font-medium text-gray-700 mb-1">
+                                Middle Initial
+                            </label>
+                            <input
+                                type="text"
+                                id="middle_initial"
+                                name="middle_initial"
+                                value={formData.middle_initial}
+                                onChange={handleChange}
+                                maxLength="1"
+                                className={`w-full px-3 py-2 border ${formErrors.middle_initial ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                                placeholder="M"
+                            />
+                            {formErrors.middle_initial && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.middle_initial}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                Last Name <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="last_name"
+                                name="last_name"
+                                value={formData.last_name}
+                                onChange={handleChange}
+                                className={`w-full px-3 py-2 border ${formErrors.last_name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                                required
+                            />
+                            {formErrors.last_name && (
+                                <p className="mt-1 text-sm text-red-600">{formErrors.last_name}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">

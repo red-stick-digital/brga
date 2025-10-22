@@ -128,7 +128,9 @@ const useUserManagement = () => {
                 .insert({
                     user_id: userId,
                     email,
-                    full_name: profileData.full_name,
+                    first_name: profileData.first_name,
+                    middle_initial: profileData.middle_initial || null,
+                    last_name: profileData.last_name,
                     phone: profileData.phone,
                     clean_date: profileData.clean_date,
                     home_group_id: profileData.home_group_id,
@@ -182,7 +184,9 @@ const useUserManagement = () => {
             // Prepare profile data, handling empty dates
             const profileDataToSave = {
                 user_id: userId,
-                full_name: profileData.full_name,
+                first_name: profileData.first_name,
+                middle_initial: profileData.middle_initial || null,
+                last_name: profileData.last_name,
                 phone: profileData.phone,
                 clean_date: profileData.clean_date || null, // Convert empty string to null
                 home_group_id: profileData.home_group_id || null, // Convert empty string to null
