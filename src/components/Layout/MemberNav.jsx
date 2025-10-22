@@ -61,8 +61,8 @@ const MemberNav = () => {
                                         key={link.name}
                                         to={link.href}
                                         className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${isActive(link.href)
-                                                ? 'bg-white text-blue-600'
-                                                : 'text-white hover:bg-blue-700'
+                                            ? 'bg-white text-blue-600'
+                                            : 'text-white hover:bg-blue-700'
                                             }`}
                                     >
                                         {link.name}

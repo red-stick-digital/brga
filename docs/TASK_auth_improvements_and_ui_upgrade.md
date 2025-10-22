@@ -102,6 +102,7 @@
   - Implemented pending approval screen for users without codes
   - Fixed hook function naming issue (refetch vs fetchEvents/fetchAnnouncements)
 - ✅ [2025-10-22] **Phase 4 COMPLETE**: Navigation system updates
+
   - Decision: Implement secondary navigation bar for logged-in users (Option A)
   - Architecture: New MemberNav component below primary header
   - Primary Header: Simplified to show only "Login" when logged out (no logout button)
@@ -111,6 +112,16 @@
   - Mobile: Primary header mobile menu shows only Login for non-authenticated users
   - UX: Hamburger menu auto-closes on mouse leave (desktop)
   - Route Migration: /member/dashboard → /member/profile (MemberDashboard.jsx → MemberProfile.jsx)
+
+- ✅ [2025-10-22] **BUG FIX - Signup Profile/Role Creation**:
+  - **Problem**: New users appearing in auth.users but missing entries in member_profiles and user_roles
+  - **Root Cause**: No database trigger to auto-create member_profiles; signup code only created user_roles
+  - **Solution**:
+    1. Created database trigger `handle_new_user()` to auto-create member_profiles on signup
+    2. Updated useAuth.js signup() to explicitly create member_profiles entry as backup
+    3. Added backfill query to create profiles for existing users without them
+  - **File**: `database/fix_signup_profile_creation.sql`
+  - **Action Required**: Apply SQL migration in Supabase SQL Editor
 
 ## ISSUES ENCOUNTERED
 

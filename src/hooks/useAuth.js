@@ -104,9 +104,30 @@ const useAuth = () => {
                     // Admin can manually add role if needed
                 }
 
+                // Create member_profiles entry (blank/placeholder)
+                // This ensures the user has a profile even if database trigger fails
+                const { error: profileError } = await supabase
+                    .from('member_profiles')
+                    .insert({
+                        user_id: newUser.id,
+                        email: newUser.email,
+                        listed_in_directory: false,
+                        willing_to_sponsor: false,
+                        share_phone_in_directory: false,
+                        share_email_in_directory: false
+                    });
+
+                if (profileError) {
+                    console.error('Error creating member profile:', profileError);
+                    // Continue anyway - the user was created successfully
+                    // Profile may have been created by database trigger
+                }
+
                 console.log(`✅ User created with status: ${approvalStatus}`, {
                     hasValidCode,
-                    userId: newUser.id
+                    userId: newUser.id,
+                    roleCreated: !roleError,
+                    profileCreated: !profileError
                 });
             }
 

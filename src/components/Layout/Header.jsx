@@ -132,7 +132,7 @@ export default function Header() {
                             <Bars3Icon aria-hidden="true" className="size-6" />
                         </button>
                         {desktopMenuOpen && (
-                            <div 
+                            <div
                                 className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-900 py-2 shadow-lg"
                                 onMouseLeave={() => setDesktopMenuOpen(false)}
                             >
