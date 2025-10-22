@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Dialog, DialogPanel } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import useAuth from '../../hooks/useAuth'
 import useUserRole from '../../hooks/useUserRole'
 
@@ -46,7 +46,6 @@ const hamburgerLinks = [
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [desktopMenuOpen, setDesktopMenuOpen] = useState(false)
-    const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
     const location = useLocation()
@@ -70,7 +69,6 @@ export default function Header() {
         if (isLoggingOut) return // Prevent double-clicks
 
         setIsLoggingOut(true)
-        setUserMenuOpen(false)
 
         try {
             console.log('Header: 🔐 Starting secure logout...');
@@ -149,45 +147,16 @@ export default function Header() {
                         )}
                     </div>
                     {user ? (
-                        <div className="relative">
-                            <button
-                                type="button"
-                                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                className="flex items-center font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px]"
-                            >
-                                <UserCircleIcon className="h-6 w-6 mr-1" />
-                                <span>My Account</span>
-                            </button>
-                            {userMenuOpen && (
-                                <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-900 py-2 shadow-lg">
-                                    <Link
-                                        to="/member/dashboard"
-                                        onClick={() => setUserMenuOpen(false)}
-                                        className="block px-4 py-2 font-helvetica text-base font-normal text-[#F7F7F7] hover:bg-gray-800 tracking-[1.1px]"
-                                    >
-                                        Member Dashboard
-                                    </Link>
-                                    {!roleLoading && (role === 'admin' || role === 'superadmin') && (
-                                        <Link
-                                            to="/admin/dashboard"
-                                            onClick={() => setUserMenuOpen(false)}
-                                            className="block px-4 py-2 font-helvetica text-base font-normal text-[#F7F7F7] hover:bg-gray-800 tracking-[1.1px]"
-                                        >
-                                            Admin Dashboard
-                                        </Link>
-                                    )}
-                                    <button
-                                        onClick={handleLogout}
-                                        className="w-full text-left px-4 py-2 font-helvetica text-base font-normal text-[#F7F7F7] hover:bg-gray-800 tracking-[1.1px]"
-                                    >
-                                        Log out
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                        <button
+                            onClick={handleLogout}
+                            disabled={isLoggingOut}
+                            className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px] uppercase disabled:opacity-50"
+                        >
+                            {isLoggingOut ? 'Logging out...' : 'Logout'}
+                        </button>
                     ) : (
-                        <Link to="/login" className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px]">
-                            Log in <span aria-hidden="true">&rarr;</span>
+                        <Link to="/login" className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] hover:text-gray-300 tracking-[1.1px] uppercase">
+                            Login <span aria-hidden="true">&rarr;</span>
                         </Link>
                     )}
                 </div>
@@ -238,40 +207,23 @@ export default function Header() {
                             </div>
                             <div className="py-6">
                                 {user ? (
-                                    <>
-                                        <Link
-                                            to="/member/dashboard"
-                                            onClick={() => setMobileMenuOpen(false)}
-                                            className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 block rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
-                                        >
-                                            Member Dashboard
-                                        </Link>
-                                        {!roleLoading && (role === 'admin' || role === 'superadmin') && (
-                                            <Link
-                                                to="/admin/dashboard"
-                                                onClick={() => setMobileMenuOpen(false)}
-                                                className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 block rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
-                                            >
-                                                Admin Dashboard
-                                            </Link>
-                                        )}
-                                        <button
-                                            onClick={(e) => {
-                                                handleLogout(e);
-                                                setMobileMenuOpen(false);
-                                            }}
-                                            className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 w-full text-left rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
-                                        >
-                                            Log out
-                                        </button>
-                                    </>
+                                    <button
+                                        onClick={(e) => {
+                                            handleLogout(e);
+                                            setMobileMenuOpen(false);
+                                        }}
+                                        disabled={isLoggingOut}
+                                        className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 w-full text-left rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px] uppercase disabled:opacity-50"
+                                    >
+                                        {isLoggingOut ? 'Logging out...' : 'Logout'}
+                                    </button>
                                 ) : (
                                     <Link
                                         to="/login"
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 block rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px]"
+                                        className="font-helvetica text-base leading-6 font-normal text-[#F7F7F7] -mx-3 block rounded-lg px-3 py-2.5 hover:bg-gray-900 tracking-[1.1px] uppercase"
                                     >
-                                        Log in
+                                        Login
                                     </Link>
                                 )}
                             </div>

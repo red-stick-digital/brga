@@ -90,6 +90,22 @@
   - Solution: Run `migration_add_directory_sharing.sql` + simplified update logic
   - Fixed: Removed defensive test queries, now directly includes all fields
 - ✅ [2025-10-22] **CODE FIXED**: Updated `useMemberProfile.js` to always include visibility fields
+- ✅ [2025-10-22] **Phase 1 COMPLETE**: All authentication bugs fixed
+  - Approval code validation working (RLS policies updated)
+  - Approval code marking working (NULL comparison fixed with .is())
+  - Email verification working (tested and confirmed)
+  - Profile visibility settings saving correctly
+- ✅ [2025-10-22] **Phase 2-3 COMPLETE**: AuthHome redesign implemented
+  - Created separate MemberDirectory page at `/memberdirectory`
+  - Redesigned AuthHome to show events and announcements
+  - Added quick action buttons for navigation
+  - Implemented pending approval screen for users without codes
+  - Fixed hook function naming issue (refetch vs fetchEvents/fetchAnnouncements)
+- ✅ [2025-10-22] **Phase 4 IN PROGRESS**: Navigation system updates
+  - Decision: Implement secondary navigation bar for logged-in users (Option A)
+  - Architecture: New MemberNav component below primary header
+  - Primary Header: Simplified to show only "Login" or "Logout" (far right)
+  - Secondary Nav (MemberNav): Home | Directory | Profile | Admin (conditional) | Logout
 
 ## ISSUES ENCOUNTERED
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/Layout/Header';
+import MemberNav from './components/Layout/MemberNav';
 import Footer from './components/Layout/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -48,6 +49,7 @@ const App = () => {
     <HelmetProvider>
       <Router>
         <Header />
+        <MemberNav />
         <main className="flex-grow">
           <Routes>
             {/* Public Routes */}
