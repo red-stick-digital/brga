@@ -4,9 +4,7 @@
 -- ============================================================================
 -- 1. HOME_GROUPS TABLE
 -- ============================================================================
-DROP TABLE IF EXISTS home_groups CASCADE;
-
-CREATE TABLE home_groups (
+CREATE TABLE IF NOT EXISTS home_groups (
     id BIGSERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     start_time TIME NOT NULL,
@@ -22,9 +20,7 @@ CREATE TABLE home_groups (
 -- ============================================================================
 -- 2. MEMBER_PROFILES TABLE
 -- ============================================================================
-DROP TABLE IF EXISTS member_profiles CASCADE;
-
-CREATE TABLE member_profiles (
+CREATE TABLE IF NOT EXISTS member_profiles (
     id BIGSERIAL PRIMARY KEY,
     user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
     full_name TEXT,
@@ -34,6 +30,9 @@ CREATE TABLE member_profiles (
     home_group_id BIGINT REFERENCES home_groups(id) ON DELETE SET NULL,
     listed_in_directory BOOLEAN DEFAULT FALSE,
     willing_to_sponsor BOOLEAN DEFAULT FALSE,
+    share_phone_in_directory BOOLEAN DEFAULT FALSE,
+    share_email_in_directory BOOLEAN DEFAULT FALSE,
+    officer_position TEXT CHECK (officer_position IN ('Chairman', 'Vice Chairman', 'Secretary', 'Treasurer', 'Librarian', 'Public Relations', 'Telephone Chair', 'Intergroup Representative')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -41,9 +40,7 @@ CREATE TABLE member_profiles (
 -- ============================================================================
 -- 3. APPROVAL_CODES TABLE
 -- ============================================================================
-DROP TABLE IF EXISTS approval_codes CASCADE;
-
-CREATE TABLE approval_codes (
+CREATE TABLE IF NOT EXISTS approval_codes (
     id BIGSERIAL PRIMARY KEY,
     code TEXT NOT NULL UNIQUE,
     created_by UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,

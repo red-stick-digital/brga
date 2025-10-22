@@ -104,7 +104,10 @@ const useMemberProfile = () => {
                     clean_date: null,
                     home_group_id: null,
                     listed_in_directory: false,
-                    willing_to_sponsor: false
+                    willing_to_sponsor: false,
+                    share_phone_in_directory: false,
+                    share_email_in_directory: false,
+                    officer_position: null
                 });
             }
         } catch (err) {
@@ -150,6 +153,9 @@ const useMemberProfile = () => {
                         home_group_id: profileData.home_group_id || null,
                         listed_in_directory: profileData.listed_in_directory,
                         willing_to_sponsor: profileData.willing_to_sponsor,
+                        share_phone_in_directory: profileData.share_phone_in_directory || false,
+                        share_email_in_directory: profileData.share_email_in_directory || false,
+                        officer_position: profileData.officer_position || null,
                         updated_at: new Date().toISOString()
                     })
                     .eq('user_id', user.id);
@@ -165,7 +171,10 @@ const useMemberProfile = () => {
                         clean_date: profileData.clean_date || null,
                         home_group_id: profileData.home_group_id || null,
                         listed_in_directory: profileData.listed_in_directory,
-                        willing_to_sponsor: profileData.willing_to_sponsor
+                        willing_to_sponsor: profileData.willing_to_sponsor,
+                        share_phone_in_directory: profileData.share_phone_in_directory || false,
+                        share_email_in_directory: profileData.share_email_in_directory || false,
+                        officer_position: profileData.officer_position || null
                     });
             }
 

@@ -20,6 +20,7 @@
     "@supabase/supabase-js": "^2.0.0",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
+    "fetch": "^1.1.0",
     "react": "^18.0.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^18.0.0",

@@ -16,7 +16,10 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
         clean_date: '',
         home_group_id: '',
         listed_in_directory: false,
-        willing_to_sponsor: false
+        willing_to_sponsor: false,
+        share_phone_in_directory: false,
+        share_email_in_directory: false,
+        officer_position: ''
     });
     const [formErrors, setFormErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
@@ -49,7 +52,10 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
                 clean_date: profile.clean_date ? new Date(profile.clean_date).toISOString().split('T')[0] : '',
                 home_group_id: profile.home_group_id || '',
                 listed_in_directory: profile.listed_in_directory || false,
-                willing_to_sponsor: profile.willing_to_sponsor || false
+                willing_to_sponsor: profile.willing_to_sponsor || false,
+                share_phone_in_directory: profile.share_phone_in_directory || false,
+                share_email_in_directory: profile.share_email_in_directory || false,
+                officer_position: profile.officer_position || ''
             });
         }
     }, [profile]);
@@ -303,6 +309,69 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
                                 I am willing to sponsor others
                             </label>
                         </div>
+                    </div>
+                </div>
+
+                {/* Directory Sharing & Officer Position */}
+                <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="text-lg font-medium text-gray-700 mb-4">Directory Sharing & Service Position</h3>
+
+                    <div className="mb-6">
+                        <p className="text-sm text-gray-600 mb-3">
+                            Choose what contact information you'd like to share in the directory (only shown if you're listed):
+                        </p>
+                        <div className="space-y-3">
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="share_phone_in_directory"
+                                    name="share_phone_in_directory"
+                                    checked={formData.share_phone_in_directory}
+                                    onChange={handleChange}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor="share_phone_in_directory" className="ml-2 block text-sm text-gray-700">
+                                    Share my phone number in the directory
+                                </label>
+                            </div>
+
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="share_email_in_directory"
+                                    name="share_email_in_directory"
+                                    checked={formData.share_email_in_directory}
+                                    onChange={handleChange}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor="share_email_in_directory" className="ml-2 block text-sm text-gray-700">
+                                    Share my email in the directory
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="officer_position" className="block text-sm font-medium text-gray-700 mb-1">
+                            Officer Position (Optional)
+                        </label>
+                        <select
+                            id="officer_position"
+                            name="officer_position"
+                            value={formData.officer_position}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="">Select a position (if applicable)</option>
+                            <option value="Chairman">Chairman</option>
+                            <option value="Vice Chairman">Vice Chairman</option>
+                            <option value="Secretary">Secretary</option>
+                            <option value="Treasurer">Treasurer</option>
+                            <option value="Librarian">Librarian</option>
+                            <option value="Public Relations">Public Relations</option>
+                            <option value="Telephone Chair">Telephone Chair</option>
+                            <option value="Intergroup Representative">Intergroup Representative</option>
+                        </select>
                     </div>
                 </div>
 
