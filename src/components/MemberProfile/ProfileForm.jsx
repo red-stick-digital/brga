@@ -232,7 +232,7 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
 
                         <div>
                             <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
-                                Last Name <span className="text-red-500">*</span>
+                                Last Name or Initial <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"

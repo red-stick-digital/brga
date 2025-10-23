@@ -3,6 +3,7 @@ import ProfileView from '../components/MemberProfile/ProfileView';
 import ProfileForm from '../components/MemberProfile/ProfileForm';
 import useMemberProfile from '../hooks/useMemberProfile';
 import useAuth from '../hooks/useAuth';
+import { calculateProfileCompletionPercentage } from '../utils/profileCompletion';
 
 /**
  * MemberProfile Component
@@ -42,15 +43,7 @@ const MemberProfile = () => {
     }
 
     // Calculate profile completion percentage
-    const calculateCompletion = () => {
-        if (!profile) return 0;
-
-        const fields = ['first_name', 'last_name', 'phone', 'email', 'clean_date', 'home_group_id'];
-        const completedFields = fields.filter(field => profile[field] !== null && profile[field] !== undefined && profile[field] !== '');
-        return Math.round((completedFields.length / fields.length) * 100);
-    };
-
-    const completionPercentage = calculateCompletion();
+    const completionPercentage = calculateProfileCompletionPercentage(profile);
 
     return (
         <div className="container mx-auto px-4 py-8">

@@ -4,17 +4,19 @@
 
 1. **This is a starter file.** The first step is to copy this file and rename it referencing the task that is being requested (e.g., `TASK_auth_upgrade.md`, `DEBUG_email_issue.md`).
 
-2. **This file should be referenced before any work is started** and it should be updated after any major step is completed.
+2. **This new file should be referenced before any work is started** and it should be updated after any major step is completed.
 
-3. **If being used for an upgrade,** each major phase of the upgrade should be listed and the anticipated steps to accomplish each phase outlined.
+3. **Copy everything in # PROJECT OVERVIEW to the new file.**
 
-4. **If this file is being used for debugging or fixing a workflow,** this file should be referenced before each attempt at debugging and each attempt at fixing the code should be logged as soon as possible so that no unsuccessful attempts are repeated.
+4. **If being used for an upgrade,** each major phase of the upgrade should be listed and the anticipated steps to accomplish each phase outlined.
 
-5. **The last step when completing an upgrade or successful debugging** of a problem should be to update the original starter file with any changes to the project.
+5. **If this file is being used for debugging or fixing a workflow,** this file should be referenced before each attempt at debugging and each attempt at fixing the code should be logged as soon as possible so that no unsuccessful attempts are repeated.
+
+6. **The last step when completing an upgrade or successful debugging** of a problem should be to update STARTER.md with any changes to the project.
 
 ---
 
-## PROJECT OVERVIEW
+# PROJECT OVERVIEW
 
 **Application**: Baton Rouge GA (Gamblers Anonymous) web application  
 **Purpose**: Information about meetings, resources for gambling addiction, and members-only section  
@@ -60,10 +62,12 @@ src/
 │   ├── Auth/           # Login, SignUp components
 │   ├── Admin/          # Administrative tools and dashboards
 │   ├── Layout/         # Header, Footer
-│   └── common/         # Reusable UI components (Button, etc.)
+│   ├── MemberProfile/  # Profile view and edit forms
+│   └── common/         # Reusable UI components (Button, ProfileCompletionModal, etc.)
 ├── pages/              # Page components (Home, Meetings, Dashboard, etc.)
-├── hooks/              # Custom React hooks (useAuth, useEvents, useApprovalCode)
+├── hooks/              # Custom React hooks (useAuth, useEvents, useMemberProfile)
 ├── services/           # Supabase client configuration
+├── utils/              # Utility functions (profileCompletion, nameUtils, etc.)
 └── styles/             # Global CSS and Tailwind
 
 public/                 # Static assets (images, videos, documents)
@@ -119,9 +123,21 @@ npm run test:e2e:debug # Debug mode
 - **announcements**: Site announcements and notifications
 - **events**: GA events and meeting schedules
 - **user_roles**: User permissions with approval status system
-- **member_profiles**: Extended member information and preferences
+- **member_profiles**: Extended member information and preferences (includes `profile_complete` flag)
 - **home_groups**: GA meeting group information
 - **approval_codes**: Signup approval system for member access
+
+### Member Profile Fields
+
+The `member_profiles` table includes:
+- **Name fields**: `first_name`, `middle_initial`, `last_name` (full_name is deprecated)
+- **Contact**: `email`, `phone`
+- **GA Info**: `clean_date`, `home_group_id`
+- **Preferences**: `listed_in_directory`, `willing_to_sponsor`, `share_phone_in_directory`, `share_email_in_directory`
+- **Status**: `profile_complete` (boolean) - auto-calculated based on required fields
+- **Officer**: `officer_position` (optional)
+
+**Required fields for completion**: first_name, last_name, email, clean_date, home_group_id
 
 ### Security Model
 

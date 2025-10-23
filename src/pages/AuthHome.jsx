@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import useUserRole from '../hooks/useUserRole';
 import useEvents from '../hooks/useEvents';
 import useAnnouncements from '../hooks/useAnnouncements';
+import useMemberProfile from '../hooks/useMemberProfile';
+import ProfileCompletionModal from '../components/common/ProfileCompletionModal';
 import { format } from 'date-fns';
 
 const AuthHome = () => {
@@ -11,11 +13,25 @@ const AuthHome = () => {
     const { role, loading: roleLoading, approvalStatus } = useUserRole();
     const { events, loading: eventsLoading, error: eventsError, refetch: refetchEvents } = useEvents();
     const { announcements, loading: announcementsLoading, error: announcementsError, refetch: refetchAnnouncements } = useAnnouncements();
+    const { profile, loading: profileLoading } = useMemberProfile();
+    const [showProfileModal, setShowProfileModal] = useState(false);
 
     useEffect(() => {
         refetchEvents();
         refetchAnnouncements();
     }, []);
+
+    // Check if we should show the profile completion modal
+    useEffect(() => {
+        // Only show modal if:
+        // 1. Profile has loaded
+        // 2. User exists
+        // 3. Profile exists
+        // 4. Profile is NOT complete
+        if (!profileLoading && user && profile && profile.profile_complete === false) {
+            setShowProfileModal(true);
+        }
+    }, [profile, profileLoading, user]);
 
     // Check if user is pending approval
     const isPending = approvalStatus === 'pending';
@@ -98,6 +114,12 @@ const AuthHome = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">
+            {/* Profile Completion Modal */}
+            <ProfileCompletionModal 
+                isOpen={showProfileModal} 
+                onClose={() => setShowProfileModal(false)} 
+            />
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Welcome Header */}
                 <div className="mb-8">

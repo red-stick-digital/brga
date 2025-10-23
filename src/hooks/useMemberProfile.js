@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import supabase from '../services/supabase';
 import useAuth from './useAuth';
+import { checkProfileComplete } from '../utils/profileCompletion';
 
 /**
  * Custom hook for managing member profiles
@@ -161,6 +162,9 @@ const useMemberProfile = () => {
                     updated_at: new Date().toISOString()
                 };
 
+                // Calculate and set profile_complete status
+                updateData.profile_complete = checkProfileComplete(updateData);
+
                 console.log('Updating profile with data:', updateData);
 
                 result = await supabase
@@ -184,6 +188,9 @@ const useMemberProfile = () => {
                     share_email_in_directory: profileData.share_email_in_directory || false,
                     officer_position: profileData.officer_position || null
                 };
+
+                // Calculate and set profile_complete status
+                insertData.profile_complete = checkProfileComplete(insertData);
 
                 console.log('Creating new profile with data:', insertData);
 
