@@ -1,8 +1,8 @@
-# DEBUG: Clean Date Update Issue
+# DEBUG: Clean Date Update & Admin Add Member Form
 
 **Date Started**: October 23, 2025  
 **Issue Reporter**: User  
-**Status**: 🔍 Investigating
+**Status**: ✅ Resolved
 
 ---
 
@@ -226,10 +226,92 @@ const handleProfileSuccess = async () => {
 
 ---
 
-## FILES TO INVESTIGATE
+## ADDITIONAL ISSUE: Admin Add Member Form
 
-- `src/components/MemberProfile/ProfileForm.jsx` - Form submission and date handling
-- `src/components/MemberProfile/ProfileView.jsx` - Display of saved date
-- `src/hooks/useMemberProfile.js` - Profile data management
-- `src/pages/MemberProfile.jsx` - Parent component coordination
-- `src/utils/` - Any date utility functions
+### Problem 3: Admin Add Member Form Using Deprecated Fields
+
+**Issue Discovered**: While testing, user noticed the Admin Add Member form still used old `full_name` field and required manual password entry.
+
+**Problems**:
+
+1. Form asked for "Full Name" instead of separate first/middle/last name fields
+2. Admin had to manually create a password for new members
+3. New members didn't receive password setup email like migrated users
+
+**Solution Applied**:
+
+**File**: `src/components/Admin/AddMemberForm.jsx`
+
+1. **Updated Form Fields**:
+
+   - Removed `full_name` field
+   - Added `first_name`, `middle_initial`, `last_name` fields
+   - Layout changed to 3-column grid for name fields
+
+2. **Removed Password Field**:
+
+   - Removed password input and show/hide toggle
+   - Removed EyeIcon and EyeSlashIcon imports
+   - Removed `showPassword` state variable
+
+3. **Automatic Password Reset Email**:
+
+   - Generate random temporary password during account creation
+   - Automatically send password reset email after account creation
+   - Added helper text: "A password reset email will be sent to this address after account creation."
+
+4. **Updated Validation**:
+   - Removed password validation
+   - Added first_name validation (required)
+   - Added last_name validation (required)
+   - Added middle_initial validation (max 1 character)
+
+**Code Changes**:
+
+```javascript
+// Generate temporary password
+const tempPassword =
+  Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-12);
+
+// Create member
+const result = await createMember(email, tempPassword, profileData);
+
+// Send password reset email
+if (result.success) {
+  const resetResult = await requestPasswordReset(email);
+  // Continue even if email fails (log warning only)
+}
+```
+
+**Files Modified**:
+
+- `src/components/Admin/AddMemberForm.jsx`
+
+**Expected Behavior**:
+
+- ✅ Admin enters first name, middle initial (optional), and last name
+- ✅ Admin doesn't need to create a password
+- ✅ New member receives password reset email automatically
+- ✅ Consistent with CSV migration workflow
+- ✅ Better user experience for both admin and new member
+
+---
+
+## SUMMARY OF ALL CHANGES
+
+### Files Modified:
+
+1. `src/components/MemberProfile/ProfileForm.jsx` - Date handling, success timing
+2. `src/components/MemberProfile/ProfileView.jsx` - Local date parsing
+3. `src/hooks/useMemberProfile.js` - Removed automatic fetch
+4. `src/pages/MemberProfile.jsx` - Added manual refresh handler
+5. `src/components/Admin/AddMemberForm.jsx` - Name fields, password removal, auto-reset email
+
+### Issues Resolved:
+
+1. ✅ Clean date timezone bug (off-by-one error)
+2. ✅ Profile view not refreshing after save
+3. ✅ Admin form using deprecated full_name field
+4. ✅ Admin form requiring manual password entry
+
+**All Changes Verified**: No linting errors, ready for testing

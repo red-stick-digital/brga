@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { XMarkIcon, UserPlusIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, UserPlusIcon } from '@heroicons/react/24/outline';
 import useUserManagement from '../../hooks/useUserManagement';
 
 const AddMemberForm = ({ onClose, onSuccess }) => {
-    const { createMember, homeGroups, loading } = useUserManagement();
+    const { createMember, homeGroups, loading, requestPasswordReset } = useUserManagement();
 
     const [formData, setFormData] = useState({
         email: '',
-        password: '',
-        full_name: '',
+        first_name: '',
+        middle_initial: '',
+        last_name: '',
         phone: '',
         clean_date: '',
         home_group_id: '',
@@ -16,7 +17,6 @@ const AddMemberForm = ({ onClose, onSuccess }) => {
         willing_to_sponsor: false
     });
 
-    const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
 
@@ -46,16 +46,17 @@ const AddMemberForm = ({ onClose, onSuccess }) => {
             newErrors.email = 'Please enter a valid email';
         }
 
-        // Password validation
-        if (!formData.password.trim()) {
-            newErrors.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
+        // Name validation
+        if (!formData.first_name.trim()) {
+            newErrors.first_name = 'First name is required';
         }
 
-        // Full name validation
-        if (!formData.full_name.trim()) {
-            newErrors.full_name = 'Full name is required';
+        if (!formData.last_name.trim()) {
+            newErrors.last_name = 'Last name is required';
+        }
+
+        if (formData.middle_initial && formData.middle_initial.length > 1) {
+            newErrors.middle_initial = 'Middle initial should be a single character';
         }
 
         // Clean date validation
@@ -81,8 +82,15 @@ const AddMemberForm = ({ onClose, onSuccess }) => {
         setSubmitting(true);
 
         try {
+            const email = formData.email.trim().toLowerCase();
+
+            // Generate a random temporary password
+            const tempPassword = Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-12);
+
             const profileData = {
-                full_name: formData.full_name.trim(),
+                first_name: formData.first_name.trim(),
+                middle_initial: formData.middle_initial.trim() || null,
+                last_name: formData.last_name.trim(),
                 phone: formData.phone.trim() || null,
                 clean_date: formData.clean_date || null,
                 home_group_id: formData.home_group_id ? parseInt(formData.home_group_id) : null,
@@ -90,13 +98,18 @@ const AddMemberForm = ({ onClose, onSuccess }) => {
                 willing_to_sponsor: formData.willing_to_sponsor
             };
 
-            const result = await createMember(
-                formData.email.trim().toLowerCase(),
-                formData.password,
-                profileData
-            );
+            // Create member with temporary password
+            const result = await createMember(email, tempPassword, profileData);
 
             if (result.success) {
+                // Send password reset email so they can set their own password
+                const resetResult = await requestPasswordReset(email);
+
+                if (!resetResult.success) {
+                    console.warn('Failed to send password reset email:', resetResult.error);
+                    // Still consider this a success, just log the warning
+                }
+
                 onSuccess();
             } else {
                 setErrors({ submit: result.error || 'Failed to create member' });
@@ -141,7 +154,7 @@ const AddMemberForm = ({ onClose, onSuccess }) => {
                         {/* Account Information */}
                         <div>
                             <h4 className="text-md font-medium text-gray-800 mb-4">Account Information</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-4">
                                 {/* Email */}
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -161,40 +174,9 @@ const AddMemberForm = ({ onClose, onSuccess }) => {
                                     {errors.email && (
                                         <p className="mt-1 text-sm text-red-600">{errors.email}</p>
                                     )}
-                                </div>
-
-                                {/* Password */}
-                                <div>
-                                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Password *
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type={showPassword ? 'text' : 'password'}
-                                            id="password"
-                                            name="password"
-                                            value={formData.password}
-                                            onChange={handleInputChange}
-                                            className={`block w-full px-3 py-2 pr-10 border ${errors.password ? 'border-red-300' : 'border-gray-300'
-                                                } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
-                                            placeholder="Enter password"
-                                            required
-                                        />
-                                        <button
-                                            type="button"
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                        >
-                                            {showPassword ? (
-                                                <EyeSlashIcon className="h-5 w-5 text-gray-400" />
-                                            ) : (
-                                                <EyeIcon className="h-5 w-5 text-gray-400" />
-                                            )}
-                                        </button>
-                                    </div>
-                                    {errors.password && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-                                    )}
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        A password reset email will be sent to this address after account creation.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -202,28 +184,72 @@ const AddMemberForm = ({ onClose, onSuccess }) => {
                         {/* Profile Information */}
                         <div>
                             <h4 className="text-md font-medium text-gray-800 mb-4">Profile Information</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {/* Full Name */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {/* First Name */}
                                 <div>
-                                    <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Full Name *
+                                    <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                        First Name *
                                     </label>
                                     <input
                                         type="text"
-                                        id="full_name"
-                                        name="full_name"
-                                        value={formData.full_name}
+                                        id="first_name"
+                                        name="first_name"
+                                        value={formData.first_name}
                                         onChange={handleInputChange}
-                                        className={`block w-full px-3 py-2 border ${errors.full_name ? 'border-red-300' : 'border-gray-300'
+                                        className={`block w-full px-3 py-2 border ${errors.first_name ? 'border-red-300' : 'border-gray-300'
                                             } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
-                                        placeholder="John Doe"
+                                        placeholder="John"
                                         required
                                     />
-                                    {errors.full_name && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.full_name}</p>
+                                    {errors.first_name && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.first_name}</p>
                                     )}
                                 </div>
 
+                                {/* Middle Initial */}
+                                <div>
+                                    <label htmlFor="middle_initial" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Middle Initial
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="middle_initial"
+                                        name="middle_initial"
+                                        value={formData.middle_initial}
+                                        onChange={handleInputChange}
+                                        maxLength="1"
+                                        className={`block w-full px-3 py-2 border ${errors.middle_initial ? 'border-red-300' : 'border-gray-300'
+                                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                                        placeholder="M"
+                                    />
+                                    {errors.middle_initial && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.middle_initial}</p>
+                                    )}
+                                </div>
+
+                                {/* Last Name */}
+                                <div>
+                                    <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Last Name or Initial *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="last_name"
+                                        name="last_name"
+                                        value={formData.last_name}
+                                        onChange={handleInputChange}
+                                        className={`block w-full px-3 py-2 border ${errors.last_name ? 'border-red-300' : 'border-gray-300'
+                                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                                        placeholder="Doe or D."
+                                        required
+                                    />
+                                    {errors.last_name && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.last_name}</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 {/* Phone */}
                                 <div>
                                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
@@ -236,7 +262,7 @@ const AddMemberForm = ({ onClose, onSuccess }) => {
                                         value={formData.phone}
                                         onChange={handleInputChange}
                                         className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="(555) 123-4567"
+                                        placeholder="337-889-8123"
                                     />
                                 </div>
 
