@@ -55,6 +55,7 @@ Possible root causes to investigate:
 **Action**: Tested trigger with `test-trigger.js`  
 **Goal**: Verify if handle_new_user() creates both profiles and roles  
 **Result**: ❌ FAILED
+
 - Profile created: ✅ YES
 - Role created: ❌ NO
 - **Conclusion**: Trigger is broken, only creates profiles
@@ -64,6 +65,7 @@ Possible root causes to investigate:
 **Action**: Backfilled missing user_roles for existing migrated users  
 **Goal**: Fix the 2 test users who were already migrated  
 **Result**: ✅ SUCCESS
+
 - Found 2 users without roles
 - Created approved member roles for both
 - All users now have role records
@@ -73,12 +75,15 @@ Possible root causes to investigate:
 
 **Action**: Created `database/fix_trigger_roles_creation.sql`  
 **SQL Applied**:
+
 ```sql
 CREATE POLICY "Trigger can create roles" ON user_roles
     FOR INSERT WITH CHECK (auth.uid() IS NULL);
 ```
+
 **Goal**: Allow trigger to INSERT when no auth.uid() exists  
 **Result**: ❌ FAILED
+
 - Tested with `test-trigger.js`
 - Profile created: ✅ YES
 - Role created: ❌ NO
@@ -88,15 +93,18 @@ CREATE POLICY "Trigger can create roles" ON user_roles
 
 **Action**: User ran simplified DROP/CREATE policy script  
 **SQL Applied**:
+
 ```sql
 DROP POLICY IF EXISTS "Superadmins can insert roles" ON user_roles;
 DROP POLICY IF EXISTS "Trigger can create roles" ON user_roles;
 CREATE POLICY "Superadmins and triggers can insert roles" ON user_roles
     FOR INSERT WITH CHECK (is_superadmin() OR auth.uid() IS NULL);
 ```
+
 **Goal**: Replace conflicting policies with single permissive policy  
 **Result**: ❌ STILL FAILED
-- Tested with `test-trigger.js` 
+
+- Tested with `test-trigger.js`
 - Profile created: ✅ YES
 - Role created: ❌ NO
 - User: f44e2db0-460e-4233-b4c3-9b51042a82fa
@@ -107,6 +115,7 @@ CREATE POLICY "Superadmins and triggers can insert roles" ON user_roles
 
 **Action**: Removed ALL restrictive policies, created permissive policy  
 **SQL Applied**:
+
 ```sql
 DROP POLICY IF EXISTS "Superadmins can insert roles" ON user_roles;
 DROP POLICY IF EXISTS "Trigger can create roles" ON user_roles;
@@ -116,8 +125,10 @@ DROP POLICY IF EXISTS "Service role can create roles" ON user_roles;
 CREATE POLICY "Temporary allow all inserts" ON user_roles
     FOR INSERT WITH CHECK (true);
 ```
+
 **Goal**: Completely bypass RLS for INSERT to test if that's the blocker  
 **Result**: ❌ STILL FAILED!
+
 - Tested with `test-trigger.js`
 - Profile created: ✅ YES
 - Role created: ❌ NO
@@ -134,6 +145,7 @@ CREATE POLICY "Temporary allow all inserts" ON user_roles
 
 **Action**: Rewrote trigger to remove `ON CONFLICT DO NOTHING` and add explicit error handling  
 **Key Change**: Removed the clause that was silently suppressing errors!
+
 ```sql
 -- OLD (broken):
 INSERT INTO public.user_roles (user_id, role, approval_status)
@@ -145,8 +157,10 @@ INSERT INTO public.user_roles (user_id, role, approval_status)
 VALUES (NEW.id, 'member', 'pending');
 -- Errors now caught by explicit EXCEPTION handlers
 ```
+
 **Goal**: Let errors surface properly instead of being silently suppressed  
 **Result**: ✅ SUCCESS!
+
 - Tested with `test-trigger.js`
 - Profile created: ✅ YES
 - Role created: ✅ YES
@@ -257,19 +271,22 @@ Created and ran `scripts/fix-missing-roles.js` to backfill missing user_roles re
 
 **Root Cause**: The `ON CONFLICT (user_id) DO NOTHING` clause in the original trigger was silently suppressing ALL errors, including RLS policy violations. When an RLS policy blocked the INSERT, the query would "succeed" with 0 rows inserted, but the trigger would never know it failed.
 
-**Solution**: 
+**Solution**:
+
 1. Remove `ON CONFLICT (user_id) DO NOTHING` from both INSERT statements
 2. Add explicit exception handling with try/catch blocks
 3. Use `WHEN unique_violation THEN` to handle actual duplicates
 4. Keep the permissive RLS policy: `CHECK (true)` for INSERT operations
 
 **Current Trigger Function** (WORKING):
+
 - Creates member_profiles with explicit error handling
-- Creates user_roles with explicit error handling  
+- Creates user_roles with explicit error handling
 - Logs SUCCESS or WARNING messages for debugging
 - Uses `SECURITY DEFINER` to run with elevated privileges
 
 **Current RLS Policy** (WORKING):
+
 - `"Temporary allow all inserts"` with `CHECK (true)` allows trigger to INSERT
 - Can be made more restrictive later if needed (e.g., check for service_role)
 - Other policies (SELECT, UPDATE, DELETE) still have proper restrictions
