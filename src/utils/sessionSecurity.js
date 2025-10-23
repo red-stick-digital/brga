@@ -300,13 +300,13 @@ class SessionSecurity {
                     if (typeof window !== 'undefined') {
                         const hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
                         const type = hashParams.get('type');
-                        
+
                         if (type === 'recovery' || window.location.pathname === '/reset-password') {
                             console.log('🔒 Skipping auth state cleanup - password recovery in progress');
                             return;
                         }
                     }
-                    
+
                     this.cleanup();
                 }
                 // Remove the initialize() call to avoid circular reference
