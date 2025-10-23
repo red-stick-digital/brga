@@ -92,14 +92,19 @@ const ResetPassword = () => {
 
         setLoading(true);
 
+        console.log('🔐 Attempting to update password...');
+        
         const { error } = await supabase.auth.updateUser({
             password: password
         });
 
         if (error) {
+            console.error('❌ Password update failed:', error);
             setError(error.message);
+            setLoading(false);
         } else {
-            console.log('🔐 Password updated successfully, logging out recovery session');
+            console.log('✅ Password updated successfully');
+            console.log('🔐 Signing out recovery session and redirecting to login');
 
             // CRITICAL: Sign out the recovery session to prevent automatic login
             await supabase.auth.signOut({ scope: 'global' });
@@ -116,9 +121,9 @@ const ResetPassword = () => {
             navigate('/login', {
                 state: { message: 'Password updated successfully! Please log in with your new password.' }
             });
+            
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     if (isValidSession === null) {
