@@ -15,7 +15,7 @@ import supabase from '../services/supabase';
 const ProtectedRoute = ({
     children,
     requiredRole = null,
-    requiredStatus = ['approved', 'editor', 'admin', 'superadmin']
+    requiredStatus = ['approved', 'member', 'editor', 'admin', 'superadmin']
 }) => {
     const { user, loading } = useAuth();
     const [userRole, setUserRole] = useState(null);
