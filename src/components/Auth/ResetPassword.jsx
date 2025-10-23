@@ -12,35 +12,50 @@ const ResetPassword = () => {
     const [isValidSession, setIsValidSession] = useState(false);
 
     useEffect(() => {
-        // Check if the user has a valid reset session
+        // FIRST: Check URL hash for password recovery tokens
+        const urlParams = new URLSearchParams(window.location.hash.replace('#', ''));
+        const accessToken = urlParams.get('access_token');
+        const tokenType = urlParams.get('token_type');
+        const type = urlParams.get('type');
+
+        console.log('🔐 Reset Password - URL Parameters:', {
+            hasAccessToken: !!accessToken,
+            tokenType,
+            type
+        });
+
+        if (type === 'recovery' && accessToken && tokenType) {
+            console.log('🔐 Valid password recovery link detected, allowing password reset');
+            setIsValidSession(true);
+            return; // Exit early, don't check session yet
+        }
+
+        // SECOND: Listen for auth state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            console.log('🔐 Auth state change:', event);
+
             if (event === 'PASSWORD_RECOVERY') {
-                console.log('🔐 Password recovery session detected');
+                console.log('🔐 Password recovery session detected via event');
                 setIsValidSession(true);
             } else if (event === 'SIGNED_IN' && session?.user) {
-                // Only redirect if this is a normal login, not password recovery
-                console.log('🔐 User signed in during password reset flow');
-                // Do not auto-redirect during password recovery
+                // Check if this is a recovery flow
+                const hash = window.location.hash;
+                if (hash.includes('type=recovery')) {
+                    console.log('🔐 User signed in during recovery flow');
+                    setIsValidSession(true);
+                } else {
+                    console.log('🔐 Normal sign-in, redirecting to dashboard');
+                    navigate('/authhome');
+                }
             }
         });
 
-        // Check current session - but don't auto-redirect during password recovery
+        // THIRD: Check current session only if no recovery token in URL
         supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session?.user) {
-                // Check URL hash for password recovery tokens
-                const urlParams = new URLSearchParams(window.location.hash.replace('#', ''));
-                const accessToken = urlParams.get('access_token');
-                const tokenType = urlParams.get('token_type');
-                const type = urlParams.get('type');
-
-                if (type === 'recovery' && accessToken && tokenType) {
-                    console.log('🔐 Valid password recovery session detected');
-                    setIsValidSession(true);
-                } else {
-                    // This is a normal authenticated session, redirect to dashboard
-                    console.log('🔐 Normal authenticated session, redirecting to dashboard');
-                    navigate('/authhome');
-                }
+            if (session?.user && !type) {
+                // User already logged in and no recovery type, redirect
+                console.log('🔐 Existing session found, redirecting to dashboard');
+                navigate('/authhome');
             }
         });
 

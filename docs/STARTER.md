@@ -210,6 +210,19 @@ npx playwright show-report    # View test results
 
 ---
 
+## DEBUGGING PHILOSOPHY
+
+**CRITICAL RULE**: When a user reports an issue:
+
+1. **Assume the user followed instructions correctly** - they probably did
+2. **Assume the code or workflow has a bug** - investigate the code first
+3. **Check the code/logic BEFORE asking user to retry** - verify the implementation
+4. **Document findings** - update task files with root cause analysis
+
+Do NOT immediately assume user error. Trust the user's report and investigate systematically.
+
+---
+
 ## COMMON PATTERNS & CONVENTIONS
 
 ### State Management
