@@ -85,10 +85,11 @@ const App = () => {
               }
             />
 
+            {/* Member Profile - Allow pending users to complete their profile */}
             <Route
               path="/member/profile"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute allowPending={true}>
                   <MemberProfile />
                 </ProtectedRoute>
               }

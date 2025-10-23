@@ -34,13 +34,39 @@ const Login = () => {
 
         if (error) {
             setError(error.message);
+            setLoading(false);
         } else if (data.user) {
-            // Login successful - redirect to auth home page
+            // Login successful - check approval status to determine redirect
             console.log('Login successful for user:', data.user.email);
-            navigate('/authhome');
-        }
 
-        setLoading(false);
+            try {
+                // Check user's approval status
+                const { data: roleData, error: roleError } = await supabase
+                    .from('user_roles')
+                    .select('approval_status, role')
+                    .eq('user_id', data.user.id)
+                    .single();
+
+                if (roleError) {
+                    console.error('Error fetching user role:', roleError);
+                    // Default to authhome if we can't fetch role
+                    navigate('/authhome');
+                } else if (roleData?.approval_status === 'pending') {
+                    // Pending users go directly to profile
+                    console.log('User has pending approval - redirecting to profile');
+                    navigate('/member/profile');
+                } else {
+                    // Approved users go to auth home
+                    navigate('/authhome');
+                }
+            } catch (err) {
+                console.error('Error during post-login redirect:', err);
+                // Default to authhome on error
+                navigate('/authhome');
+            }
+
+            setLoading(false);
+        }
     };
 
     const handleForgotPassword = async () => {

@@ -15,7 +15,8 @@ import supabase from '../services/supabase';
 const ProtectedRoute = ({
     children,
     requiredRole = null,
-    requiredStatus = ['approved', 'member', 'editor', 'admin', 'superadmin']
+    requiredStatus = ['approved', 'member', 'editor', 'admin', 'superadmin'],
+    allowPending = false  // New prop to explicitly allow pending users
 }) => {
     const { user, loading } = useAuth();
     const [userRole, setUserRole] = useState(null);
@@ -66,21 +67,40 @@ const ProtectedRoute = ({
                 return;
             }
 
-            // Check if user has required approval status OR role (for admin/superadmin cases)
+            // Check approval status
+            const isApproved = userRole.approval_status === 'approved';
+            const isPending = userRole.approval_status === 'pending';
+            const isRejected = userRole.approval_status === 'rejected';
+            const isAdminRole = userRole.role === 'admin' || userRole.role === 'superadmin';
+
+            // Rejected users are always denied access
+            if (isRejected) {
+                setAccessDenied(true);
+                return;
+            }
+
+            // Admins/superadmins bypass approval requirement
+            if (isAdminRole) {
+                return;
+            }
+
+            // Pending users: only allow if explicitly permitted by allowPending prop
+            if (isPending && !allowPending) {
+                setAccessDenied(true);
+                return;
+            }
+
+            // For approved users or pending users on allowed routes
             if (requiredStatus) {
-                // Check if user has required role (superadmin, admin, editor, user)
                 const hasRequiredRole = requiredStatus.includes(userRole.role);
 
-                // Check if user is not banned (approval_status should not be 'rejected')
-                const isNotBanned = userRole.approval_status !== 'rejected';
-
-                if (!hasRequiredRole || !isNotBanned) {
+                if (!hasRequiredRole) {
                     setAccessDenied(true);
                     return;
                 }
             }
         }
-    }, [userRole, roleLoading, requiredRole, requiredStatus]);
+    }, [userRole, roleLoading, requiredRole, requiredStatus, allowPending]);
 
     if (loading || roleLoading) {
         return (
@@ -107,7 +127,15 @@ const ProtectedRoute = ({
                     {userRole?.approval_status === 'pending' && (
                         <div className="mb-4">
                             <p className="text-gray-700 mb-2">Your account is pending approval.</p>
-                            <p className="text-gray-700">A group administrator will review your account soon.</p>
+                            <p className="text-gray-700 mb-3">While you wait for approval, you can complete your member profile.</p>
+                            <div className="mt-4">
+                                <a
+                                    href="/member/profile"
+                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                >
+                                    Go to My Profile
+                                </a>
+                            </div>
                         </div>
                     )}
 
