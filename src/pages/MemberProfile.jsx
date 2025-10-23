@@ -14,11 +14,18 @@ import { calculateProfileCompletionPercentage } from '../utils/profileCompletion
  */
 const MemberProfile = () => {
     const { user } = useAuth();
-    const { profile, loading, error } = useMemberProfile();
+    const { profile, loading, error, fetchProfile } = useMemberProfile();
     const { approvalStatus, loading: roleLoading } = useUserRole();
     const [isEditing, setIsEditing] = useState(false);
 
     const isPending = approvalStatus === 'pending';
+
+    // Handle successful profile update
+    const handleProfileSuccess = async () => {
+        // Refresh the profile data before switching back to view mode
+        await fetchProfile();
+        setIsEditing(false);
+    };
 
     if (loading) {
         return (
@@ -95,7 +102,7 @@ const MemberProfile = () => {
                     <ProfileForm
                         profile={profile}
                         onCancel={() => setIsEditing(false)}
-                        onSuccess={() => setIsEditing(false)}
+                        onSuccess={handleProfileSuccess}
                     />
                 ) : (
                     <ProfileView

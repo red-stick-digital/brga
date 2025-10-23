@@ -155,30 +155,74 @@ To verify these fixes work:
 
 ✅ **RESOLVED** - Both issues fixed
 
-### Changes Made:
+### Final Solution (Updated after user testing)
+
+After user testing revealed the profile view still wasn't updating, we implemented a more robust solution:
+
+**The Real Problem**: The `ProfileForm` was calling `onSuccess()` immediately after the update completed, which switched back to view mode before the fresh data had loaded. The real-time subscription in `useMemberProfile` would eventually update the data, but the timing was unreliable.
+
+**The Fix**: Moved the responsibility of refreshing profile data to the parent component (`MemberProfile.jsx`), which explicitly calls `fetchProfile()` before switching back to view mode.
+
+### Changes Made
 
 1. **ProfileForm.jsx** - Line 56: Removed timezone conversion, use date string directly
 2. **ProfileView.jsx** - Lines 53-57: Parse date as local date to avoid timezone shift
-3. **useMemberProfile.js** - Lines 175-178: Added small delay to ensure state propagates
-4. **ProfileForm.jsx** - Lines 143-149: Adjusted success message timing to 1500ms
+3. **MemberProfile.jsx** - NEW: Added `handleProfileSuccess` function that explicitly fetches fresh profile data before exiting edit mode
+4. **ProfileForm.jsx** - Lines 143-149: Made `onSuccess` callback async, reduced timeout to 1000ms
+5. **useMemberProfile.js** - Removed automatic `fetchProfile()` call from `updateProfile()` - now handled by parent component
 
-### Expected Behavior After Fix:
+### Code Changes
+
+**File**: `src/pages/MemberProfile.jsx`
+
+```javascript
+// Added fetchProfile to destructured hook
+const { profile, loading, error, fetchProfile } = useMemberProfile();
+
+// New handler that refreshes before exiting edit mode
+const handleProfileSuccess = async () => {
+  await fetchProfile();
+  setIsEditing(false);
+};
+
+// Updated ProfileForm props
+<ProfileForm
+  profile={profile}
+  onCancel={() => setIsEditing(false)}
+  onSuccess={handleProfileSuccess} // Changed from inline arrow function
+/>;
+```
+
+**File**: `src/hooks/useMemberProfile.js`
+
+- Removed the automatic `fetchProfile()` and delay from `updateProfile()`
+- Parent components now control when to refresh data
+
+**File**: `src/components/MemberProfile/ProfileForm.jsx`
+
+- Made `onSuccess` callback `async`
+- Reduced success message timeout from 1500ms to 1000ms for better UX
+
+### Expected Behavior After Fix
 
 - ✅ Clean date displays correctly without off-by-one errors
-- ✅ Profile view updates immediately after saving (no page refresh needed)
+- ✅ Profile view updates immediately after saving with fresh data from database
 - ✅ Date input shows the exact same date as what's stored in the database
 - ✅ Works correctly regardless of user's timezone
+- ✅ No page refresh needed - data updates automatically
 
-### Files Modified:
+### Files Modified
 
 - `src/components/MemberProfile/ProfileForm.jsx`
 - `src/components/MemberProfile/ProfileView.jsx`
 - `src/hooks/useMemberProfile.js`
+- `src/pages/MemberProfile.jsx` (NEW)
 
 ---
 
 **Resolution Date**: October 23, 2025  
-**Verified**: Code changes applied, no linting errors
+**Verified**: Code changes applied, no linting errors  
+**User Testing**: Console shows correct data saving, profile view now refreshes correctly
 
 ---
 

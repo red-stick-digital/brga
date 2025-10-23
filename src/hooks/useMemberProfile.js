@@ -203,12 +203,6 @@ const useMemberProfile = () => {
                 throw result.error;
             }
 
-            // Fetch the updated profile and wait for it to complete
-            await fetchProfile();
-
-            // Add a small delay to ensure state has updated before returning
-            await new Promise(resolve => setTimeout(resolve, 100));
-
             return { success: true };
         } catch (err) {
             console.error('Error updating profile:', err);

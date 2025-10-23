@@ -144,11 +144,11 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
 
         if (result.success) {
             setSuccessMessage('Profile updated successfully!');
-            // Wait for success message to be visible and state to propagate
-            setTimeout(() => {
+            // Wait briefly for success message to be visible
+            setTimeout(async () => {
                 setSuccessMessage('');
-                if (onSuccess) onSuccess();
-            }, 1500);
+                if (onSuccess) await onSuccess();
+            }, 1000);
         }
     };
 
