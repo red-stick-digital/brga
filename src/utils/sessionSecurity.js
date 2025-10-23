@@ -45,6 +45,25 @@ class SessionSecurity {
      * Clean up session security
      */
     cleanup() {
+        // Check if we're in a password recovery flow
+        // If so, don't clean up - let the recovery process complete
+        if (typeof window !== 'undefined' && window.location.hash) {
+            const hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
+            const type = hashParams.get('type');
+            const accessToken = hashParams.get('access_token');
+
+            if (type === 'recovery' && accessToken) {
+                console.log('🔒 Skipping cleanup - password recovery in progress');
+                return;
+            }
+        }
+
+        // Also check if we're on the reset password page
+        if (typeof window !== 'undefined' && window.location.pathname === '/reset-password') {
+            console.log('🔒 Skipping cleanup - on reset password page');
+            return;
+        }
+
         this.isActive = false;
 
         // Clear timeouts
@@ -204,6 +223,23 @@ class SessionSecurity {
      * Clear all possible storage locations
      */
     clearAllStorage() {
+        // Check if we're in a password recovery flow
+        if (typeof window !== 'undefined' && window.location.hash) {
+            const hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
+            const type = hashParams.get('type');
+
+            if (type === 'recovery') {
+                console.log('🔒 Skipping storage clear - password recovery in progress');
+                return;
+            }
+        }
+
+        // Also check if we're on the reset password page
+        if (typeof window !== 'undefined' && window.location.pathname === '/reset-password') {
+            console.log('🔒 Skipping storage clear - on reset password page');
+            return;
+        }
+
         // Only run in browser environment
         if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
             return;
