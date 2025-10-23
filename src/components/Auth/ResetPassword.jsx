@@ -128,26 +128,26 @@ const ResetPassword = () => {
                 setError(error.message);
                 setLoading(false);
             } else {
-            console.log('✅ Password updated successfully');
-            console.log('🔐 Signing out recovery session and redirecting to login');
+                console.log('✅ Password updated successfully');
+                console.log('🔐 Signing out recovery session and redirecting to login');
 
-            // CRITICAL: Sign out the recovery session to prevent automatic login
-            await supabase.auth.signOut({ scope: 'global' });
+                // CRITICAL: Sign out the recovery session to prevent automatic login
+                await supabase.auth.signOut({ scope: 'global' });
 
-            // Clear any residual auth tokens from storage
-            const storageKeys = Object.keys(localStorage);
-            storageKeys.forEach(key => {
-                if (key.includes('supabase') || key.includes('auth')) {
-                    localStorage.removeItem(key);
-                }
-            });
+                // Clear any residual auth tokens from storage
+                const storageKeys = Object.keys(localStorage);
+                storageKeys.forEach(key => {
+                    if (key.includes('supabase') || key.includes('auth')) {
+                        localStorage.removeItem(key);
+                    }
+                });
 
-            // Password updated successfully, redirect to login
-            navigate('/login', {
-                state: { message: 'Password updated successfully! Please log in with your new password.' }
-            });
+                // Password updated successfully, redirect to login
+                navigate('/login', {
+                    state: { message: 'Password updated successfully! Please log in with your new password.' }
+                });
 
-            setLoading(false);
+                setLoading(false);
             }
         } catch (err) {
             console.error('❌ Unexpected error during password reset:', err);
