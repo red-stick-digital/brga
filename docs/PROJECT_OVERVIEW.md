@@ -7,16 +7,19 @@ Baton Rouge GA is a web application for Gamblers Anonymous in the Baton Rouge ar
 ## Technical Stack
 
 **Frontend**:
+
 - React 18.0.0
 - Vite 4.0.0 (build system)
 - React Router 6.0.0
 - Tailwind CSS 3.0.0
 
 **Backend Services**:
+
 - Supabase (authentication & PostgreSQL database)
 - Resend 6.2.0 (email service)
 
 **Testing**:
+
 - Playwright 1.56.1 (E2E tests)
 
 **Package Manager**: npm
@@ -71,6 +74,7 @@ batonrougega/
 ## Key Features
 
 ### Public Features
+
 - Meeting information and locations
 - Resources for gambling addiction (20 Questions, First Meeting guide)
 - Contact form
@@ -79,6 +83,7 @@ batonrougega/
 - FAQ and GA information
 
 ### Member Portal (Protected)
+
 - **Authentication**: Email/password with approval code system
 - **Member Profile**: Customizable profile with directory visibility settings
 - **Member Directory**: Searchable directory with contact information
@@ -87,6 +92,7 @@ batonrougega/
 - **Approval System**: Pending/approved status for new members
 
 ### Admin Features (Superadmin/Admin Only)
+
 - User management and approval
 - Approval code generation
 - Events and announcements creation/editing
@@ -96,6 +102,7 @@ batonrougega/
 ## Database Schema
 
 **Tables**:
+
 - `announcements`: Site-wide announcements
 - `events`: GA events and meetings
 - `user_roles`: User permissions with approval status (pending/approved)
@@ -108,12 +115,14 @@ batonrougega/
 ## Authentication Flow
 
 1. **Signup**:
+
    - Optional approval code (auto-approves if valid)
    - Email verification required
    - Creates `user_roles` (pending/approved) and `member_profiles` entries
    - Database trigger ensures both tables are populated
 
 2. **Login**:
+
    - Email/password authentication via Supabase
    - Redirects to `/authhome` after successful login
    - Protected routes check authentication state
@@ -126,6 +135,7 @@ batonrougega/
 ## Routing Structure
 
 ### Public Routes
+
 - `/` - Home page
 - `/meetings` - Meeting information
 - `/myfirstmeeting` - First meeting guide
@@ -139,6 +149,7 @@ batonrougega/
 - `/signup` - Signup page
 
 ### Protected Routes (Requires Authentication)
+
 - `/authhome` - Authenticated home with events/announcements
 - `/memberdirectory` - Member directory
 - `/member/profile` - Member profile editor
@@ -147,12 +158,14 @@ batonrougega/
 ## Navigation System
 
 **Primary Header** (always visible):
+
 - Logo and site name
 - Public navigation links
 - Hamburger menu for additional pages
 - Login button (logged out) / No button (logged in)
 
 **Secondary Navigation** (MemberNav - logged in only):
+
 - Home → `/authhome`
 - Directory → `/memberdirectory`
 - Profile → `/member/profile`
@@ -186,6 +199,7 @@ npm run test:e2e:debug   # debug mode
 ## Environment Variables
 
 **Required**:
+
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -206,10 +220,12 @@ PORT=3000  # optional, defaults to 3000
 **Framework**: Tailwind CSS 3.0.0
 **Approach**: Utility-first CSS
 **Fonts**:
+
 - League Spartan (headings)
 - Helvetica (body text)
 
 **Color Palette**:
+
 - Blue: `#8BB7D1`, `#6B92B0`
 - Backgrounds: Black (`#000000`), Gray (`#F7F7F7`)
 - Accent: Blue-600 for member navigation
@@ -219,16 +235,19 @@ PORT=3000  # optional, defaults to 3000
 ## Recent Updates (October 2025)
 
 1. **Navigation Redesign**:
+
    - Added MemberNav secondary navigation for logged-in users
    - Simplified primary header to show only Login/Logout
    - Hamburger menu auto-closes on mouse leave
 
 2. **Route Changes**:
+
    - Renamed `/member/dashboard` → `/member/profile`
    - Created `/authhome` as main authenticated landing page
    - Separated `/memberdirectory` from AuthHome
 
 3. **Bug Fixes**:
+
    - Fixed signup profile/role creation (database trigger + code)
    - Fixed approval code validation (RLS policies)
    - Fixed member profile update fields
@@ -241,6 +260,7 @@ PORT=3000  # optional, defaults to 3000
 ## Documentation
 
 See `/docs` folder for additional documentation:
+
 - `TASK_auth_improvements_and_ui_upgrade.md` - Recent improvements
 - `SECURITY_ANALYSIS.md` - Security considerations
 - `EMAIL_SETUP_SUMMARY.md` - Email configuration
@@ -252,6 +272,7 @@ See `/docs` folder for additional documentation:
 **Framework**: Playwright
 **Browsers**: Chromium, Firefox, WebKit
 **Test Coverage**:
+
 - Authentication flows
 - Password reset security
 - Session management
