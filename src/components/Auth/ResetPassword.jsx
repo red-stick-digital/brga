@@ -92,17 +92,42 @@ const ResetPassword = () => {
 
         setLoading(true);
 
-        console.log('🔐 Attempting to update password...');
-        
-        const { error } = await supabase.auth.updateUser({
-            password: password
-        });
+        try {
+            // CRITICAL: Extract recovery tokens from URL hash
+            const urlParams = new URLSearchParams(window.location.hash.replace('#', ''));
+            const accessToken = urlParams.get('access_token');
+            const refreshToken = urlParams.get('refresh_token');
 
-        if (error) {
-            console.error('❌ Password update failed:', error);
-            setError(error.message);
-            setLoading(false);
-        } else {
+            console.log('🔐 Attempting to update password...');
+            console.log('🔐 Setting session from recovery tokens...');
+
+            // If we have recovery tokens, set the session explicitly
+            if (accessToken && refreshToken) {
+                const { data, error: sessionError } = await supabase.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: refreshToken
+                });
+
+                if (sessionError) {
+                    console.error('❌ Failed to set session:', sessionError);
+                    setError('Failed to authenticate. Please request a new reset link.');
+                    setLoading(false);
+                    return;
+                }
+
+                console.log('✅ Session established successfully');
+            }
+
+            // Now update the password with an active session
+            const { error } = await supabase.auth.updateUser({
+                password: password
+            });
+
+            if (error) {
+                console.error('❌ Password update failed:', error);
+                setError(error.message);
+                setLoading(false);
+            } else {
             console.log('✅ Password updated successfully');
             console.log('🔐 Signing out recovery session and redirecting to login');
 
@@ -121,7 +146,12 @@ const ResetPassword = () => {
             navigate('/login', {
                 state: { message: 'Password updated successfully! Please log in with your new password.' }
             });
-            
+
+            setLoading(false);
+            }
+        } catch (err) {
+            console.error('❌ Unexpected error during password reset:', err);
+            setError('An unexpected error occurred. Please try again.');
             setLoading(false);
         }
     };
