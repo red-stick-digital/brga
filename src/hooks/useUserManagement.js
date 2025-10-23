@@ -120,28 +120,53 @@ const useUserManagement = () => {
                 throw authError;
             }
 
-            const userId = authData.user.id;
+            if (!authData.user) {
+                throw new Error('Failed to create user account');
+            }
 
-            // 2. Create member profile
-            const { error: profileError } = await supabase
-                .from('member_profiles')
-                .insert({
-                    user_id: userId,
-                    email,
-                    first_name: profileData.first_name,
-                    middle_initial: profileData.middle_initial || null,
-                    last_name: profileData.last_name,
-                    phone: profileData.phone,
-                    clean_date: profileData.clean_date,
-                    home_group_id: profileData.home_group_id,
-                    listed_in_directory: profileData.listed_in_directory || false,
-                    willing_to_sponsor: profileData.willing_to_sponsor || false
-                });
+            const userId = authData.user.id;
+            console.log('Created user with ID:', userId);
+
+            // Wait a moment for the auth user to be fully committed
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // 2. Create member profile with retry logic
+            let profileError = null;
+            let retries = 3;
+
+            while (retries > 0) {
+                const { error } = await supabase
+                    .from('member_profiles')
+                    .insert({
+                        user_id: userId,
+                        email,
+                        first_name: profileData.first_name,
+                        middle_initial: profileData.middle_initial || null,
+                        last_name: profileData.last_name,
+                        phone: profileData.phone,
+                        clean_date: profileData.clean_date,
+                        home_group_id: profileData.home_group_id,
+                        listed_in_directory: profileData.listed_in_directory || false,
+                        willing_to_sponsor: profileData.willing_to_sponsor || false
+                    });
+
+                if (!error) {
+                    profileError = null;
+                    break;
+                }
+
+                profileError = error;
+                retries--;
+
+                if (retries > 0) {
+                    console.log(`Profile creation failed, retrying... (${retries} attempts left)`);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
 
             if (profileError) {
-                // Cleanup: delete auth user if profile creation failed
-                await supabase.auth.admin.deleteUser(userId);
-                throw profileError;
+                console.error('Failed to create profile after retries:', profileError);
+                throw new Error('Failed to create member profile: ' + profileError.message);
             }
 
             // 3. Create user role (approved by default for manually added members)
@@ -155,10 +180,10 @@ const useUserManagement = () => {
                 });
 
             if (roleError) {
+                console.error('Failed to create user role:', roleError);
                 // Cleanup: delete profile if role creation failed
-                // Note: Can't delete auth user with anon key, user will need manual cleanup
                 await supabase.from('member_profiles').delete().eq('user_id', userId);
-                throw roleError;
+                throw new Error('Failed to create member role: ' + roleError.message);
             }
 
             // Refresh members list

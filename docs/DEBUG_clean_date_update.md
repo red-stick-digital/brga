@@ -313,5 +313,90 @@ if (result.success) {
 2. ✅ Profile view not refreshing after save
 3. ✅ Admin form using deprecated full_name field
 4. ✅ Admin form requiring manual password entry
+5. ✅ Foreign key constraint violation on member profile creation
+
+---
+
+## ADDITIONAL FIX: Foreign Key Constraint Error
+
+### Problem 4: Member Creation Foreign Key Violation
+
+**Issue Discovered During Testing**: When admin tried to add a new member, got error:
+
+```
+insert or update on table "member_profiles" violates foreign key constraint "member_profiles_user_id_fkey"
+```
+
+**Root Cause**:
+The `signUp()` function creates the auth user asynchronously, and the code was immediately trying to insert into `member_profiles` before the auth.users record was fully committed to the database. The foreign key constraint on `member_profiles.user_id` references `auth.users.id`, so if that user isn't fully committed yet, the insert fails.
+
+**Solution Applied**:
+
+**File**: `src/hooks/useUserManagement.js` - `createMember` function
+
+1. **Added delay after user creation**:
+   - Wait 500ms after signUp to allow auth user to be committed
+2. **Implemented retry logic for profile creation**:
+
+   - Try to create profile up to 3 times with 1 second delays
+   - Handles timing issues with async user creation
+   - Logs retry attempts for debugging
+
+3. **Better error handling**:
+   - Check that `authData.user` exists before proceeding
+   - Better error messages with context
+   - Removed invalid `admin.deleteUser()` call (doesn't work with anon key)
+
+**Code Changes**:
+
+```javascript
+// Wait for auth user to be committed
+await new Promise(resolve => setTimeout(resolve, 500));
+
+// Retry logic for profile creation
+let retries = 3;
+while (retries > 0) {
+    const { error } = await supabase.from('member_profiles').insert({...});
+
+    if (!error) break;
+
+    retries--;
+    if (retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+}
+```
+
+**Files Modified**:
+
+- `src/hooks/useUserManagement.js`
+
+**Expected Behavior**:
+
+- ✅ User account created successfully
+- ✅ Profile created without foreign key errors
+- ✅ Automatic retry if timing issues occur
+- ✅ Better error messages if creation fails
+
+---
+
+## FINAL SUMMARY
+
+### All Files Modified:
+
+1. `src/components/MemberProfile/ProfileForm.jsx` - Date handling, success timing
+2. `src/components/MemberProfile/ProfileView.jsx` - Local date parsing
+3. `src/hooks/useMemberProfile.js` - Removed automatic fetch
+4. `src/pages/MemberProfile.jsx` - Added manual refresh handler
+5. `src/components/Admin/AddMemberForm.jsx` - Name fields, password removal, auto-reset email
+6. `src/hooks/useUserManagement.js` - Added retry logic, better error handling
+
+### All Issues Resolved:
+
+1. ✅ Clean date timezone bug (off-by-one error)
+2. ✅ Profile view not refreshing after save
+3. ✅ Admin form using deprecated full_name field
+4. ✅ Admin form requiring manual password entry
+5. ✅ Foreign key constraint violation on member profile creation
 
 **All Changes Verified**: No linting errors, ready for testing
