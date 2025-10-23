@@ -11,18 +11,22 @@
 ## REQUIREMENTS
 
 ### Database Changes
+
 - Add `profile_complete` boolean field to `member_profiles` table
 - Default value: `false` for new records
 
 ### Frontend Changes
+
 - Modal component that appears on login if `profile_complete = false`
 - Modal should have a button linking to profile edit page
 - Modal should NOT appear if `profile_complete = true`
 
 ### Completion Criteria (100%)
+
 Profile is considered complete when ALL of the following are present:
+
 1. ✅ First name entered
-2. ✅ Any text entered in last name field  
+2. ✅ Any text entered in last name field
 3. ✅ Email (will be present by default if user can login)
 4. ✅ Clean Date
 5. ✅ Home Group
@@ -32,22 +36,26 @@ Profile is considered complete when ALL of the following are present:
 ## UPGRADE PHASES
 
 ### Phase 1: Database Migration
+
 - [ ] Create migration SQL file to add `profile_complete` field
 - [ ] Test migration on development database
 - [ ] Verify default value behavior
 
 ### Phase 2: Profile Completion Logic
+
 - [ ] Create utility function to check profile completion status
 - [ ] Determine where to trigger profile completion check (on save/update)
 - [ ] Update profile save logic to set `profile_complete = true` when criteria met
 
 ### Phase 3: Modal Component
+
 - [ ] Create ProfileCompletionModal component
 - [ ] Add modal to appropriate location (Dashboard/App layout)
 - [ ] Implement check on login to show/hide modal
 - [ ] Add navigation to profile edit page
 
 ### Phase 4: Testing
+
 - [ ] Test with new user (incomplete profile)
 - [ ] Test with existing user (incomplete profile)
 - [ ] Test profile completion flow
@@ -58,10 +66,10 @@ Profile is considered complete when ALL of the following are present:
 ## USER ANSWERS
 
 1. **Modal Behavior**: ✅ Dismissable with X button, but will reappear on each login until complete
-2. **Profile Edit Page**: ✅ `/member/profile` 
+2. **Profile Edit Page**: ✅ `/member/profile`
 3. **Existing Users**: ✅ Leave all at false (only 3 users currently)
 4. **Modal Timing**: ✅ Immediately after login, dismissing redirects to `/authhome`
-5. **Field Details**: 
+5. **Field Details**:
    - ✅ Email: `member_profiles.email`
    - ✅ Clean Date: Any valid date in `clean_date` field
    - ✅ Home Group: `home_group_id` must be set
@@ -72,17 +80,20 @@ Profile is considered complete when ALL of the following are present:
 ## IMPLEMENTATION PLAN
 
 ### Phase 1: Database Migration ✅
+
 - [x] Remove deprecated `full_name` field
 - [x] Add `first_name` TEXT field
-- [x] Add `last_name` TEXT field  
+- [x] Add `last_name` TEXT field
 - [x] Add `profile_complete` BOOLEAN field (default FALSE)
 
 ### Phase 2: Profile Completion Logic
+
 - [ ] Create utility function `checkProfileComplete()` in utils
 - [ ] Update profile save logic to auto-set `profile_complete`
 - [ ] Ensure function checks: first_name, last_name, email, clean_date, home_group_id
 
 ### Phase 3: Modal Component
+
 - [ ] Create `ProfileCompletionModal` component using Headless UI Dialog
 - [ ] Add modal to appropriate location (likely in App.jsx or AuthHome)
 - [ ] Implement check after login to show/hide modal
@@ -90,6 +101,7 @@ Profile is considered complete when ALL of the following are present:
 - [ ] Add dismiss (X) functionality
 
 ### Phase 4: Integration & Testing
+
 - [ ] Test with incomplete profile (modal appears)
 - [ ] Test dismissing modal (redirects to /authhome)
 - [ ] Test completing profile (modal stops appearing)
@@ -100,6 +112,7 @@ Profile is considered complete when ALL of the following are present:
 ## COMPLETED STEPS
 
 **October 23, 2025**
+
 - ✅ Created task file and gathered requirements
 - ✅ Reviewed existing code structure and patterns
 - ✅ Confirmed implementation approach with user

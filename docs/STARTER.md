@@ -130,6 +130,7 @@ npm run test:e2e:debug # Debug mode
 ### Member Profile Fields
 
 The `member_profiles` table includes:
+
 - **Name fields**: `first_name`, `middle_initial`, `last_name` (full_name is deprecated)
 - **Contact**: `email`, `phone`
 - **GA Info**: `clean_date`, `home_group_id`

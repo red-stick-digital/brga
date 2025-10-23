@@ -31,7 +31,7 @@ export const checkProfileComplete = (profile) => {
     // Check that all required fields exist and have non-empty values
     return requiredFields.every(field => {
         const value = profile[field];
-        
+
         // Check for null, undefined, or empty string
         if (value === null || value === undefined || value === '') {
             return false;
@@ -65,7 +65,7 @@ export const calculateProfileCompletionPercentage = (profile) => {
 
     const completedFields = requiredFields.filter(field => {
         const value = profile[field];
-        
+
         if (value === null || value === undefined || value === '') {
             return false;
         }
@@ -101,7 +101,7 @@ export const getMissingProfileFields = (profile) => {
 
     return requiredFields.filter(field => {
         const value = profile[field];
-        
+
         if (value === null || value === undefined || value === '') {
             return true;
         }

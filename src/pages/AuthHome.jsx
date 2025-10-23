@@ -115,9 +115,9 @@ const AuthHome = () => {
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             {/* Profile Completion Modal */}
-            <ProfileCompletionModal 
-                isOpen={showProfileModal} 
-                onClose={() => setShowProfileModal(false)} 
+            <ProfileCompletionModal
+                isOpen={showProfileModal}
+                onClose={() => setShowProfileModal(false)}
             />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
