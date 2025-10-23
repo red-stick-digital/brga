@@ -34,7 +34,7 @@ export default function Home() {
             "@type": "Organization",
             "name": "Baton Rouge Gamblers Anonymous",
             "url": "https://batonrougega.org",
-            "logo": "https://batonrougega.org/images/logo-white.png",
+            "logo": "https://batonrougega.org/images/logo-white.webp",
             "contactPoint": {
                 "@type": "ContactPoint",
                 "telephone": "+1-888-502-5610",
@@ -59,7 +59,7 @@ export default function Home() {
                 <div
                     className="relative w-full flex items-center justify-center pt-[250px]"
                     style={{
-                        backgroundImage: 'url(/images/Home%20Hand%20Up.png)',
+                        backgroundImage: 'url(/images/Home%20Hand%20Up.webp)',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
@@ -126,7 +126,7 @@ export default function Home() {
                             {/* Card 1: Our Story */}
                             <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                                 <img
-                                    src="/images/home three rocks.png"
+                                    src="/images/home three rocks.webp"
                                     alt="Rocks that represent the first three steps of a twelve step program."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                                 />
@@ -143,7 +143,7 @@ export default function Home() {
                             {/* Card 2: Local Meetings */}
                             <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                                 <img
-                                    src="/images/home bonsai.png"
+                                    src="/images/home bonsai.webp"
                                     alt="A bonsai tree that invokes hope to be able to stop gambling."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                                 />
@@ -166,7 +166,7 @@ export default function Home() {
                             {/* Card 3: Am I a compulsive gambler? */}
                             <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                                 <img
-                                    src="/images/home head down.png"
+                                    src="/images/home head down.webp"
                                     alt="A sad woman crying because she wants to stop gambling."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                                 />
@@ -189,7 +189,7 @@ export default function Home() {
                             {/* Card 4: Stop Now */}
                             <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                                 <img
-                                    src="/images/home slot machine.png"
+                                    src="/images/home slot machine.webp"
                                     alt="A group of people addicted to gambling staring at a slot machine in a casino."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                                 />
@@ -212,7 +212,7 @@ export default function Home() {
                             {/* Card 5: GA International */}
                             <div className="flex flex-col items-center text-center max-w-[400px] w-full">
                                 <img
-                                    src="/images/home walking on rocks.png"
+                                    src="/images/home walking on rocks.webp"
                                     alt="A person walking on the rocks taking steps to improve their life."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
                                 />
@@ -293,7 +293,7 @@ export default function Home() {
                                 className="hover:opacity-80 transition-opacity"
                             >
                                 <img
-                                    src="/images/Facebook_Logo_Primary.png"
+                                    src="/images/Facebook_Logo_Primary.webp"
                                     alt="Facebook"
                                     className="social-icon"
                                 />
@@ -310,7 +310,7 @@ export default function Home() {
                                     className="flex items-center justify-center bg-black rounded-full social-icon"
                                 >
                                     <img
-                                        src="/images/logo-white.png"
+                                        src="/images/logo-white.webp"
                                         alt="X"
                                         className="social-icon-small"
                                     />

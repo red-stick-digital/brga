@@ -133,7 +133,7 @@ const ContactUs = () => {
                 <div
                     className="relative w-full flex items-center justify-center pt-[250px]"
                     style={{
-                        backgroundImage: 'url(/images/contact%20jumping%20in%20the%20sun.png)',
+                        backgroundImage: 'url(/images/contact%20jumping%20in%20the%20sun.webp)',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',

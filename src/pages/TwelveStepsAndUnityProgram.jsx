@@ -42,7 +42,7 @@ const TwelveStepsAndUnityProgram = () => {
                 "name": "Baton Rouge Gamblers Anonymous",
                 "logo": {
                     "@type": "ImageObject",
-                    "url": "https://batonrougega.org/images/logo-white.png"
+                    "url": "https://batonrougega.org/images/logo-white.webp"
                 }
             },
             "mainEntityOfPage": {

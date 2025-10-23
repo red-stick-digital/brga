@@ -119,7 +119,7 @@ const HelpForGambling = () => {
                             {/* Image - Right */}
                             <div className="flex justify-center">
                                 <img
-                                    src="/images/help for gambling circle meeting.png"
+                                    src="/images/help for gambling circle meeting.webp"
                                     alt="Support group for gambling addiction in Baton Rouge"
                                     className="rounded-lg max-w-full h-auto"
                                 />
@@ -135,7 +135,7 @@ const HelpForGambling = () => {
                             {/* Image - Left */}
                             <div className="flex justify-center order-2 md:order-1">
                                 <img
-                                    src="/images/help for gambling looking at phone.png"
+                                    src="/images/help for gambling looking at phone.webp"
                                     alt="I can't stop gambling — help and recovery support"
                                     className="rounded-lg max-w-full h-auto"
                                 />
@@ -179,7 +179,7 @@ const HelpForGambling = () => {
                             {/* Image - Right */}
                             <div className="flex justify-center">
                                 <img
-                                    src="/images/help for gambling next step.png"
+                                    src="/images/help for gambling next step.webp"
                                     alt="Taking the next step in gambling addiction recovery with Gamblers Anonymous"
                                     className="rounded-lg max-w-full h-auto"
                                 />
@@ -296,7 +296,7 @@ const HelpForGambling = () => {
                             {/* Image - Left */}
                             <div className="flex justify-center order-2 md:order-1">
                                 <img
-                                    src="/images/help for gambling sunrise.png"
+                                    src="/images/help for gambling sunrise.webp"
                                     alt="Gamblers Anonymous success story — Baton Rouge meeting"
                                     className="rounded-lg max-w-full h-auto"
                                 />
