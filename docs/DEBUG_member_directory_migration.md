@@ -311,13 +311,15 @@ After fixing the trigger and ProtectedRoute, user reports member directory is st
 Created comprehensive end-to-end test (`test-directory-e2e-fixed.js`) that simulates exact frontend behavior:
 
 **Database Status** (verified correct):
+
 - ✅ marsh11272@yahoo.com has profile with `listed_in_directory = true`
 - ✅ marsh11272@yahoo.com has role with `approval_status = 'approved'`
 - ✅ Profile has name fields populated
 
 **Query Test Results**:
+
 1. Service role query: ✅ Returns 1 profile
-2. Anonymous query for profiles: ✅ Returns 1 profile  
+2. Anonymous query for profiles: ✅ Returns 1 profile
 3. Anonymous query for roles: ✅ Query succeeds BUT returns 0 roles
 4. Final filtered members: ❌ 0 members (filtered out due to missing role)
 
@@ -326,11 +328,13 @@ Created comprehensive end-to-end test (`test-directory-e2e-fixed.js`) that simul
 **RLS Policy Blocks Anonymous Users from Reading `user_roles`**
 
 The `useDirectory.js` hook makes two separate queries:
+
 1. Get `member_profiles` WHERE `listed_in_directory = true` → Works
 2. Get `user_roles` WHERE `user_id` IN (profile_ids) → Fails (returns 0 rows)
 3. Filter to only show members with `approval_status = 'approved'` → All filtered out
 
 Current `user_roles` SELECT policies:
+
 - "Users can view their own role" - requires `auth.uid() = user_id`
 - "Admins can view all roles" - requires `is_superadmin()`
 
@@ -354,6 +358,7 @@ CREATE POLICY "Public can view approval status for directory members" ON user_ro
 ```
 
 This policy:
+
 - ✅ Allows anyone to read `user_roles` records
 - ✅ BUT ONLY for users who have `listed_in_directory = true`
 - ✅ Maintains privacy - only exposes approval status for public members
@@ -375,6 +380,7 @@ Cannot be applied via script because Supabase client doesn't support raw SQL exe
 ### Verification
 
 After applying the policy, run `test-directory-e2e-fixed.js` again. Expected results:
+
 - Step 1: ✅ Found 1 profiles
 - Step 2: ✅ Found 1 roles (was 0 before fix)
 - Step 3: ✅ Final result: 1 members
