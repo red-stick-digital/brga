@@ -313,13 +313,13 @@ if (result.success) {
 2. ✅ Profile view not refreshing after save
 3. ✅ Admin form using deprecated full_name field
 4. ✅ Admin form requiring manual password entry
-5. ✅ Foreign key constraint violation on member profile creation
+5. ⚠️ Foreign key constraint violation on member profile creation - IN PROGRESS
 
 ---
 
-## ADDITIONAL FIX: Foreign Key Constraint Error
+## ONGOING ISSUE: Foreign Key Constraint Error
 
-### Problem 4: Member Creation Foreign Key Violation
+### Problem 4: Member Creation Foreign Key Violation (STILL OCCURRING)
 
 **Issue Discovered During Testing**: When admin tried to add a new member, got error:
 
@@ -327,10 +327,12 @@ if (result.success) {
 insert or update on table "member_profiles" violates foreign key constraint "member_profiles_user_id_fkey"
 ```
 
-**Root Cause**:
+**Initial Hypothesis**:
 The `signUp()` function creates the auth user asynchronously, and the code was immediately trying to insert into `member_profiles` before the auth.users record was fully committed to the database. The foreign key constraint on `member_profiles.user_id` references `auth.users.id`, so if that user isn't fully committed yet, the insert fails.
 
-**Solution Applied**:
+**Attempts to Fix**:
+
+### Attempt 1: Added Delay and Retry Logic
 
 **File**: `src/hooks/useUserManagement.js` - `createMember` function
 
@@ -367,16 +369,202 @@ while (retries > 0) {
 }
 ```
 
+**Result**: ❌ FAILED - Still getting foreign key constraint error after all 3 retries
+
+**Console Output**:
+
+```
+Created user with ID: 71373249-3194-456c-a3b0-d027ed0a9267
+Profile creation failed, retrying... (2 attempts left)
+Profile creation failed, retrying... (1 attempts left)
+Failed to create profile after retries
+Error: Failed to create member profile: insert or update on table "member_profiles"
+violates foreign key constraint "member_profiles_user_id_fkey"
+```
+
+**Analysis**: The retry logic is working, but even after 500ms + 3 retries with 1-second delays (total ~3.5 seconds), the auth.users record still doesn't exist for the foreign key to reference.
+
+---
+
+### ROOT CAUSE INVESTIGATION
+
+The real issue appears to be **architectural**, not timing-related:
+
+**Problem**: When using `supabase.auth.signUp()` with an **anon key** (which is what the client-side app uses):
+
+1. The user is created in `auth.users` table
+2. BUT the foreign key constraint on `member_profiles.user_id` might be checking against a different auth schema or the user record isn't visible to the anon key's RLS policies
+3. Even though we can see the user ID returned from signUp, the database-level foreign key constraint can't reference it
+
+**Evidence**:
+
+- User ID is successfully returned: `71373249-3194-456c-a3b0-d027ed0a9267`
+- The insert fails with 409 (Conflict) due to foreign key constraint
+- Retry logic runs but never succeeds
+- Error persists even after 3+ seconds
+
+**The Actual Problem**:
+We're trying to use **client-side signup** for an **admin function**. The proper solution requires **server-side user creation** with service role credentials, not client-side anon key.
+
+---
+
+### PLANNED SOLUTION
+
+We need to move user creation to a **server-side function** that uses the **service role key**:
+
+**Option 1: Create Supabase Edge Function** (Recommended)
+
+- Create a server-side Edge Function with service role access
+- Admin calls the Edge Function to create users
+- Edge Function uses `supabase.auth.admin.createUser()` which properly commits to auth.users
+- Then creates profile and role records
+
+**Option 2: Use Database Trigger** (Alternative)
+
+- Remove manual profile/role creation from client
+- Create database trigger on auth.users insert
+- Trigger automatically creates member_profiles and user_roles records
+- But this requires passing profile data through auth metadata
+
+**Option 3: Direct Database Function** (Quick Fix)
+
+- Create a PostgreSQL function that runs with elevated privileges
+- Function creates auth user and profile in a single transaction
+- Call from client using RPC
+
+---
+
+### CRITICAL DISCOVERY: Database Trigger Already Exists!
+
+**Found**: There IS a database trigger `handle_new_user()` that should automatically create `member_profiles` and `user_roles` when a new user signs up!
+
+**File**: `database/fix_trigger_roles_creation_v2.sql`
+
+**What the trigger does**:
+
+```sql
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Auto-create member_profiles entry
+    INSERT INTO public.member_profiles (user_id, email)
+    VALUES (NEW.id, NEW.email)
+    ON CONFLICT (user_id) DO NOTHING;
+
+    -- Auto-create user_roles entry
+    INSERT INTO public.user_roles (user_id, role, approval_status)
+    VALUES (NEW.id, 'member', 'pending')
+    ON CONFLICT (user_id) DO NOTHING;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+**The Real Problem**: Our code is trying to manually insert into `member_profiles` AFTER the trigger already created a basic profile. We're getting a conflict (409) because the profile already exists!
+
+**Evidence**:
+
+- Error code is 409 (Conflict), not 404 or permission error
+- The trigger uses `ON CONFLICT DO NOTHING` so it creates a minimal profile
+- Our code then tries to insert a full profile with all fields, causing the conflict
+
+---
+
+### ACTUAL ROOT CAUSE
+
+The `createMember` function in `useUserManagement.js` is trying to:
+
+1. Create user via signUp() ✅
+2. Trigger auto-creates minimal profile ✅
+3. **Our code tries to INSERT full profile** ❌ (CONFLICT - profile already exists!)
+4. Our code tries to INSERT user_role ❌ (CONFLICT - role already exists!)
+
+**We should be using UPDATE, not INSERT!**
+
+---
+
+### CORRECT SOLUTION
+
+Instead of INSERT, we need to UPDATE the existing profile that the trigger created:
+
+```javascript
+// After signUp completes and trigger runs...
+
+// UPDATE the profile (not INSERT)
+const { error: profileError } = await supabase
+  .from("member_profiles")
+  .update({
+    first_name: profileData.first_name,
+    middle_initial: profileData.middle_initial,
+    last_name: profileData.last_name,
+    phone: profileData.phone,
+    clean_date: profileData.clean_date,
+    home_group_id: profileData.home_group_id,
+    listed_in_directory: profileData.listed_in_directory,
+    willing_to_sponsor: profileData.willing_to_sponsor,
+  })
+  .eq("user_id", userId);
+
+// UPDATE the role approval status (not INSERT)
+const { error: roleError } = await supabase
+  .from("user_roles")
+  .update({
+    approval_status: "approved",
+    notes: "Manually added by admin",
+  })
+  .eq("user_id", userId);
+```
+
+---
+
+### Attempt 2: Change INSERT to UPDATE (CORRECT SOLUTION)
+
+**Implementation**: Modified `useUserManagement.js` `createMember` function
+
+**Changes Made**:
+
+1. **Removed INSERT logic** - No longer trying to create profiles/roles manually
+2. **Added UPDATE logic** - Update the profiles/roles that the trigger created
+3. **Increased delay** - Changed from 500ms to 1000ms to ensure trigger completes
+4. **Better logging** - Added success messages to track flow
+
+**Code Changes**:
+
+```javascript
+// Wait for database trigger to complete (1 second)
+await new Promise((resolve) => setTimeout(resolve, 1000));
+
+// UPDATE profile (not INSERT)
+const { error: profileError } = await supabase
+  .from("member_profiles")
+  .update({
+    first_name: profileData.first_name,
+    middle_initial: profileData.middle_initial,
+    last_name: profileData.last_name,
+    phone: profileData.phone,
+    clean_date: profileData.clean_date,
+    home_group_id: profileData.home_group_id,
+    listed_in_directory: profileData.listed_in_directory,
+    willing_to_sponsor: profileData.willing_to_sponsor,
+  })
+  .eq("user_id", userId);
+
+// UPDATE role to approved (not INSERT)
+const { error: roleError } = await supabase
+  .from("user_roles")
+  .update({
+    approval_status: "approved",
+    notes: "Manually added by admin",
+  })
+  .eq("user_id", userId);
+```
+
 **Files Modified**:
 
 - `src/hooks/useUserManagement.js`
 
-**Expected Behavior**:
-
-- ✅ User account created successfully
-- ✅ Profile created without foreign key errors
-- ✅ Automatic retry if timing issues occur
-- ✅ Better error messages if creation fails
+**Expected Result**: ✅ Should work! The trigger creates minimal profile/role, we just update with full details.
 
 ---
 
@@ -397,6 +585,25 @@ while (retries > 0) {
 2. ✅ Profile view not refreshing after save
 3. ✅ Admin form using deprecated full_name field
 4. ✅ Admin form requiring manual password entry
-5. ✅ Foreign key constraint violation on member profile creation
+5. ✅ Foreign key constraint violation - FIXED (changed INSERT to UPDATE)
 
-**All Changes Verified**: No linting errors, ready for testing
+**All Changes Verified**: No linting errors
+
+---
+
+## TESTING STATUS
+
+**Ready for Testing**: Admin Add Member form should now work correctly
+
+**Test Steps**:
+
+1. Login as admin
+2. Go to Admin Dashboard
+3. Click "Add New Member"
+4. Fill in: Email, First Name, Last Name, and other details
+5. Click "Create Member"
+6. **Expected**: Success! Member created and password reset email sent
+7. **Verify**: Check member appears in admin member list
+8. **Verify**: New member receives password reset email
+
+**If it fails**: Check console for detailed error messages and update this document

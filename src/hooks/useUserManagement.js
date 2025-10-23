@@ -127,64 +127,49 @@ const useUserManagement = () => {
             const userId = authData.user.id;
             console.log('Created user with ID:', userId);
 
-            // Wait a moment for the auth user to be fully committed
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Wait for database trigger (handle_new_user) to create basic profile and role
+            // The trigger auto-creates minimal member_profiles and user_roles entries
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // 2. Create member profile with retry logic
-            let profileError = null;
-            let retries = 3;
-
-            while (retries > 0) {
-                const { error } = await supabase
-                    .from('member_profiles')
-                    .insert({
-                        user_id: userId,
-                        email,
-                        first_name: profileData.first_name,
-                        middle_initial: profileData.middle_initial || null,
-                        last_name: profileData.last_name,
-                        phone: profileData.phone,
-                        clean_date: profileData.clean_date,
-                        home_group_id: profileData.home_group_id,
-                        listed_in_directory: profileData.listed_in_directory || false,
-                        willing_to_sponsor: profileData.willing_to_sponsor || false
-                    });
-
-                if (!error) {
-                    profileError = null;
-                    break;
-                }
-
-                profileError = error;
-                retries--;
-
-                if (retries > 0) {
-                    console.log(`Profile creation failed, retrying... (${retries} attempts left)`);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-            }
+            // 2. UPDATE the member profile (trigger already created it)
+            // The database trigger creates a minimal profile, we just need to fill in the details
+            const { error: profileError } = await supabase
+                .from('member_profiles')
+                .update({
+                    first_name: profileData.first_name,
+                    middle_initial: profileData.middle_initial || null,
+                    last_name: profileData.last_name,
+                    phone: profileData.phone,
+                    clean_date: profileData.clean_date,
+                    home_group_id: profileData.home_group_id,
+                    listed_in_directory: profileData.listed_in_directory || false,
+                    willing_to_sponsor: profileData.willing_to_sponsor || false
+                })
+                .eq('user_id', userId);
 
             if (profileError) {
-                console.error('Failed to create profile after retries:', profileError);
-                throw new Error('Failed to create member profile: ' + profileError.message);
+                console.error('Failed to update profile:', profileError);
+                throw new Error('Failed to update member profile: ' + profileError.message);
             }
 
-            // 3. Create user role (approved by default for manually added members)
+            console.log('Successfully updated member profile');
+
+            // 3. UPDATE user role to approved (trigger created it as 'pending')
+            // The database trigger creates the role with 'pending' status, we update to 'approved'
             const { error: roleError } = await supabase
                 .from('user_roles')
-                .insert({
-                    user_id: userId,
-                    role: 'member',
+                .update({
                     approval_status: 'approved',
                     notes: 'Manually added by admin'
-                });
+                })
+                .eq('user_id', userId);
 
             if (roleError) {
-                console.error('Failed to create user role:', roleError);
-                // Cleanup: delete profile if role creation failed
-                await supabase.from('member_profiles').delete().eq('user_id', userId);
-                throw new Error('Failed to create member role: ' + roleError.message);
+                console.error('Failed to update user role:', roleError);
+                throw new Error('Failed to update member role: ' + roleError.message);
             }
+
+            console.log('Successfully updated user role to approved');
 
             // Refresh members list
             await fetchAllMembers();
