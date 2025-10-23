@@ -129,6 +129,8 @@ export default function Home() {
                                     src="/images/home three rocks.webp"
                                     alt="Rocks that represent the first three steps of a twelve step program."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                                 <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                     Our Story
@@ -146,6 +148,8 @@ export default function Home() {
                                     src="/images/home bonsai.webp"
                                     alt="A bonsai tree that invokes hope to be able to stop gambling."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                                 <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                     Local Meetings
@@ -169,6 +173,8 @@ export default function Home() {
                                     src="/images/home head down.webp"
                                     alt="A sad woman crying because she wants to stop gambling."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                                 <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                     Am I a compulsive gambler?
@@ -192,6 +198,8 @@ export default function Home() {
                                     src="/images/home slot machine.webp"
                                     alt="A group of people addicted to gambling staring at a slot machine in a casino."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                                 <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                     Stop Now
@@ -215,6 +223,8 @@ export default function Home() {
                                     src="/images/home walking on rocks.webp"
                                     alt="A person walking on the rocks taking steps to improve their life."
                                     className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full object-cover mb-4"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                                 <h3 className="font-helvetica text-[24px] font-normal text-gray-800 mb-3">
                                     GA International
