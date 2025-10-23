@@ -9,60 +9,74 @@ const ResetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [isValidSession, setIsValidSession] = useState(false);
+    const [isValidSession, setIsValidSession] = useState(null); // null = checking, true = valid, false = invalid
 
     useEffect(() => {
-        // FIRST: Check URL hash for password recovery tokens
-        const urlParams = new URLSearchParams(window.location.hash.replace('#', ''));
-        const accessToken = urlParams.get('access_token');
-        const tokenType = urlParams.get('token_type');
-        const type = urlParams.get('type');
+        let mounted = true;
 
-        console.log('🔐 Reset Password - URL Parameters:', {
-            hasAccessToken: !!accessToken,
-            tokenType,
-            type
-        });
+        const checkRecoverySession = async () => {
+            // FIRST: Check URL hash for password recovery tokens
+            const urlParams = new URLSearchParams(window.location.hash.replace('#', ''));
+            const accessToken = urlParams.get('access_token');
+            const type = urlParams.get('type');
 
-        if (type === 'recovery' && accessToken && tokenType) {
-            console.log('🔐 Valid password recovery link detected, allowing password reset');
-            setIsValidSession(true);
-            return; // Exit early, don't check session yet
-        }
+            console.log('🔐 Reset Password - Checking recovery session');
+            console.log('🔐 URL hash parameters:', { 
+                hasAccessToken: !!accessToken, 
+                type,
+                fullHash: window.location.hash
+            });
 
-        // SECOND: Listen for auth state changes
+            // If we have recovery tokens in URL, we're good
+            if (type === 'recovery' && accessToken) {
+                console.log('🔐 Valid recovery tokens in URL hash');
+                if (mounted) setIsValidSession(true);
+                return;
+            }
+
+            // SECOND: Check if we have an active session (user just got redirected from Supabase)
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                console.log('🔐 Current session check:', {
+                    hasSession: !!session,
+                    hasUser: !!session?.user,
+                    error: error?.message
+                });
+
+                if (session?.user) {
+                    // We have a session - this means the user came from the magic link
+                    // and Supabase already authenticated them
+                    console.log('🔐 Active session found - user authenticated via magic link');
+                    if (mounted) setIsValidSession(true);
+                } else {
+                    // No session and no recovery tokens
+                    console.log('🔐 No valid session or recovery tokens found');
+                    if (mounted) setIsValidSession(false);
+                }
+            } catch (err) {
+                console.error('🔐 Error checking session:', err);
+                if (mounted) setIsValidSession(false);
+            }
+        };
+
+        checkRecoverySession();
+
+        // THIRD: Listen for auth state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             console.log('🔐 Auth state change:', event);
-
-            if (event === 'PASSWORD_RECOVERY') {
-                console.log('🔐 Password recovery session detected via event');
-                setIsValidSession(true);
-            } else if (event === 'SIGNED_IN' && session?.user) {
-                // Check if this is a recovery flow
-                const hash = window.location.hash;
-                if (hash.includes('type=recovery')) {
-                    console.log('🔐 User signed in during recovery flow');
-                    setIsValidSession(true);
-                } else {
-                    console.log('🔐 Normal sign-in, redirecting to dashboard');
-                    navigate('/authhome');
-                }
+            
+            if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+                console.log('🔐 Password recovery event detected');
+                if (mounted) setIsValidSession(true);
             }
         });
 
-        // THIRD: Check current session only if no recovery token in URL
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session?.user && !type) {
-                // User already logged in and no recovery type, redirect
-                console.log('🔐 Existing session found, redirecting to dashboard');
-                navigate('/authhome');
-            }
-        });
-
-        return () => subscription.unsubscribe();
-    }, [navigate]);
-
-    const handleResetPassword = async (e) => {
+        return () => {
+            mounted = false;
+            subscription.unsubscribe();
+        };
+    }, [navigate]);    const handleResetPassword = async (e) => {
         e.preventDefault();
         setError(null);
 
@@ -107,7 +121,21 @@ const ResetPassword = () => {
         setLoading(false);
     };
 
-    if (!isValidSession) {
+    if (isValidSession === null) {
+        // Still checking
+        return (
+            <div className="flex flex-col items-center justify-start pt-16 min-h-[80vh]">
+                <h1 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-8">Reset Password</h1>
+                <div className="w-full max-w-sm text-center">
+                    <p className="text-gray-600 mb-4">
+                        Verifying your reset link...
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (isValidSession === false) {
         return (
             <div className="flex flex-col items-center justify-start pt-16 min-h-[80vh]">
                 <h1 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-8">Reset Password</h1>
