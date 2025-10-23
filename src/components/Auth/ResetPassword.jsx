@@ -21,8 +21,8 @@ const ResetPassword = () => {
             const type = urlParams.get('type');
 
             console.log('🔐 Reset Password - Checking recovery session');
-            console.log('🔐 URL hash parameters:', { 
-                hasAccessToken: !!accessToken, 
+            console.log('🔐 URL hash parameters:', {
+                hasAccessToken: !!accessToken,
                 type,
                 fullHash: window.location.hash
             });
@@ -37,7 +37,7 @@ const ResetPassword = () => {
             // SECOND: Check if we have an active session (user just got redirected from Supabase)
             try {
                 const { data: { session }, error } = await supabase.auth.getSession();
-                
+
                 console.log('🔐 Current session check:', {
                     hasSession: !!session,
                     hasUser: !!session?.user,
@@ -65,7 +65,7 @@ const ResetPassword = () => {
         // THIRD: Listen for auth state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             console.log('🔐 Auth state change:', event);
-            
+
             if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
                 console.log('🔐 Password recovery event detected');
                 if (mounted) setIsValidSession(true);
@@ -76,7 +76,7 @@ const ResetPassword = () => {
             mounted = false;
             subscription.unsubscribe();
         };
-    }, [navigate]);    const handleResetPassword = async (e) => {
+    }, [navigate]); const handleResetPassword = async (e) => {
         e.preventDefault();
         setError(null);
 
