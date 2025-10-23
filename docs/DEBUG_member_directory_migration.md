@@ -300,10 +300,94 @@ Created and ran `scripts/fix-missing-roles.js` to backfill missing user_roles re
 
 ---
 
+## ISSUE 2: Member Directory Empty (Oct 23, 2025 20:45 UTC)
+
+### Problem
+
+After fixing the trigger and ProtectedRoute, user reports member directory is still empty. marsh11272@yahoo.com should be visible but isn't.
+
+### Investigation
+
+Created comprehensive end-to-end test (`test-directory-e2e-fixed.js`) that simulates exact frontend behavior:
+
+**Database Status** (verified correct):
+- ✅ marsh11272@yahoo.com has profile with `listed_in_directory = true`
+- ✅ marsh11272@yahoo.com has role with `approval_status = 'approved'`
+- ✅ Profile has name fields populated
+
+**Query Test Results**:
+1. Service role query: ✅ Returns 1 profile
+2. Anonymous query for profiles: ✅ Returns 1 profile  
+3. Anonymous query for roles: ✅ Query succeeds BUT returns 0 roles
+4. Final filtered members: ❌ 0 members (filtered out due to missing role)
+
+### Root Cause
+
+**RLS Policy Blocks Anonymous Users from Reading `user_roles`**
+
+The `useDirectory.js` hook makes two separate queries:
+1. Get `member_profiles` WHERE `listed_in_directory = true` → Works
+2. Get `user_roles` WHERE `user_id` IN (profile_ids) → Fails (returns 0 rows)
+3. Filter to only show members with `approval_status = 'approved'` → All filtered out
+
+Current `user_roles` SELECT policies:
+- "Users can view their own role" - requires `auth.uid() = user_id`
+- "Admins can view all roles" - requires `is_superadmin()`
+
+But the directory page is accessible to **anyone** (not just logged-in users), so anonymous users get blocked by RLS and can't see which members are approved.
+
+### Solution
+
+**File**: `database/fix_directory_rls_policy.sql`
+
+Add a new SELECT policy that allows public users to view approval status for directory-listed members:
+
+```sql
+CREATE POLICY "Public can view approval status for directory members" ON user_roles
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM member_profiles
+            WHERE member_profiles.user_id = user_roles.user_id
+              AND member_profiles.listed_in_directory = true
+        )
+    );
+```
+
+This policy:
+- ✅ Allows anyone to read `user_roles` records
+- ✅ BUT ONLY for users who have `listed_in_directory = true`
+- ✅ Maintains privacy - only exposes approval status for public members
+- ✅ Does not expose role details for private members
+
+### Application Status
+
+⚠️ **MANUAL APPLICATION REQUIRED**
+
+The SQL must be applied via Supabase Dashboard → SQL Editor:
+
+1. Open Supabase Dashboard
+2. Navigate to SQL Editor
+3. Paste the CREATE POLICY statement above
+4. Click "Run"
+
+Cannot be applied via script because Supabase client doesn't support raw SQL execution.
+
+### Verification
+
+After applying the policy, run `test-directory-e2e-fixed.js` again. Expected results:
+- Step 1: ✅ Found 1 profiles
+- Step 2: ✅ Found 1 roles (was 0 before fix)
+- Step 3: ✅ Final result: 1 members
+- Directory page: Shows marsh11272@yahoo.com
+
+---
+
 ## VERIFICATION STEPS
 
-After fix is applied:
+After both fixes are applied:
 
+- [ ] Run `node test-directory-e2e-fixed.js` - should show 1 member in final result
+- [ ] Refresh website - directory should show marsh11272@yahoo.com
 - [ ] Migrated user can see members in directory (including themselves)
 - [ ] Profile updates for directory sharing work immediately
 - [ ] Migrated users appear in admin dashboard User Management tab
