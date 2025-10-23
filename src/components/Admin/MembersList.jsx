@@ -14,6 +14,7 @@ import EditMemberPanel from './EditMemberPanel';
 import ResetPasswordModal from './ResetPasswordModal';
 import DeleteMemberRequestModal from './DeleteMemberRequestModal';
 import SuperAdminDeleteModal from './SuperAdminDeleteModal';
+import { formatMemberName } from '../../utils/nameUtils';
 
 const MembersList = ({ members, loading, onMemberDeleted }) => {
     const { user } = useAuth();
@@ -43,11 +44,12 @@ const MembersList = ({ members, loading, onMemberDeleted }) => {
         // Apply search filter
         if (searchTerm.trim()) {
             const term = searchTerm.toLowerCase();
-            filtered = localMembers.filter(member =>
-                (member.profile?.full_name || '').toLowerCase().includes(term) ||
-                (member.email || '').toLowerCase().includes(term) ||
-                (member.profile?.phone || '').includes(term)
-            );
+            filtered = localMembers.filter(member => {
+                const fullName = formatMemberName(member.profile || {}).toLowerCase();
+                return fullName.includes(term) ||
+                    (member.email || '').toLowerCase().includes(term) ||
+                    (member.profile?.phone || '').includes(term);
+            });
         }
 
         // Apply sorting
@@ -56,8 +58,8 @@ const MembersList = ({ members, loading, onMemberDeleted }) => {
 
             switch (sortBy) {
                 case 'name':
-                    aValue = a.profile?.full_name || '';
-                    bValue = b.profile?.full_name || '';
+                    aValue = formatMemberName(a.profile || {});
+                    bValue = formatMemberName(b.profile || {});
                     break;
                 case 'email':
                     aValue = a.email || '';
@@ -259,7 +261,7 @@ const MembersList = ({ members, loading, onMemberDeleted }) => {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                                             <div className="flex flex-col">
                                                 <div className="font-medium text-gray-900">
-                                                    {member.profile?.full_name || 'No name'}
+                                                    {formatMemberName(member.profile || {})}
                                                 </div>
                                                 {member.profile?.phone && (
                                                     <div className="text-gray-500">

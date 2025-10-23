@@ -6,7 +6,7 @@
 
 2. **This new file should be referenced before any work is started** and it should be updated after any major step is completed.
 
-3. **Copy everything in # PROJECT OVERVIEW to the new file.**
+3. **Copy everything after and including # PROJECT OVERVIEW to the new file.**
 
 4. **If being used for an upgrade,** each major phase of the upgrade should be listed and the anticipated steps to accomplish each phase outlined.
 

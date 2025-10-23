@@ -7,6 +7,7 @@ import {
     EyeIcon
 } from '@heroicons/react/24/outline';
 import useUserManagement from '../../hooks/useUserManagement';
+import { formatMemberName } from '../../utils/nameUtils';
 
 const PendingDeletionsList = ({ members, loading }) => {
     const { approveMemberDeletion, rejectMemberDeletion } = useUserManagement();
@@ -143,7 +144,7 @@ const PendingDeletionsList = ({ members, loading }) => {
                                     <div className="flex items-center mb-3">
                                         <div>
                                             <h4 className="text-lg font-medium text-gray-800">
-                                                {member.profile?.full_name || 'No name provided'}
+                                                {formatMemberName(member.profile || {})}
                                             </h4>
                                             <p className="text-sm text-gray-600">
                                                 {member.email}
@@ -228,7 +229,7 @@ const PendingDeletionsList = ({ members, loading }) => {
                             <div>
                                 <h4 className="font-medium text-gray-700 mb-3">Account Information</h4>
                                 <div className="space-y-2 text-sm">
-                                    <div><strong>Name:</strong> {selectedMember.profile?.full_name || 'Not provided'}</div>
+                                    <div><strong>Name:</strong> {formatMemberName(selectedMember.profile || {})}</div>
                                     <div><strong>Email:</strong> {selectedMember.email}</div>
                                     <div><strong>Phone:</strong> {selectedMember.profile?.phone || 'Not provided'}</div>
                                     <div><strong>Status:</strong> {selectedMember.approval_status}</div>
@@ -305,7 +306,7 @@ const PendingDeletionsList = ({ members, loading }) => {
                                 Are you sure you want to <strong>permanently delete</strong> this member account?
                             </p>
                             <div className="mt-2 p-3 bg-gray-50 rounded text-sm">
-                                <div><strong>Member:</strong> {selectedMember.profile?.full_name || selectedMember.email}</div>
+                                <div><strong>Member:</strong> {formatMemberName(selectedMember.profile || {})}</div>
                                 <div><strong>Email:</strong> {selectedMember.email}</div>
                             </div>
                             <div className="mt-3 text-sm text-red-600">
@@ -356,7 +357,7 @@ const PendingDeletionsList = ({ members, loading }) => {
                                 Rejecting this deletion request will restore the member to active status.
                             </p>
                             <div className="p-3 bg-gray-50 rounded text-sm">
-                                <div><strong>Member:</strong> {selectedMember.profile?.full_name || selectedMember.email}</div>
+                                <div><strong>Member:</strong> {formatMemberName(selectedMember.profile || {})}</div>
                                 <div><strong>Email:</strong> {selectedMember.email}</div>
                             </div>
                         </div>

@@ -3,9 +3,9 @@ import { UserPlusIcon, ExclamationTriangleIcon, DocumentArrowDownIcon } from '@h
 
 const UserMigration = () => {
     // CSV template data for download
-    const csvTemplate = `email,full_name,phone,clean_date,home_group_name,listed_in_directory,willing_to_sponsor
-john.doe@email.com,John Doe,555-1234,2020-01-15,Monday Night Group,true,false
-jane.smith@email.com,Jane Smith,555-5678,2019-06-20,Tuesday Noon Group,false,true`;
+    const csvTemplate = `email,first_name,middle_initial,last_name,phone,clean_date,home_group_name,listed_in_directory,willing_to_sponsor
+john.doe@email.com,John,,Doe,555-1234,2020-01-15,Monday Night Group,true,false
+jane.smith@email.com,Jane,M,Smith,555-5678,2019-06-20,Tuesday Noon Group,false,true`;
 
     const downloadCSVTemplate = () => {
         const blob = new Blob([csvTemplate], { type: 'text/csv' });
@@ -62,7 +62,7 @@ jane.smith@email.com,Jane Smith,555-5678,2019-06-20,Tuesday Noon Group,false,tru
                         CSV Template
                     </h4>
                     <p className="text-sm text-gray-600 mb-4">
-                        Use this template for bulk user imports. Required columns: <strong>email</strong>, <strong>full_name</strong>
+                        Use this template for bulk user imports. Required columns: <strong>email</strong>, <strong>first_name</strong>, <strong>last_name</strong>
                     </p>
                     <button
                         onClick={downloadCSVTemplate}

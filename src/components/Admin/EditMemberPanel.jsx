@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { XMarkIcon, PencilIcon } from '@heroicons/react/24/outline';
 import useUserManagement from '../../hooks/useUserManagement';
 import useAuth from '../../hooks/useAuth';
+import { formatMemberName } from '../../utils/nameUtils';
 
 const EditMemberPanel = ({ member, onClose, onSuccess }) => {
     const { updateMemberProfile, updateMemberRole, homeGroups, loading, createSampleHomeGroups } = useUserManagement();
@@ -21,7 +22,9 @@ const EditMemberPanel = ({ member, onClose, onSuccess }) => {
     };
 
     const [profileData, setProfileData] = useState({
-        full_name: '',
+        first_name: '',
+        middle_initial: '',
+        last_name: '',
         phone: '',
         clean_date: '',
         home_group_id: '',
@@ -42,7 +45,9 @@ const EditMemberPanel = ({ member, onClose, onSuccess }) => {
     useEffect(() => {
         if (member) {
             setProfileData({
-                full_name: member.profile?.full_name || '',
+                first_name: member.profile?.first_name || '',
+                middle_initial: member.profile?.middle_initial || '',
+                last_name: member.profile?.last_name || '',
                 phone: member.profile?.phone || '',
                 clean_date: member.profile?.clean_date || '',
                 home_group_id: member.profile?.home_group_id || '',
@@ -84,8 +89,16 @@ const EditMemberPanel = ({ member, onClose, onSuccess }) => {
     const validateProfileData = () => {
         const newErrors = {};
 
-        if (!profileData.full_name.trim()) {
-            newErrors.full_name = 'Full name is required';
+        if (!profileData.first_name.trim()) {
+            newErrors.first_name = 'First name is required';
+        }
+
+        if (!profileData.last_name.trim()) {
+            newErrors.last_name = 'Last name is required';
+        }
+
+        if (profileData.middle_initial && profileData.middle_initial.length > 1) {
+            newErrors.middle_initial = 'Middle initial should be a single character';
         }
 
         if (profileData.clean_date) {
@@ -168,7 +181,7 @@ const EditMemberPanel = ({ member, onClose, onSuccess }) => {
                     <div className="flex justify-between items-center">
                         <h3 className="text-lg font-semibold text-gray-800 flex items-center">
                             <PencilIcon className="h-6 w-6 mr-2 text-blue-600" />
-                            Edit Member: {member.profile?.full_name || member.email}
+                            Edit Member: {formatMemberName(member.profile || {}) || member.email}
                         </h3>
                         <button
                             type="button"
@@ -228,23 +241,64 @@ const EditMemberPanel = ({ member, onClose, onSuccess }) => {
                     {activeTab === 'profile' && (
                         <div className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {/* Full Name */}
+                                {/* First Name */}
                                 <div>
-                                    <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Full Name *
+                                    <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                        First Name *
                                     </label>
                                     <input
                                         type="text"
-                                        id="full_name"
-                                        name="full_name"
-                                        value={profileData.full_name}
+                                        id="first_name"
+                                        name="first_name"
+                                        value={profileData.first_name}
                                         onChange={handleProfileInputChange}
-                                        className={`block w-full px-3 py-2 border ${errors.full_name ? 'border-red-300' : 'border-gray-300'
+                                        className={`block w-full px-3 py-2 border ${errors.first_name ? 'border-red-300' : 'border-gray-300'
                                             } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                                         required
                                     />
-                                    {errors.full_name && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.full_name}</p>
+                                    {errors.first_name && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.first_name}</p>
+                                    )}
+                                </div>
+
+                                {/* Last Name */}
+                                <div>
+                                    <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Last Name *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="last_name"
+                                        name="last_name"
+                                        value={profileData.last_name}
+                                        onChange={handleProfileInputChange}
+                                        className={`block w-full px-3 py-2 border ${errors.last_name ? 'border-red-300' : 'border-gray-300'
+                                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                                        required
+                                    />
+                                    {errors.last_name && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.last_name}</p>
+                                    )}
+                                </div>
+
+                                {/* Middle Initial */}
+                                <div>
+                                    <label htmlFor="middle_initial" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Middle Initial
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="middle_initial"
+                                        name="middle_initial"
+                                        value={profileData.middle_initial}
+                                        onChange={handleProfileInputChange}
+                                        maxLength={1}
+                                        className={`block w-full px-3 py-2 border ${errors.middle_initial ? 'border-red-300' : 'border-gray-300'
+                                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                                        placeholder="M"
+                                    />
+                                    {errors.middle_initial && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.middle_initial}</p>
                                     )}
                                 </div>
 

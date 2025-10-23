@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { XMarkIcon, KeyIcon } from '@heroicons/react/24/outline';
 import useUserManagement from '../../hooks/useUserManagement';
+import { formatMemberName } from '../../utils/nameUtils';
 
 const ResetPasswordModal = ({ member, onClose, onSuccess }) => {
     const { requestPasswordReset } = useUserManagement();
@@ -65,7 +66,7 @@ const ResetPasswordModal = ({ member, onClose, onSuccess }) => {
                         <h4 className="text-sm font-medium text-gray-800 mb-2">Member Details:</h4>
                         <div className="bg-gray-50 p-3 rounded-md">
                             <div className="text-sm text-gray-700">
-                                <div><strong>Name:</strong> {member.profile?.full_name || 'No name provided'}</div>
+                                <div><strong>Name:</strong> {formatMemberName(member.profile || {})}</div>
                                 <div><strong>Email:</strong> {member.email}</div>
                             </div>
                         </div>

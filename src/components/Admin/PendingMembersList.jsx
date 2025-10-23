@@ -221,7 +221,7 @@ const PendingMembersList = () => {
                         <div className="space-y-3">
                             <div>
                                 <span className="font-medium text-gray-700">Name:</span>
-                                <p className="text-gray-600">{selectedMember.profile?.full_name || 'Not provided'}</p>
+                                <p className="text-gray-600">{formatMemberName(selectedMember.profile || {})}</p>
                             </div>
                             <div>
                                 <span className="font-medium text-gray-700">Email:</span>
@@ -288,7 +288,7 @@ const PendingMembersList = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                            Approve Member: {selectedMember.profile?.full_name}
+                            Approve Member: {formatMemberName(selectedMember.profile || {})}
                         </h3>
 
                         <div className="mb-4">
@@ -331,7 +331,7 @@ const PendingMembersList = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                            Reject Member: {selectedMember.profile?.full_name}
+                            Reject Member: {formatMemberName(selectedMember.profile || {})}
                         </h3>
 
                         <div className="mb-4">

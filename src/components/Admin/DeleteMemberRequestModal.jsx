@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { XMarkIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import useUserManagement from '../../hooks/useUserManagement';
 import useAuth from '../../hooks/useAuth';
+import { formatMemberName } from '../../utils/nameUtils';
 
 const DeleteMemberRequestModal = ({ member, onClose, onSuccess }) => {
     const { requestMemberDeletion } = useUserManagement();
@@ -96,7 +97,7 @@ const DeleteMemberRequestModal = ({ member, onClose, onSuccess }) => {
                         <h4 className="text-sm font-medium text-gray-800 mb-2">Member to Delete:</h4>
                         <div className="bg-gray-50 p-3 rounded-md">
                             <div className="text-sm text-gray-700">
-                                <div><strong>Name:</strong> {member.profile?.full_name || 'No name provided'}</div>
+                                <div><strong>Name:</strong> {formatMemberName(member.profile || {})}</div>
                                 <div><strong>Email:</strong> {member.email}</div>
                                 <div><strong>Status:</strong> {member.approval_status}</div>
                                 <div><strong>Home Group:</strong> {member.profile?.home_group?.name || 'None'}</div>
