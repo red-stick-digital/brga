@@ -53,7 +53,7 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
                 last_name: profile.last_name || '',
                 phone: formattedPhone,
                 email: profile.email || '',
-                clean_date: profile.clean_date ? new Date(profile.clean_date).toISOString().split('T')[0] : '',
+                clean_date: profile.clean_date || '',
                 home_group_id: profile.home_group_id || '',
                 listed_in_directory: profile.listed_in_directory || false,
                 willing_to_sponsor: profile.willing_to_sponsor || false,
@@ -144,10 +144,11 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
 
         if (result.success) {
             setSuccessMessage('Profile updated successfully!');
+            // Wait for success message to be visible and state to propagate
             setTimeout(() => {
                 setSuccessMessage('');
                 if (onSuccess) onSuccess();
-            }, 2000);
+            }, 1500);
         }
     };
 

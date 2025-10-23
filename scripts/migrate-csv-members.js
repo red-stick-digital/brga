@@ -140,7 +140,6 @@ async function updateMemberProfile(userId, memberData) {
             .update({
                 first_name: memberData.first_name || 'Member',
                 last_name: memberData.last_name || '',
-                full_name: memberData.full_name || `${memberData.first_name || 'Member'} ${memberData.last_name || ''}`.trim(),
                 phone: memberData.phone
                 // listed_in_directory defaults to false
                 // willing_to_sponsor defaults to false

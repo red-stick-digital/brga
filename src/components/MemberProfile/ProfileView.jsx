@@ -52,7 +52,10 @@ const ProfileView = ({ profile, onEdit }) => {
     const formatCleanDate = (dateString) => {
         if (!dateString) return 'Not specified';
 
-        const cleanDate = new Date(dateString);
+        // Parse date as local date to avoid timezone issues
+        // dateString format is YYYY-MM-DD
+        const [year, month, day] = dateString.split('-').map(Number);
+        const cleanDate = new Date(year, month - 1, day); // month is 0-indexed
         const today = new Date();
 
         const yearDiff = today.getFullYear() - cleanDate.getFullYear();
