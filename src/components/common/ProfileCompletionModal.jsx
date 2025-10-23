@@ -62,7 +62,7 @@ const ProfileCompletionModal = ({ isOpen, onClose }) => {
                         </p>
                         <ul className="text-sm text-gray-600 mt-2 space-y-1 text-left mx-auto max-w-xs">
                             <li>• First Name</li>
-                            <li>• Last Name</li>
+                            <li>• Last Name or Initial</li>
                             <li>• Email</li>
                             <li>• Clean Date</li>
                             <li>• Home Group</li>

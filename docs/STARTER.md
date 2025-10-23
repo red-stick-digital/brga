@@ -246,7 +246,17 @@ Do NOT immediately assume user error. Trust the user's report and investigate sy
 
 - Local component state with React hooks
 - No global state management library
-- Custom hooks for shared logic (`useAuth`, `useEvents`, etc.)
+- Custom hooks for shared logic (`useAuth`, `useEvents`, `useMemberProfile`, etc.)
+
+### Profile Completion System
+
+**Feature**: Users are prompted to complete their profile on login if required fields are missing.
+
+- **Modal**: `ProfileCompletionModal` appears after login if `profile_complete = false`
+- **Auto-calculation**: `profile_complete` field is automatically set when profile is saved
+- **Required fields**: first_name, last_name, email, clean_date, home_group_id
+- **Utilities**: Use `src/utils/profileCompletion.js` for completion checks
+- **Behavior**: Modal is dismissable but reappears on each login until profile is complete
 
 ### Error Handling
 
@@ -334,7 +344,10 @@ tail -f server.log
 
 - Main app: `src/App.jsx`
 - Auth hook: `src/hooks/useAuth.js`
+- Member profile hook: `src/hooks/useMemberProfile.js`
 - Supabase config: `src/services/supabase.js`
+- Profile utilities: `src/utils/profileCompletion.js`
+- Profile modal: `src/components/common/ProfileCompletionModal.jsx`
 - Global styles: `src/styles/globals.css`
 - Test files: `tests/e2e/*.spec.js`
 
@@ -383,5 +396,19 @@ tail -f server.log
 
 ---
 
-**Last Updated**: [Insert date when making changes to this starter file]
-**Project Version**: [Current project state/version]
+## RECENT UPDATES
+
+### October 23, 2025 - Profile Completion Feature
+
+- ✅ Added profile completion tracking system
+- ✅ Modal prompts users to complete profile on login
+- ✅ Replaced `full_name` field with `first_name`, `middle_initial`, `last_name`
+- ✅ Added `profile_complete` boolean field (auto-calculated)
+- ✅ Created `ProfileCompletionModal` component
+- ✅ Created `profileCompletion.js` utility functions
+- 📄 See: `docs/TASK_profile_completion_modal.md` for details
+
+---
+
+**Last Updated**: October 23, 2025  
+**Project Version**: v1.1 - Profile Completion System
