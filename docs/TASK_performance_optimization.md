@@ -64,41 +64,81 @@ Optimize website performance based on PageSpeed Insights recommendations to impr
    - **Rolled back**: Reverted to simple Vite config
 
 4. **Working Configuration**
+
    - Basic code splitting (vendor, supabase, ui bundles)
    - Standard Vite asset paths
    - Image lazy loading active
+
+5. **Self-Hosted Google Fonts** ✅ (Oct 23, 2025 - 8:30 PM)
+
+   - Downloaded League Spartan font files (400, 500, 600, 700 weights)
+   - Created local `@font-face` declarations in `/public/fonts/league-spartan-local.css`
+   - Removed external Google Fonts requests
+   - **Impact**: Eliminates 450ms render blocking time
+   - **Commit**: `07cc60b - perf: self-host Google Fonts to eliminate 450ms render blocking`
+   - **Files**: `index.html`, `public/fonts/` (5 new files)
+   - **Status**: Deployed, awaiting PageSpeed verification
+
+6. **Hero Image Preloading** ✅ (Oct 23, 2025 - 8:40 PM)
+   - Added `<link rel="preload" as="image">` for LCP hero image (Home Hand Up.webp, 197KB)
+   - Used `fetchpriority="high"` to prioritize loading
+   - **Impact**: Expected -0.5 to -1.0s LCP improvement (currently 4.5s → target 3.5-4.0s)
+   - **Target**: Reach 85+ performance score (currently 78/100, need +7 points)
+   - **Files**: `index.html`
+   - **Status**: Ready to deploy
 
 ---
 
 ## CURRENT STATUS
 
-### Latest PageSpeed Report (Oct 23, 2025 - 7:06 PM)
+### Latest PageSpeed Report (Oct 23, 2025 - 8:35 PM)
 
-- **URL**: https://pagespeed.web.dev/analysis/https-www-batonrougega-org/l3tz9m20z6?form_factor=mobile
-- **Performance Score**: 74/100 (+6 from baseline!)
-- **FCP**: 3.7s (similar to baseline 3.6s)
-- **LCP**: 4.5s ✅ (improved from 5.8s, but target is <2.5s)
-- **TBT**: 0ms ✅ (excellent, was 40ms)
-- **CLS**: 0.049 ✅ (excellent, unchanged)
-- **SI**: 4.9s (unchanged)
+- **URL**: https://pagespeed.web.dev/ (after font optimization)
+- **Performance Score**: 78/100 (+10 from baseline, +4 from fonts)
+- **FCP**: 3.6s (unchanged)
+- **LCP**: 4.5s (improved from 5.8s, target: <2.5s)
+- **TBT**: 0ms (excellent - improved from 40ms)
+- **CLS**: 0.049 (excellent)
+- **SI**: Not measured
+
+### Current Work Session (Oct 23, 2025 - 8:40 PM)
+
+- ✅ **Hero image preload** - Added to `index.html` with `fetchpriority="high"`
+- 🔄 **Image optimization** - User working on compressing large images (302KB, 197KB, 119KB, 109KB)
+- **Next test**: Deploy and measure LCP improvement (expect 4.5s → 3.5-4.0s)
 
 ### Improvements Achieved
 
-- ✅ **+6 point** performance score increase (68 → 74)
-- ✅ **-1.3s** LCP improvement (5.8s → 4.5s) - 22% faster!
+- ✅ **+10 points** total performance score increase (68 → 78)
+- ✅ **+4 points** from self-hosted fonts (74 → 78)
+- ✅ **Eliminated 450ms** render blocking from Google Fonts
+- ✅ **-1.3s** LCP improvement from lazy loading (5.8s → 4.5s)
 - ✅ **-40ms** TBT improvement (40ms → 0ms)
-- ✅ Image lazy loading working effectively
+- ✅ Image lazy loading working (9 images)
+- ✅ Self-hosted fonts deployed and working
 
-### Remaining Opportunities
+### Remaining Opportunities (To Reach 85+)
 
-1. **Render blocking requests** - Est. 450ms savings
-   - Google Fonts still blocking render
-2. **Image delivery** - Est. 379 KiB savings
-   - Some images still need optimization
+1. **Image delivery** - Est. 379 KiB savings 🔄 IN PROGRESS
+   - Large images identified: `help looking at phone.webp` (302KB), `home three rocks.webp` (197KB), `home bonsai.webp` (119KB), `home head down.webp` (109KB)
+   - User manually optimizing/compressing these images
+   - Target: Reduce by 60-70% (aim for ~230KB total savings)
+2. **LCP Optimization** - Hero image now preloaded ✅
+   - Added `<link rel="preload">` with `fetchpriority="high"`
+   - Expect -0.5 to -1.0s improvement (4.5s → 3.5-4.0s)
+   - Combined with image optimization should hit <4.0s target
 3. **Unused JavaScript** - Est. 150 KiB savings
-   - Bundle size optimization needed
+   - Bundle size could be reduced further
+   - Tree shaking opportunities
 4. **Long main-thread tasks** - 2 tasks found
-   - JavaScript execution optimization
+   - JavaScript execution blocking main thread
+   - Consider code splitting or deferring non-critical JS
+
+### Target: 85+ Performance Score
+
+- **Current**: 78/100
+- **Goal**: 85+/100
+- **Gap**: 7 points to close
 
 ---
 
@@ -215,6 +255,8 @@ git push
 - `src/pages/Home.jsx` - Image lazy loading (5 images)
 - `src/pages/HelpForGambling.jsx` - Image lazy loading (4 images)
 - `vite.config.js` - Basic code splitting
+- `index.html` - Hero image preload with fetchpriority="high"
+- `public/fonts/` - Self-hosted League Spartan fonts (5 files)
 
 ### Reverted Changes
 
