@@ -264,9 +264,11 @@ Fix multiple UI issues reported across desktop and mobile views:
 ### Solution Attempts
 
 1. **Attempt 1**: Added `pt-[100px]` to Home page container
+
    - Result: ❌ Pushed hero image down from top of screen (broke design)
 
 2. **Attempt 2**: Changed MemberNav to `sticky top-0 z-20`
+
    - Result: ❌ Made Header and MemberNav sticky on all pages (unwanted behavior)
 
 3. **Final Solution**: Integrated MemberNav into Header component
@@ -279,6 +281,7 @@ Fix multiple UI issues reported across desktop and mobile views:
 ### Implementation
 
 **Before**: MemberNav was a separate component in App.jsx
+
 ```jsx
 // App.jsx
 <Header />
@@ -287,15 +290,13 @@ Fix multiple UI issues reported across desktop and mobile views:
 ```
 
 **After**: MemberNav integrated into Header.jsx
+
 ```jsx
 // Header.jsx
 <header className={isHome ? "fixed top-0..." : "bg-black"}>
   <nav>...</nav> {/* Main navigation */}
-  
   {user && (
-    <nav className="bg-blue-600 shadow-md">
-      {/* Member navigation links */}
-    </nav>
+    <nav className="bg-blue-600 shadow-md">{/* Member navigation links */}</nav>
   )}
 </header>
 ```
@@ -313,6 +314,7 @@ Fix multiple UI issues reported across desktop and mobile views:
 ### Result
 
 ✅ MemberNav displays correctly on all pages:
+
 - On Home page: Part of fixed header, overlays hero image as intended
 - On other pages: Part of static header, flows naturally
 - Always appears immediately below main navigation
@@ -347,6 +349,7 @@ Fix multiple UI issues reported across desktop and mobile views:
 ### Final Architecture
 
 **Header Component** now includes:
+
 - Logo and branding
 - Public navigation links
 - Hamburger menu (mobile + desktop)
@@ -354,6 +357,7 @@ Fix multiple UI issues reported across desktop and mobile views:
 - All inherits same positioning (fixed on Home, static elsewhere)
 
 **Benefits**:
+
 - Simplified App.jsx structure
 - Consistent positioning across all pages
 - Logical grouping of navigation elements
