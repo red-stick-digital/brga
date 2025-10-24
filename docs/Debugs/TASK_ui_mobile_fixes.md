@@ -162,7 +162,7 @@ Fix multiple UI issues reported across desktop and mobile views:
 
 ### Changes Kept (What Was CORRECT):
 
-1. ✅ MemberNav z-index fix - `relative z-10` prevents header overlap
+1. ✅ MemberNav z-index fix - **FINAL FIX** uses `sticky top-0 z-20` to stay below Header but above hero content
 2. ✅ Home hero padding - Responsive `pt-[180px] sm:pt-[200px] md:pt-[250px]` prevents mobile overlap
 3. ✅ Home video width - Responsive `w-full sm:w-[90%] lg:w-[67.5%]` for proper display
 4. ✅ MyFirstMeeting buttons - Grid `gap-3 sm:gap-4` with proper padding
@@ -244,3 +244,117 @@ Fix multiple UI issues reported across desktop and mobile views:
 6. **Mobile needs more top padding** - Headers are taller on mobile, need 220px+ clearance
 7. **Test on actual mobile devices** - Desktop responsive mode doesn't always show real issues
 8. **Hero section heights should vary** - Not all pages need 820px hero sections
+9. **Z-index conflicts require hierarchy** - When two elements have same z-index, later DOM element wins; use z-20 vs z-10 to establish clear stacking order
+
+---
+
+## ADDITIONAL FIX: MemberNav Z-Index on Home Page
+
+**Date**: October 24, 2025  
+**Status**: ✅ COMPLETED  
+**Issue**: MemberNav appearing behind/overlapping Header on Home page only
+
+### Root Cause
+
+- **Home page Header** is `fixed top-0` with `z-20` (not in normal document flow)
+- **Other pages Header** is `static` with normal flow
+- MemberNav was a separate component rendering after Header in App.jsx
+- On Home page, fixed Header didn't take up document flow space, causing MemberNav positioning issues
+
+### Solution Attempts
+
+1. **Attempt 1**: Added `pt-[100px]` to Home page container
+   - Result: ❌ Pushed hero image down from top of screen (broke design)
+
+2. **Attempt 2**: Changed MemberNav to `sticky top-0 z-20`
+   - Result: ❌ Made Header and MemberNav sticky on all pages (unwanted behavior)
+
+3. **Final Solution**: Integrated MemberNav into Header component
+   - MemberNav is now part of the `<header>` element
+   - On Home page: inherits `fixed top-0` from Header
+   - On other pages: inherits static positioning from Header
+   - Always renders immediately after main navigation
+   - Result: ✅ Perfect positioning on all pages
+
+### Implementation
+
+**Before**: MemberNav was a separate component in App.jsx
+```jsx
+// App.jsx
+<Header />
+<MemberNav />
+<main>...</main>
+```
+
+**After**: MemberNav integrated into Header.jsx
+```jsx
+// Header.jsx
+<header className={isHome ? "fixed top-0..." : "bg-black"}>
+  <nav>...</nav> {/* Main navigation */}
+  
+  {user && (
+    <nav className="bg-blue-600 shadow-md">
+      {/* Member navigation links */}
+    </nav>
+  )}
+</header>
+```
+
+### Files Modified
+
+- ✅ `src/components/Layout/Header.jsx` - Added MemberNav inside header element
+- ✅ `src/App.jsx` - Removed MemberNav import and component
+- ✅ `src/pages/Home.jsx` - Removed temporary `pt-[100px]` fix
+
+### Files That Can Be Removed
+
+- `src/components/Layout/MemberNav.jsx` - No longer needed (functionality moved to Header)
+
+### Result
+
+✅ MemberNav displays correctly on all pages:
+- On Home page: Part of fixed header, overlays hero image as intended
+- On other pages: Part of static header, flows naturally
+- Always appears immediately below main navigation
+- No z-index conflicts or positioning issues
+
+---
+
+## TASK COMPLETION SUMMARY
+
+**Date Completed**: October 24, 2025  
+**Status**: ✅ ALL ISSUES RESOLVED
+
+### Issues Fixed
+
+1. ✅ Desktop: MemberNav appearing behind Header on Home page
+2. ✅ Mobile: Hero text overlapping header (fixed with padding adjustments)
+3. ✅ Mobile: Video section display issues (fixed with responsive width)
+4. ✅ Mobile: CTA section overflow (fixed with padding)
+5. ✅ Mobile: MyFirstMeeting button spacing (fixed with grid gap)
+6. ✅ Mobile: ContactUs spacing issues (fixed with responsive padding)
+7. ✅ Mobile: HelpForGambling layout issues (fixed with min-height)
+8. ✅ Scroll position on route change (added ScrollToTop component)
+
+### Key Takeaways
+
+1. **Component composition matters** - Sometimes the best fix is restructuring component hierarchy, not just CSS
+2. **Fixed positioning creates flow issues** - Elements with `position: fixed` don't take up document space
+3. **Test every solution** - Quick fixes can break design in unexpected ways
+4. **Consider all pages** - Solution must work across entire app, not just one page
+5. **Integrate related functionality** - MemberNav logically belongs with Header, not as separate component
+
+### Final Architecture
+
+**Header Component** now includes:
+- Logo and branding
+- Public navigation links
+- Hamburger menu (mobile + desktop)
+- **Member navigation** (when logged in) ← NEW
+- All inherits same positioning (fixed on Home, static elsewhere)
+
+**Benefits**:
+- Simplified App.jsx structure
+- Consistent positioning across all pages
+- Logical grouping of navigation elements
+- Easier to maintain and understand

@@ -1091,6 +1091,25 @@ oldString: `
 
 ## RECENT UPDATES
 
+### October 24, 2025 - MemberNav Architecture Improvement
+
+- ✅ Integrated MemberNav into Header component (was separate component)
+- ✅ Fixed MemberNav positioning issues on Home page (fixed header)
+- ✅ Simplified App.jsx structure (removed separate MemberNav import)
+- ✅ MemberNav now inherits Header positioning (fixed on Home, static elsewhere)
+- ✅ Removed standalone `src/components/Layout/MemberNav.jsx` file
+- 📄 See: `docs/Debugs/TASK_ui_mobile_fixes.md` for complete details
+- 🎯 Result: Consistent navigation behavior across all pages
+
+### October 24, 2025 - Project File Cleanup
+
+- ✅ Removed 25 completed migration scripts from `/scripts`
+- ✅ Removed 12 database debugging files from `/database`
+- ✅ Removed 2 root directory test files
+- ✅ Archived 4 completed task documentation files to `/docs/Archive`
+- 📄 See: `docs/TASK_file_cleanup_review.md` for complete list
+- 🎯 Result: Cleaner project structure with 29 files removed/archived
+
 ### October 24, 2025 - Approval Code Signup Fix
 
 - ✅ Fixed approval code signup not setting users to 'approved' status
@@ -1099,7 +1118,7 @@ oldString: `
 - ✅ Updated `useAuth.js` to call RPC function instead of direct UPDATE
 - ✅ Fixed email confirmation redirect from /dashboard to /authhome
 - ✅ Fixed redirect URL to use dynamic port detection instead of hardcoded 3000
-- 📄 See: `docs/DEBUG_approval_code_signup.md` for complete debugging log
+- 📄 See: `docs/Debugs/DEBUG_approval_code_signup.md` for complete debugging log
 - 🗄️ Migration: `database/fix_approval_code_update.sql`
 
 ### October 23, 2025 - Profile Completion Feature

@@ -54,6 +54,15 @@ export default function Header() {
     const { user, logout } = useAuth()
     const { role, loading: roleLoading } = useUserRole()
 
+    const isAdmin = !roleLoading && (role === 'admin' || role === 'superadmin')
+
+    const memberNavLinks = [
+        { name: 'Home', href: '/authhome', show: true },
+        { name: 'Directory', href: '/memberdirectory', show: true },
+        { name: 'Profile', href: '/member/profile', show: true },
+        { name: 'Admin', href: '/admin/dashboard', show: isAdmin },
+    ]
+
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50)
@@ -215,6 +224,39 @@ export default function Header() {
                     </div>
                 </DialogPanel>
             </Dialog>
+
+            {/* Member Navigation - Only shown when user is logged in */}
+            {user && (
+                <nav className="bg-blue-600 shadow-md">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex items-center h-12">
+                            <div className="flex space-x-1">
+                                {memberNavLinks.map((link) =>
+                                    link.show ? (
+                                        <Link
+                                            key={link.name}
+                                            to={link.href}
+                                            className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${location.pathname === link.href
+                                                    ? 'bg-white text-blue-600'
+                                                    : 'text-white hover:bg-blue-700'
+                                                }`}
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    ) : null
+                                )}
+                                <button
+                                    onClick={handleLogout}
+                                    disabled={isLoggingOut}
+                                    className="px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 rounded-md transition-colors"
+                                >
+                                    {isLoggingOut ? 'Logging out...' : 'Logout'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            )}
         </header>
     )
 }
