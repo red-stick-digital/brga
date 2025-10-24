@@ -252,15 +252,26 @@ const { data, error } = await supabase
   .from("member_profiles")
   .update({ field: value })
   .eq("user_id", user.id);
+
+// Call RPC function (for privileged operations)
+const { data, error } = await supabase.rpc("function_name", {
+  param1: value1,
+});
 ```
 
 **Key RLS Patterns in This Project:**
 
 - `member_profiles`: Users can read their own, members can read directory-listed profiles
-- `user_roles`: Users can read their own roles, admins can read all
+- `user_roles`: Users can read their own roles, **only superadmins can UPDATE**
 - `events`: Public read, admin write
 - `home_groups`: Public read, admin write
 - `approval_codes`: Admin only
+
+**Important RLS Constraint:**
+
+- Users CANNOT update their own `user_roles.approval_status` due to RLS
+- Solution: Use SECURITY DEFINER functions (e.g., `approve_user_with_code()`)
+- Call via RPC: `supabase.rpc('approve_user_with_code', { user_id_param })`
 
 **Database Triggers:**
 
@@ -526,6 +537,31 @@ export default {
 - Problem: Users forgot, profiles incomplete in directory
 - Solution: Auto-calculate based on required fields
 - Implementation: Database trigger or frontend utility
+
+### Approval Code Signup (October 2025)
+
+❌ **Don't try to UPDATE user_roles directly from frontend after signup**
+
+- Attempted: Direct UPDATE query to set approval_status = 'approved'
+- Result: UPDATE silently failed, users remained 'pending'
+- Reason: RLS policy `FOR UPDATE USING (is_superadmin())` blocked new users
+- Root cause: New users aren't superadmins, so RLS denied the update
+- Solution: Use SECURITY DEFINER database function to bypass RLS
+
+❌ **Don't INSERT into user_roles after signup (trigger already created it)**
+
+- Attempted: INSERT with 'approved' status, using ON CONFLICT DO NOTHING
+- Result: INSERT ignored because row already exists from trigger
+- Reason: Database trigger `handle_new_user()` creates row immediately
+- Lesson: Check for existing triggers before planning INSERT logic
+
+✅ **Use SECURITY DEFINER functions for privileged operations**
+
+- Pattern: User needs to update their own restricted data during signup
+- Solution: Create database function with SECURITY DEFINER
+- Example: `approve_user_with_code(user_id)` bypasses RLS
+- Call via: `supabase.rpc('function_name', { params })`
+- Security: Function validates operation before executing
 
 ### Performance Optimization
 
@@ -1055,6 +1091,17 @@ oldString: `
 
 ## RECENT UPDATES
 
+### October 24, 2025 - Approval Code Signup Fix
+
+- ✅ Fixed approval code signup not setting users to 'approved' status
+- ✅ Root cause: RLS policies blocked users from updating their own approval_status
+- ✅ Solution: Created `approve_user_with_code()` database function with SECURITY DEFINER
+- ✅ Updated `useAuth.js` to call RPC function instead of direct UPDATE
+- ✅ Fixed email confirmation redirect from /dashboard to /authhome
+- ✅ Fixed redirect URL to use dynamic port detection instead of hardcoded 3000
+- 📄 See: `docs/DEBUG_approval_code_signup.md` for complete debugging log
+- 🗄️ Migration: `database/fix_approval_code_update.sql`
+
 ### October 23, 2025 - Profile Completion Feature
 
 - ✅ Added profile completion tracking system
@@ -1111,9 +1158,19 @@ oldString: `
 ---
 
 **Last Updated**: October 24, 2025  
-**Project Version**: v1.2 - Performance Optimized
+**Project Version**: v1.3 - Approval Code Signup Fixed
 
 ## CHANGELOG FOR THIS STARTER FILE
+
+### October 24, 2025 - Approval Code Signup Debug
+
+Fixed critical approval code signup issue and documented patterns:
+
+- **Approval Code Fix**: Users now properly approved when using valid approval codes
+- **RLS Pattern**: Documented SECURITY DEFINER functions for privileged operations
+- **Failed Approaches**: Added approval code debugging lessons
+- **Database Functions**: Added RPC pattern to Database Quick Reference
+- **Email Redirect Fix**: Corrected confirmation email redirect to /authhome
 
 ### October 24, 2025 - Major Enhancement for AI Assistance
 

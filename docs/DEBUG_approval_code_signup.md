@@ -65,10 +65,18 @@
   - Redirect destination: Going to /dashboard instead of /authhome
 
 - [October 24, 2025 - 11:45 AM] **Applied fix: Correct email confirmation redirect**
+
   - Fixed: `src/pages/AuthCallback.jsx` now redirects to '/authhome' instead of '/dashboard'
   - Fixed: `src/utils/redirectUrls.js` uses window.location.port (detects current port)
   - Result: Email confirmations will redirect to correct page at correct port
   - Status: Ready for testing - next signup should redirect properly
+
+- [October 24, 2025 - 11:50 AM] **✅ ALL FIXES VERIFIED - DEBUG COMPLETE**
+  - Test: New user signup with approval code elephant-kitten-yellow
+  - Result: User approved successfully via RPC function
+  - Result: Email confirmation redirected to /authhome correctly
+  - Status: **COMPLETE** - Both issues resolved
+  - Documentation: Updated STARTER.md with learnings and patterns
   - Logic: When hasValidCode=true, UPDATE existing row to approval_status='approved'
   - Fallback: INSERT only if UPDATE fails (trigger didn't create row)
   - Ready for user testing with valid approval code
