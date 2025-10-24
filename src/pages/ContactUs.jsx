@@ -131,20 +131,20 @@ const ContactUs = () => {
             <div className="w-full">
                 {/* Hero Section */}
                 <div
-                    className="relative w-full flex items-center justify-center pt-[250px]"
+                    className="relative w-full flex items-start justify-center pt-[280px] sm:pt-[220px] md:pt-[250px]"
                     style={{
                         backgroundImage: 'url(/images/contact%20jumping%20in%20the%20sun.webp)',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
-                        height: '820px',
+                        minHeight: '500px',
                     }}
                 >
                     {/* Overlay for readability */}
                     <div className="absolute inset-0 bg-black bg-opacity-20"></div>
 
                     {/* Content */}
-                    <div className="relative z-10 text-center px-6 max-w-6xl">
+                    <div className="relative z-10 text-center px-6 max-w-6xl mt-0">
                         <h1 className="hero-h1 text-white mb-8">
                             Get In Touch With Us
                         </h1>
@@ -174,9 +174,9 @@ const ContactUs = () => {
                 </div>
 
                 {/* Contact Form and Information Section */}
-                <div className="w-full bg-white py-20">
+                <div className="w-full bg-white py-8 sm:py-12 md:py-20">
                     <div className="w-3/4 mx-auto px-6">
-                        <div className="grid gap-12 md:grid-cols-2">
+                        <div className="grid gap-8 sm:gap-12 md:grid-cols-2">
                             {/* Contact Form */}
                             <div>
                                 <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-8">
@@ -261,7 +261,7 @@ const ContactUs = () => {
 
                             {/* Contact Information */}
                             <div>
-                                <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-8">
+                                <h2 className="font-league-spartan text-[36px] sm:text-[48px] md:text-[56px] leading-[40px] sm:leading-[52px] md:leading-[60px] font-bold text-[#6B92B0] mb-6 sm:mb-8">
                                     Better yet, see us in person!
                                 </h2>
                                 <div className="space-y-6">

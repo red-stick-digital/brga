@@ -250,9 +250,9 @@ const HelpForGambling = () => {
                 {/* Section 4: Two-column layout - How to Get Help + Do I Have a Problem */}
                 <div className="w-full bg-gray-50 py-16">
                     <div className="w-3/4 mx-auto px-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-[440px]">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:min-h-[440px]">
                             {/* Left Column: How to Get Help Right Now */}
-                            <div>
+                            <div className="flex flex-col">
                                 <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-6">
                                     How to Get Help Right Now
                                 </h2>
@@ -281,11 +281,11 @@ const HelpForGambling = () => {
                             </div>
 
                             {/* Right Column: Do I Have a Gambling Problem */}
-                            <div className="flex flex-col">
+                            <div className="flex flex-col mt-8 md:mt-0">
                                 <h2 className="font-league-spartan text-[56px] leading-[60px] font-bold text-[#6B92B0] mb-6">
                                     Do I Have a Gambling Problem?
                                 </h2>
-                                <div className="flex-1 flex items-center justify-center text-center">
+                                <div className="flex-1 flex items-start md:items-center justify-center text-center">
                                     <p className="font-helvetica text-[18px] leading-[28px] text-gray-700">
                                         Only you can decide. But we invite you to read the <Link to="/20questions" className="text-[#6B92B0] underline hover:text-blue-600 font-semibold">20 Questions</Link> — a helpful tool many of us used when we weren't sure.
                                     </p>
@@ -296,9 +296,9 @@ const HelpForGambling = () => {
                 </div>
 
                 {/* Section 5: Recovery Is Possible with image - help for gambling sunrise */}
-                <div className="w-full bg-white py-16">
-                    <div className="w-3/4 mx-auto px-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="w-full bg-white py-12 sm:py-16">
+                    <div className="w-full sm:w-3/4 mx-auto px-4 sm:px-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-start md:items-center">
                             {/* Image - Left */}
                             <div className="flex justify-center order-2 md:order-1">
                                 <img

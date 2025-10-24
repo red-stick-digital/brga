@@ -450,30 +450,30 @@ const Meetings = () => {
 
                 {/* Navigation Buttons */}
                 <div className="mt-12 mb-12">
-                    <div className="w-full max-w-2xl mx-auto">
-                        <div className="grid grid-cols-2 gap-4">
-                            <Link to="/MyFirstMeeting" className="flex">
+                    <div className="w-full max-w-2xl mx-auto px-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <Link to="/MyFirstMeeting">
                                 <Button className="w-full">Guide to Your First Meeting</Button>
                             </Link>
-                            <Link to="/AboutGamblersAnonymous" className="flex">
+                            <Link to="/AboutGamblersAnonymous">
                                 <Button className="w-full">About Gamblers Anonymous</Button>
                             </Link>
-                            <Link to="/TwelveStepsAndUnityProgram" className="flex">
+                            <Link to="/TwelveStepsAndUnityProgram">
                                 <Button className="w-full">12 Steps and Unity Program</Button>
                             </Link>
-                            <Link to="/TwentyQuestions" className="flex">
+                            <Link to="/TwentyQuestions">
                                 <Button className="w-full">Am I A Compulsive Gambler</Button>
                             </Link>
-                            <Link to="/PublicRelations" className="flex">
+                            <Link to="/PublicRelations">
                                 <Button className="w-full">Public Relations</Button>
                             </Link>
-                            <Link to="/EventsAndAnnouncements" className="flex">
+                            <Link to="/EventsAndAnnouncements">
                                 <Button className="w-full">Events and Announcements</Button>
                             </Link>
-                            <Link to="/FAQ" className="flex">
+                            <Link to="/FAQ">
                                 <Button className="w-full">Frequently Asked Questions</Button>
                             </Link>
-                            <Link to="/" className="flex">
+                            <Link to="/">
                                 <Button className="w-full">Return To Home Page</Button>
                             </Link>
                         </div>

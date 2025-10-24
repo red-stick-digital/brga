@@ -41,7 +41,7 @@ const MemberNav = () => {
     const isActive = (href) => location.pathname === href;
 
     return (
-        <nav className="bg-blue-600 shadow-md">
+        <nav className="bg-blue-600 shadow-md relative z-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center h-12">
                     {/* Navigation Links */}

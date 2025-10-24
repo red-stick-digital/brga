@@ -136,31 +136,31 @@ const MyFirstMeeting = () => {
 
                 {/* Navigation Buttons */}
                 <div className="mt-12 mb-12">
-                    <div className="w-full max-w-2xl mx-auto">
-                        <div className="grid grid-cols-2 gap-4">
+                    <div className="w-full max-w-2xl mx-auto px-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <Link to="/Meetings" className="flex">
-                                <Button className="w-full">Meetings</Button>
+                                <Button className="w-full py-2 sm:py-3 text-sm sm:text-base">Meetings</Button>
                             </Link>
                             <Link to="/AboutGamblersAnonymous" className="flex">
-                                <Button className="w-full">About Gamblers Anonymous</Button>
+                                <Button className="w-full py-2 sm:py-3 text-sm sm:text-base">About Gamblers Anonymous</Button>
                             </Link>
                             <Link to="/TwelveStepsAndUnityProgram" className="flex">
-                                <Button className="w-full">12 Steps and Unity Program</Button>
+                                <Button className="w-full py-2 sm:py-3 text-sm sm:text-base">12 Steps and Unity Program</Button>
                             </Link>
                             <Link to="/TwentyQuestions" className="flex">
-                                <Button className="w-full">Am I A Compulsive Gambler</Button>
+                                <Button className="w-full py-2 sm:py-3 text-sm sm:text-base">Am I A Compulsive Gambler</Button>
                             </Link>
                             <Link to="/PublicRelations" className="flex">
-                                <Button className="w-full">Public Relations</Button>
+                                <Button className="w-full py-2 sm:py-3 text-sm sm:text-base">Public Relations</Button>
                             </Link>
                             <Link to="/EventsAndAnnouncements" className="flex">
-                                <Button className="w-full">Events and Announcements</Button>
+                                <Button className="w-full py-2 sm:py-3 text-sm sm:text-base">Events and Announcements</Button>
                             </Link>
                             <Link to="/FAQ" className="flex">
-                                <Button className="w-full">Frequently Asked Questions</Button>
+                                <Button className="w-full py-2 sm:py-3 text-sm sm:text-base">Frequently Asked Questions</Button>
                             </Link>
                             <Link to="/" className="flex">
-                                <Button className="w-full">Return To Home Page</Button>
+                                <Button className="w-full py-2 sm:py-3 text-sm sm:text-base">Return To Home Page</Button>
                             </Link>
                         </div>
                     </div>

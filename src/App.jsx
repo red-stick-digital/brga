@@ -5,6 +5,7 @@ import Header from './components/Layout/Header';
 import MemberNav from './components/Layout/MemberNav';
 import Footer from './components/Layout/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // Public Pages
 import Home from './pages/Home';
@@ -48,6 +49,7 @@ const App = () => {
   return (
     <HelmetProvider>
       <Router>
+        <ScrollToTop />
         <Header />
         <MemberNav />
         <main className="flex-grow">

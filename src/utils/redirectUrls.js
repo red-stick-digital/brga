@@ -5,6 +5,7 @@ export const getRedirectUrl = (path = '') => {
     const isDevelopment = import.meta.env.DEV || window.location.hostname === 'localhost';
 
     if (isDevelopment) {
+        // Use the current port from the window location, fallback to 3000
         const port = window.location.port || '3000';
         return `http://localhost:${port}${path}`;
     }

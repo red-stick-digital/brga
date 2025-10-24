@@ -87,21 +87,43 @@ const useAuth = () => {
                     hasValidCode = true;
                 }
 
-                // Create user_roles entry
-                // - 'approved' if they used a valid approval code
-                // - 'pending' if they signed up without a code (requires admin approval)
-                const { error: roleError } = await supabase
-                    .from('user_roles')
-                    .insert({
-                        user_id: newUser.id,
-                        role: 'member',
-                        approval_status: approvalStatus
-                    });
+                // Update or create user_roles entry
+                // Note: Database trigger creates a 'pending' entry automatically
+                // We need to update it to 'approved' if they used a valid code
+                // BUT: RLS policies prevent users from updating their own roles
+                // Solution: Use an RPC call with SECURITY DEFINER to bypass RLS
+                let roleError = null;
 
-                if (roleError) {
-                    console.error('Error creating user role:', roleError);
-                    // Continue anyway - the user was created successfully
-                    // Admin can manually add role if needed
+                if (hasValidCode && approvalStatus === 'approved') {
+                    // Call a database function to update approval status with elevated privileges
+                    const { data: rpcResult, error: rpcError } = await supabase.rpc(
+                        'approve_user_with_code',
+                        { user_id_param: newUser.id }
+                    );
+
+                    if (rpcError) {
+                        console.error('❌ Error approving user via RPC:', rpcError);
+                        // Try direct update as fallback (will likely fail due to RLS but worth trying)
+                        const { error: updateError } = await supabase
+                            .from('user_roles')
+                            .update({
+                                approval_status: 'approved',
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('user_id', newUser.id);
+
+                        if (updateError) {
+                            console.error('❌ Fallback update also failed:', updateError);
+                            roleError = updateError;
+                        } else {
+                            console.log('✅ Updated user role via fallback (unexpected success)');
+                        }
+                    } else {
+                        console.log('✅ User approved via RPC function:', rpcResult);
+                    }
+                } else {
+                    // For users without codes, the trigger already set 'pending' - no action needed
+                    console.log('ℹ️  User role remains pending (no approval code)');
                 }
 
                 // Create member_profiles entry (blank/placeholder)

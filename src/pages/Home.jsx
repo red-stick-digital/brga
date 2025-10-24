@@ -57,20 +57,20 @@ export default function Home() {
             <div className="w-full">
                 {/* Hero Section */}
                 <div
-                    className="relative w-full flex items-center justify-center pt-[250px]"
+                    className="relative w-full flex items-start justify-center pt-[280px] sm:pt-[200px] md:pt-[250px] pb-12 sm:pb-16"
                     style={{
                         backgroundImage: 'url(/images/Home%20Hand%20Up.webp)',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
-                        height: '820px',
+                        minHeight: '700px',
                     }}
                 >
                     {/* Overlay for readability */}
                     <div className="absolute inset-0 bg-black bg-opacity-20"></div>
 
                     {/* Content */}
-                    <div className="relative z-10 text-center px-6 max-w-6xl">
+                    <div className="relative z-10 text-center px-6 max-w-6xl mt-0">
                         <h1 className="hero-h1 text-white mb-8">
                             Gambling Addiction?<br />Compulsive Gambler? We are<br />glad you are here.
                         </h1>
@@ -96,7 +96,7 @@ export default function Home() {
                 </div>
 
                 {/* Video Section */}
-                <div className="w-[67.5%] mx-auto px-6 py-8">
+                <div className="w-full sm:w-[90%] lg:w-[67.5%] mx-auto px-4 sm:px-6 py-8">
                     <Video />
                 </div>
 
@@ -248,12 +248,12 @@ export default function Home() {
                 </div>
 
                 {/* Someone's Gambling Affecting You Section */}
-                <div className="w-full flex items-center justify-center py-12">
-                    <div className="flex flex-col items-center justify-center text-center max-w-4xl px-6">
-                        <p className="font-helvetica font-normal text-[32px] sm:text-[40px] lg:text-[48px] leading-[1.25] text-[#151515] mb-8 text-center">
+                <div className="w-full flex items-center justify-center py-12 px-4">
+                    <div className="flex flex-col items-center justify-center text-center max-w-4xl">
+                        <p className="font-helvetica font-normal text-[24px] sm:text-[32px] md:text-[40px] lg:text-[48px] leading-[1.3] text-[#151515] mb-6 sm:mb-8 text-center px-2">
                             Are you concerned about someone else gambling in your life?
                         </p>
-                        <Button className="font-bold text-center whitespace-nowrap">
+                        <Button className="font-bold text-center text-sm sm:text-base px-4 sm:px-6 whitespace-normal sm:whitespace-nowrap max-w-full">
                             IS SOMEONE'S GAMBLING AFFECTING YOU? CLICK HERE
                         </Button>
                     </div>

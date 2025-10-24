@@ -23,7 +23,7 @@ const AuthCallback = () => {
                 if (data.session) {
                     // User is now confirmed and logged in
                     console.log('User confirmed and logged in:', data.session.user);
-                    navigate('/dashboard');
+                    navigate('/authhome');
                 } else {
                     // No session found, redirect to login
                     navigate('/login');
