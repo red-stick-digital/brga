@@ -91,21 +91,42 @@ Optimize website performance based on PageSpeed Insights recommendations to impr
 
 ## CURRENT STATUS
 
-### Latest PageSpeed Report (Oct 23, 2025 - 8:35 PM)
+### Latest PageSpeed Report (Oct 23, 2025 - 8:48 PM) - After Hero Preload
 
-- **URL**: https://pagespeed.web.dev/ (after font optimization)
-- **Performance Score**: 78/100 (+10 from baseline, +4 from fonts)
-- **FCP**: 3.6s (unchanged)
-- **LCP**: 4.5s (improved from 5.8s, target: <2.5s)
-- **TBT**: 0ms (excellent - improved from 40ms)
-- **CLS**: 0.049 (excellent)
-- **SI**: Not measured
+- **URL**: https://pagespeed.web.dev/analysis/https-www-batonrougega-org/7bdgew33ev?form_factor=mobile
+- **Performance Score**: 77/100 (-1 from previous test, but LCP improved!)
+- **FCP**: 3.2s (improved -0.4s from 3.6s) ✅
+- **LCP**: 4.1s (improved -0.4s from 4.5s) ✅ **Hero preload is working!**
+- **TBT**: 0ms (excellent - unchanged)
+- **CLS**: 0.049 (excellent - unchanged)
+- **SI**: 4.7s (newly measured)
 
-### Current Work Session (Oct 23, 2025 - 8:40 PM)
+### Analysis: Why -1 Point Despite LCP Improvement?
 
-- ✅ **Hero image preload** - Added to `index.html` with `fetchpriority="high"`
-- 🔄 **Image optimization** - User working on compressing large images (302KB, 197KB, 119KB, 109KB)
-- **Next test**: Deploy and measure LCP improvement (expect 4.5s → 3.5-4.0s)
+**Good News:**
+
+- ✅ Hero image preload IS WORKING - LCP improved by 0.4s (4.5s → 4.1s)
+- ✅ FCP also improved by 0.4s (3.6s → 3.2s)
+- ✅ TBT and CLS remain perfect
+
+**The Trade-off:**
+
+- ⚠️ NEW issue appeared: "Render blocking requests - Est savings of 300ms"
+- The preload link itself may be slightly blocking initial render
+- **Net effect**: LCP improvement (+points) offset by new render blocking (-points) = -1 total
+
+**Verdict:** This is a typical performance optimization trade-off. The preload helps LCP but adds a small blocking penalty. The -1 point is acceptable since we're prioritizing the hero image (LCP element).
+
+### Current Work Session (Oct 23, 2025 - 8:50 PM)
+
+- ✅ **Hero image preload deployed** - Working! LCP improved 4.5s → 4.1s (-0.4s)
+- ✅ **Image compression completed** - User optimized 4 large images:
+  - `help looking at phone.webp`: 302KB → 105KB (-197KB, 65% reduction!)
+  - `home three rocks.webp`: 197KB → 60KB (-137KB, 70% reduction!)
+  - `home bonsai.webp`: 119KB → 64KB (-55KB, 46% reduction!)
+  - `home head down.webp`: 109KB → 98KB (-11KB, 10% reduction!)
+  - **Total: ~400KB savings** (way better than the 186KB PageSpeed estimated!)
+- 🚀 **Ready to deploy** - Combined preload + image optimization should push score to 82-85+
 
 ### Improvements Achieved
 
@@ -119,15 +140,16 @@ Optimize website performance based on PageSpeed Insights recommendations to impr
 
 ### Remaining Opportunities (To Reach 85+)
 
-1. **Image delivery** - Est. 379 KiB savings 🔄 IN PROGRESS
-   - Large images identified: `help looking at phone.webp` (302KB), `home three rocks.webp` (197KB), `home bonsai.webp` (119KB), `home head down.webp` (109KB)
-   - User manually optimizing/compressing these images
-   - Target: Reduce by 60-70% (aim for ~230KB total savings)
-2. **LCP Optimization** - Hero image now preloaded ✅
-   - Added `<link rel="preload">` with `fetchpriority="high"`
-   - Expect -0.5 to -1.0s improvement (4.5s → 3.5-4.0s)
-   - Combined with image optimization should hit <4.0s target
-3. **Unused JavaScript** - Est. 150 KiB savings
+1. **Image delivery** - Est. 186 KiB savings 🔄 IN PROGRESS (was 379 KiB!)
+   - **Good news**: PageSpeed now estimates only 186KB savings (down from 379KB)
+   - Suggests some images are already better optimized than expected
+   - Large images still to compress: `help looking at phone.webp` (302KB), `home three rocks.webp` (197KB), `home bonsai.webp` (119KB), `home head down.webp` (109KB)
+   - User manually optimizing these now
+2. **Render blocking requests** - Est. 300ms savings ⚠️ NEW
+   - Hero image preload may be causing slight blocking
+   - Could try `media="print" onload="this.media='all'"` trick for fonts
+   - **Decision needed**: Keep preload (better LCP) or remove (better FCP)?
+3. **Unused JavaScript** - Est. 151 KiB savings (was 150 KiB)
    - Bundle size could be reduced further
    - Tree shaking opportunities
 4. **Long main-thread tasks** - 2 tasks found
