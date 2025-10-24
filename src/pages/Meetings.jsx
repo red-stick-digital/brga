@@ -189,9 +189,6 @@ const Meetings = () => {
                                 >
                                     Click Here for Exact Location
                                 </a></p>
-                                <p className="special-note">
-                                    1st Wednesday of the Month - Speaker Meeting
-                                </p>
                             </div>
                         </div>
                     </div>

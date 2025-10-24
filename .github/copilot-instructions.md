@@ -1,65 +1,157 @@
 # Copilot Instructions for Baton Rouge GA
 
-## Project Overview
-This is a React + Vite web application with Supabase authentication and Tailwind CSS styling. The app serves as a platform for user authentication with a dashboard system.
+> **📚 For comprehensive documentation, see [`docs/STARTER.md`](../docs/STARTER.md)**  
+> This file contains essential quick-reference information loaded in every chat session.
 
-## Tech Stack & Key Dependencies
-- **Build System**: Vite (not Create React App) - uses `import.meta.env` for environment variables
-- **Authentication**: Supabase with custom `useAuth` hook pattern
-- **Styling**: Tailwind CSS with PostCSS processing
-- **Routing**: React Router with standard component-based routing in `App.jsx`
+## Project Type
+React 18 + Vite 4 SPA with Supabase backend (PostgreSQL + Auth) and Tailwind CSS styling.
 
-## Architecture Patterns
+## Critical Architecture Facts
 
-### Authentication Flow
-- **Centralized auth**: `src/services/supabase.js` exports configured Supabase client
-- **Auth hook**: `src/hooks/useAuth.js` provides `{ user, loading, login, signup, logout }` 
-- **Import pattern**: Components import from `'../../services/supabase'` (note: inconsistent - useAuth imports with named import, Login imports default)
-- **Auth methods**: Uses older Supabase v1 API (`signIn`, `signUp`, `signOut`) - may need updating for v2
+### Build System: Vite (NOT Create React App)
+- Environment variables use `VITE_` prefix: `import.meta.env.VITE_SUPABASE_URL`
+- Port config: `process.env.PORT || 3000` in `vite.config.js`
+- Production build → `dist/` folder
 
-### Component Structure
-- **Layout**: `Header` and `Footer` wrap main content in `App.jsx` with `<main className="flex-grow">`
-- **Auth components**: `Login` and `SignUp` in `src/components/Auth/` - handle their own state and errors
-- **Common components**: Reusable `Button` component in `src/components/common/` with Tailwind classes
-- **Pages**: `Home` and `Dashboard` in `src/pages/` directory
+### Authentication: Supabase v2
+- **Hook**: `src/hooks/useAuth.js` → `{ user, loading, login, signup, logout }`
+- **Client**: `src/services/supabase.js` (default export)
+- **API**: Uses v2 methods (`signInWithPassword`, NOT v1's `signIn`)
+- **Protection**: `ProtectedRoute` component wraps authenticated pages
 
-### Styling Conventions
-- **Tailwind-first**: All components use utility classes, no custom CSS modules
-- **Global styles**: Only Tailwind directives in `src/styles/globals.css`
-- **Button pattern**: Blue theme (`bg-blue-500`, `hover:bg-blue-700`) with consistent padding (`px-4 py-2`)
-- **Form styling**: Consistent input classes with shadow, border, and focus states
+### Database: Supabase (PostgreSQL)
+- **RLS enabled** on all tables - policies control access, not just queries
+- **Profile system**: `member_profiles` table with auto-creation trigger
+- **Role system**: `user_roles` table with approval workflow
+- **Schema**: See `database/schema.sql` for full structure
 
-## Development Workflow
+### Styling: Tailwind CSS
+- Utility-first approach, no CSS modules
+- Global styles: `src/styles/globals.css` (only Tailwind directives)
+- Custom fonts: League Spartan and Helvetica
+- Blue theme: `bg-blue-500`, `hover:bg-blue-700`
 
-### Environment Setup
-- **Environment variables**: Uses Vite env pattern with `VITE_` prefix
-- **Required vars**: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
-- **No .env file**: Project expects manual .env creation (referenced in README but not included)
+## File Locations (Quick Reference)
+```
+src/
+├── hooks/
+│   ├── useAuth.js              # Authentication state
+│   └── useMemberProfile.js     # Profile data & operations
+├── services/
+│   └── supabase.js             # Supabase client config
+├── utils/
+│   └── profileCompletion.js    # Profile validation logic
+├── components/
+│   ├── Auth/                   # Login, SignUp
+│   ├── MemberProfile/          # Profile forms
+│   └── common/                 # Reusable UI (Button, modals)
+└── pages/                      # Route components
 
-### Build Commands
-```bash
-npm run dev      # Development server (port 3000 or PORT env var)
-npm run build    # Production build to dist/
-npm run serve    # Preview production build
+database/
+└── schema.sql                  # Tables, RLS policies, triggers
+
+tests/e2e/                      # Playwright tests
 ```
 
-### Port Configuration
-- **Development**: Uses `process.env.PORT || 3000` in `vite.config.js`
-- **Environment loading**: Vite config manually loads dotenv (not automatic)
+## Common Gotchas & Critical Warnings
 
-## Key Files to Understand
-- `src/App.jsx` - Main routing and layout structure
-- `src/hooks/useAuth.js` - Authentication state management
-- `src/services/supabase.js` - Supabase client configuration
-- `vite.config.js` - Custom port and dotenv configuration
+### 🚨 RLS Policy Pitfalls
+- **Users CANNOT update their own `user_roles.approval_status`** due to RLS
+- **Solution**: Use SECURITY DEFINER functions called via `.rpc()`, not direct UPDATE
+- **Pattern**: `supabase.rpc('approve_user_with_code', { user_id_param })`
+- **Why**: RLS policy requires `is_superadmin()` for UPDATE, new users aren't admins
 
-## Common Patterns
-- **State management**: Local component state with hooks, no global state library
-- **Error handling**: Component-level error state (see `Login.jsx` error pattern)
-- **Loading states**: Boolean loading flags with disabled UI states
-- **Import paths**: Relative imports with proper directory traversal (`../../`)
+### 🚨 Database Triggers Already Handle These
+- **Profile creation**: Auto-created on signup (don't INSERT manually)
+- **Role assignment**: Auto-assigned 'pending_member' on signup
+- **Profile completion**: Auto-calculated when profile is saved
+- **Check**: `database/schema.sql` trigger section before adding INSERT logic
 
-## Potential Issues
-- **Supabase API version**: Using deprecated v1 methods (`signIn` vs `signInWithPassword`)
-- **Import inconsistency**: Mixed default/named imports for supabase client
-- **Missing dependencies**: `react-router-dom` used but not in package.json dependencies
+### 🚨 Import Patterns
+- Supabase client: `import supabase from '../../services/supabase'` (default export)
+- Auth hook: `import { useAuth } from '../../hooks/useAuth'` (named export)
+- Use relative paths with proper traversal (`../../`)
+
+### 🚨 Testing Requirements
+- Start dev server BEFORE running Playwright tests
+- Use cleanup scripts after tests: `scripts/cleanup-test-users.js`
+- Test database state persists between runs
+
+## Debugging Philosophy
+
+**When user reports an issue:**
+1. ✅ Assume user followed instructions correctly
+2. ✅ Assume code has a bug - investigate implementation first
+3. ✅ Check RLS policies and triggers before assuming frontend issue
+4. ❌ Don't ask user to "try again" without verifying the code
+5. 📝 Document findings in task files to avoid repeat attempts
+
+**Common issue patterns:**
+- "Profile not loading" → Usually RLS policy blocking access, not missing data
+- "Update not working" → Check RLS UPDATE policies and triggers
+- "Can't sign up" → Check approval code system and role creation trigger
+
+## Environment Variables (Required)
+```bash
+VITE_SUPABASE_URL=your_project_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+RESEND_API_KEY=re_XxDKFExG_CQZb8nwACsi1B7c6a43Ap4cp  # For emails
+PORT=3000  # Optional, defaults to 3000
+```
+
+## Quick Commands
+```bash
+npm run dev           # Dev server (localhost:3000)
+npm run dev:full      # Dev server + API endpoints
+npm run build         # Production build
+npm run preview       # Test production build locally
+npm run test:e2e      # Run Playwright tests
+npm run test:e2e:ui   # Playwright with UI
+```
+
+## Recent Critical Fixes (Learn From These!)
+
+### Approval Code Signup (Oct 2025)
+- **Issue**: Users stayed "pending" after using approval code
+- **Root cause**: Frontend tried to UPDATE `user_roles` directly - RLS blocked it
+- **Solution**: Created `approve_user_with_code()` SECURITY DEFINER function
+- **Lesson**: Privileged operations need database functions, not frontend queries
+- **See**: `docs/Debugs/DEBUG_approval_code_signup.md`
+
+### Profile Completion System (Oct 2025)
+- **Pattern**: Auto-calculate `profile_complete` flag, don't trust manual updates
+- **Fields**: first_name, last_name, email, clean_date, home_group_id
+- **Modal**: `ProfileCompletionModal` prompts on login if incomplete
+- **Utilities**: Use `src/utils/profileCompletion.js` for validation
+
+## Tool Usage for This Project
+
+### Editing Files
+- **Always use** `replace_string_in_file` for edits (never terminal commands)
+- **Include 3-5 lines of context** before/after to ensure unique match
+- **Match whitespace exactly** (tabs vs spaces matter)
+- **Never use placeholders** like `// ... existing code ...`
+
+### Gathering Context
+- **Start with** `semantic_search` for broad concepts
+- **Use** `grep_search` for specific function/variable names
+- **Read files in parallel** when possible (except semantic_search)
+- **Check** `database/schema.sql` for RLS policies when debugging access issues
+
+### Testing Changes
+- **Run** `npm run dev` with `isBackground: true` before tests
+- **Use** `get_terminal_output` to check server status
+- **Execute** Playwright tests after auth/profile changes
+- **Verify** `npm run preview` before declaring deployment-ready
+
+---
+
+**📚 For detailed information on:**
+- Complete tech stack and versions
+- Full database schema and RLS patterns
+- Deployment checklists and rollback procedures
+- Failed approaches log (what NOT to try)
+- Testing strategies and gotchas
+- Code editing best practices
+
+**→ See [`docs/STARTER.md`](../docs/STARTER.md)**
