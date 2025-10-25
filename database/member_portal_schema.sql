@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS member_profiles (
     share_phone_in_directory BOOLEAN DEFAULT FALSE,
     share_email_in_directory BOOLEAN DEFAULT FALSE,
     officer_position TEXT CHECK (officer_position IN ('Chairman', 'Vice Chairman', 'Secretary', 'Treasurer', 'Librarian', 'Public Relations', 'Telephone Chair', 'Intergroup Representative')),
+    verification_info TEXT, -- User-provided verification information for signup bot protection (admin-visible only)
     profile_complete BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

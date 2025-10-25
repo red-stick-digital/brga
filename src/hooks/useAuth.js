@@ -47,7 +47,7 @@ const useAuth = () => {
         return { user: data.user, error };
     };
 
-    const signup = async (email, password, approvalCode) => {
+    const signup = async (email, password, approvalCode, verificationInfo = '') => {
         setLoading(true);
 
         try {
@@ -128,16 +128,23 @@ const useAuth = () => {
 
                 // Create member_profiles entry (blank/placeholder)
                 // This ensures the user has a profile even if database trigger fails
+                const profileData = {
+                    user_id: newUser.id,
+                    email: newUser.email,
+                    listed_in_directory: false,
+                    willing_to_sponsor: false,
+                    share_phone_in_directory: false,
+                    share_email_in_directory: false
+                };
+
+                // Add verification info if provided
+                if (verificationInfo && verificationInfo.trim()) {
+                    profileData.verification_info = verificationInfo.trim();
+                }
+
                 const { error: profileError } = await supabase
                     .from('member_profiles')
-                    .insert({
-                        user_id: newUser.id,
-                        email: newUser.email,
-                        listed_in_directory: false,
-                        willing_to_sponsor: false,
-                        share_phone_in_directory: false,
-                        share_email_in_directory: false
-                    });
+                    .insert(profileData);
 
                 if (profileError) {
                     console.error('Error creating member profile:', profileError);
@@ -149,7 +156,8 @@ const useAuth = () => {
                     hasValidCode,
                     userId: newUser.id,
                     roleCreated: !roleError,
-                    profileCreated: !profileError
+                    profileCreated: !profileError,
+                    hasVerificationInfo: !!(verificationInfo && verificationInfo.trim())
                 });
             }
 

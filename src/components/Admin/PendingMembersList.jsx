@@ -183,6 +183,20 @@ const PendingMembersList = () => {
                                                 </p>
                                             </div>
                                         </div>
+
+                                        {/* Verification Information Section */}
+                                        {member.profile?.verification_info && (
+                                            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                                                <div className="flex items-start gap-2">
+                                                    <span className="text-sm font-medium text-blue-800 flex-shrink-0">
+                                                        Verification Info:
+                                                    </span>
+                                                    <p className="text-sm text-blue-700 leading-relaxed break-words">
+                                                        {member.profile.verification_info}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="flex gap-2 ml-4">
@@ -257,6 +271,16 @@ const PendingMembersList = () => {
                                 <span className="font-medium text-gray-700">Applied:</span>
                                 <p className="text-gray-600">{formatDate(selectedMember.created_at)}</p>
                             </div>
+                            {selectedMember.profile?.verification_info && (
+                                <div>
+                                    <span className="font-medium text-gray-700">Verification Information:</span>
+                                    <div className="mt-1 p-3 bg-blue-50 border border-blue-200 rounded">
+                                        <p className="text-gray-700 text-sm leading-relaxed break-words whitespace-pre-wrap">
+                                            {selectedMember.profile.verification_info}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex justify-end gap-3 mt-6">
@@ -286,10 +310,22 @@ const PendingMembersList = () => {
             {/* Approval Modal */}
             {showApproveModal && selectedMember && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-96 overflow-y-auto">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">
                             Approve Member: {formatMemberName(selectedMember.profile || {})}
                         </h3>
+
+                        {/* Display verification info if available */}
+                        {selectedMember.profile?.verification_info && (
+                            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                                <span className="text-sm font-medium text-blue-800 block mb-1">
+                                    Verification Information:
+                                </span>
+                                <p className="text-sm text-blue-700 leading-relaxed break-words whitespace-pre-wrap">
+                                    {selectedMember.profile.verification_info}
+                                </p>
+                            </div>
+                        )}
 
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -329,10 +365,22 @@ const PendingMembersList = () => {
             {/* Rejection Modal */}
             {showRejectModal && selectedMember && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-96 overflow-y-auto">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">
                             Reject Member: {formatMemberName(selectedMember.profile || {})}
                         </h3>
+
+                        {/* Display verification info if available */}
+                        {selectedMember.profile?.verification_info && (
+                            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                                <span className="text-sm font-medium text-blue-800 block mb-1">
+                                    Verification Information:
+                                </span>
+                                <p className="text-sm text-blue-700 leading-relaxed break-words whitespace-pre-wrap">
+                                    {selectedMember.profile.verification_info}
+                                </p>
+                            </div>
+                        )}
 
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700 mb-2">

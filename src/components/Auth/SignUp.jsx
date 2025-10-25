@@ -3,11 +3,17 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import useApprovalCode from '../../hooks/useApprovalCode';
 import Button from '../common/Button';
+import {
+    validateVerificationInfo,
+    formatCharacterCountDisplay,
+    getCharacterCountClasses
+} from '../../utils/verificationValidation';
 
 const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [approvalCode, setApprovalCode] = useState('');
+    const [verificationInfo, setVerificationInfo] = useState('');
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const [isValidating, setIsValidating] = useState(false);
@@ -17,23 +23,38 @@ const SignUp = () => {
     const { signup } = useAuth();
     const { validateCode, loading: codeLoading } = useApprovalCode();
 
+    // Check if verification field is required (no approval code entered)
+    const isVerificationRequired = !approvalCode.trim();
+
+    // Check if verification field is disabled (approval code entered)
+    const isVerificationDisabled = approvalCode.trim().length > 0;
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
 
+        // Validate verification info if required
+        if (isVerificationRequired) {
+            const verificationValidation = validateVerificationInfo(verificationInfo);
+            if (!verificationValidation.isValid) {
+                setError(verificationValidation.error);
+                return;
+            }
+        }
+
         // If no approval code is provided, show dialog to confirm
         if (!approvalCode.trim()) {
-            setPendingSubmission({ email, password });
+            setPendingSubmission({ email, password, verificationInfo });
             setShowCodeDialog(true);
             return;
         }
 
         // If approval code is provided, validate it first
-        await processSignup(email, password, approvalCode);
+        await processSignup(email, password, approvalCode, verificationInfo);
     };
 
-    const processSignup = async (userEmail, userPassword, userApprovalCode = '') => {
+    const processSignup = async (userEmail, userPassword, userApprovalCode = '', userVerificationInfo = '') => {
         setIsValidating(true);
 
         // If approval code is provided, validate it
@@ -46,8 +67,8 @@ const SignUp = () => {
             }
         }
 
-        // Proceed with signup (with or without approval code)
-        const { user, error: signupError } = await signup(userEmail, userPassword, userApprovalCode);
+        // Proceed with signup (with or without approval code, include verification info)
+        const { user, error: signupError } = await signup(userEmail, userPassword, userApprovalCode, userVerificationInfo);
 
         if (signupError) {
             setError(signupError.message);
@@ -64,7 +85,7 @@ const SignUp = () => {
     const handleDialogContinue = () => {
         setShowCodeDialog(false);
         if (pendingSubmission) {
-            processSignup(pendingSubmission.email, pendingSubmission.password, '');
+            processSignup(pendingSubmission.email, pendingSubmission.password, '', pendingSubmission.verificationInfo);
             setPendingSubmission(null);
         }
     };
@@ -94,6 +115,46 @@ const SignUp = () => {
                         <p className="text-gray-600 text-xs mt-1">
                             Enter the three-word approval code if provided by an admin. You can still sign up without one.
                         </p>
+                    </div>
+
+                    {/* OR Separator */}
+                    <div className="text-center my-6">
+                        <span className="text-2xl font-bold text-gray-400">OR</span>
+                    </div>
+
+                    {/* Verification Information Field */}
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="verificationInfo">
+                            Verification Information
+                            {isVerificationRequired && <span className="text-red-500 ml-1">*</span>}
+                            {isVerificationDisabled && <span className="font-normal text-gray-600">(Not needed with approval code)</span>}
+                        </label>
+                        <textarea
+                            id="verificationInfo"
+                            value={verificationInfo}
+                            onChange={(e) => setVerificationInfo(e.target.value)}
+                            disabled={isVerificationDisabled}
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none ${isVerificationDisabled ? 'bg-gray-100 cursor-not-allowed' : ''
+                                }`}
+                            rows="4"
+                            maxLength="2000"
+                            placeholder={isVerificationDisabled
+                                ? "Not needed when using an approval code"
+                                : "Tell us about your connection to GA (meetings attended, sponsor name, etc.) to help us verify you're not a bot"
+                            }
+                            required={isVerificationRequired}
+                        />
+                        <div className="flex justify-between items-center mt-1">
+                            <p className="text-gray-600 text-xs">
+                                {isVerificationDisabled
+                                    ? "This field is disabled when you enter an approval code above."
+                                    : "Required if no approval code. Help us verify you're genuine (no links please)."
+                                }
+                            </p>
+                            <span className={`text-xs ${getCharacterCountClasses(verificationInfo)}`}>
+                                {formatCharacterCountDisplay(verificationInfo)}
+                            </span>
+                        </div>
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
