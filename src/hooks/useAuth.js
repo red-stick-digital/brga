@@ -49,6 +49,13 @@ const useAuth = () => {
 
     const signup = async (email, password, approvalCode, verificationInfo = '') => {
         setLoading(true);
+        
+        console.log('🚀 Signup called with:', {
+            email,
+            hasApprovalCode: !!approvalCode?.trim(),
+            hasVerificationInfo: !!verificationInfo?.trim(),
+            verificationLength: verificationInfo?.length || 0
+        });
 
         try {
             // Create the user account first
@@ -141,6 +148,9 @@ const useAuth = () => {
                     profileData.verification_info = verificationInfo.trim();
                     console.log('📝 Adding verification info to profile:', verificationInfo.trim().substring(0, 50) + '...');
                 }
+
+                console.log('🔄 About to update profile with data:', profileData);
+                console.log('🔄 User ID:', newUser.id);
 
                 const { error: profileError } = await supabase
                     .from('member_profiles')
