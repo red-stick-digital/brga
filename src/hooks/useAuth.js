@@ -126,10 +126,9 @@ const useAuth = () => {
                     console.log('ℹ️  User role remains pending (no approval code)');
                 }
 
-                // Create member_profiles entry (blank/placeholder)
-                // This ensures the user has a profile even if database trigger fails
+                // Update member_profiles entry (created by database trigger)
+                // The trigger creates a basic profile, we need to update it with our data
                 const profileData = {
-                    user_id: newUser.id,
                     email: newUser.email,
                     listed_in_directory: false,
                     willing_to_sponsor: false,
@@ -140,16 +139,31 @@ const useAuth = () => {
                 // Add verification info if provided
                 if (verificationInfo && verificationInfo.trim()) {
                     profileData.verification_info = verificationInfo.trim();
+                    console.log('📝 Adding verification info to profile:', verificationInfo.trim().substring(0, 50) + '...');
                 }
 
                 const { error: profileError } = await supabase
                     .from('member_profiles')
-                    .insert(profileData);
+                    .update(profileData)
+                    .eq('user_id', newUser.id);
 
                 if (profileError) {
-                    console.error('Error creating member profile:', profileError);
-                    // Continue anyway - the user was created successfully
-                    // Profile may have been created by database trigger
+                    console.error('❌ Error updating member profile:', profileError);
+                    // Try upsert as fallback
+                    const { error: upsertError } = await supabase
+                        .from('member_profiles')
+                        .upsert({
+                            user_id: newUser.id,
+                            ...profileData
+                        });
+
+                    if (upsertError) {
+                        console.error('❌ Fallback upsert also failed:', upsertError);
+                    } else {
+                        console.log('✅ Profile updated via upsert fallback');
+                    }
+                } else {
+                    console.log('✅ Member profile updated successfully');
                 }
 
                 console.log(`✅ User created with status: ${approvalStatus}`, {
