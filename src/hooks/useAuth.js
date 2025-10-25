@@ -49,7 +49,7 @@ const useAuth = () => {
 
     const signup = async (email, password, approvalCode, verificationInfo = '') => {
         setLoading(true);
-        
+
         console.log('🚀 Signup called with:', {
             email,
             hasApprovalCode: !!approvalCode?.trim(),
