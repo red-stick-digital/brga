@@ -8,6 +8,15 @@ import useMemberProfile from '../hooks/useMemberProfile';
 import ProfileCompletionModal from '../components/common/ProfileCompletionModal';
 import { format } from 'date-fns';
 
+const formatTime = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    return `${displayHour}:${minutes} ${ampm}`;
+};
+
 const AuthHome = () => {
     const { user } = useAuth();
     const { role, loading: roleLoading, approvalStatus } = useUserRole();
@@ -124,7 +133,7 @@ const AuthHome = () => {
                 {/* Welcome Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">
-                        Welcome back, {user?.email?.split('@')[0]}!
+                        Welcome back, {profile?.first_name || user?.email?.split('@')[0]}!
                     </h1>
                     <p className="mt-2 text-gray-600">
                         You're logged in to the Baton Rouge GA member area.
@@ -279,15 +288,26 @@ const AuthHome = () => {
                                             📅 {format(new Date(event.event_date), 'EEEE, MMMM d, yyyy')}
                                         </p>
                                     )}
-                                    {event.start_time && (
+                                    {(event.start_time || event.end_time) && (
                                         <p className="text-sm text-gray-600 mb-2">
-                                            🕐 {event.start_time}
-                                            {event.end_time && ` - ${event.end_time}`}
+                                            🕐 {event.start_time && formatTime(event.start_time)}
+                                            {event.start_time && event.end_time && ' - '}
+                                            {event.end_time && formatTime(event.end_time)}
                                         </p>
                                     )}
                                     {event.location && (
                                         <p className="text-sm text-gray-600 mb-2">
                                             📍 {event.location}
+                                        </p>
+                                    )}
+                                    {event.address && (
+                                        <p className="text-sm text-gray-600 mb-2">
+                                            🏠 {event.address}
+                                        </p>
+                                    )}
+                                    {event.recurrence_pattern && (
+                                        <p className="text-sm text-gray-600 mb-2">
+                                            🔄 {event.recurrence_pattern}
                                         </p>
                                     )}
                                     {event.description && (

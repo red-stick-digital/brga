@@ -31,9 +31,21 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 
 // Users to delete
 const usersToDelete = [
-    // Test users
+    // Test users from JSON data
+    'naquinmarshall+test1@gmail.com',
     'naquinmarshall+test10@gmail.com',
     'naquinmarshall+test11@gmail.com',
+    'naquinmarshall+test12@gmail.com',
+    'naquinmarshall+test2@gmail.com',
+    'naquinmarshall+test20@gmail.com',
+    'naquinmarshall+test21@gmail.com',
+    'naquinmarshall+test22@gmail.com',
+    'naquinmarshall+test23@gmail.com',
+    'naquinmarshall+test24@gmail.com',
+    'naquinmarshall+test25@gmail.com',
+    'naquinmarshall+test26@gmail.com',
+    'naquinmarshall+test3@gmail.com',
+    'naquinmarshall+test4@gmail.com',
 ];
 
 /**

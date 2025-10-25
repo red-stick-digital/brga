@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import useApprovals from '../../hooks/useApprovals';
 import { formatMemberName } from '../../utils/nameUtils';
 
+const formatTime = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    return `${displayHour}:${minutes} ${ampm}`;
+};
+
 const PendingMembersList = () => {
     const {
         pendingMembers,
@@ -262,7 +271,7 @@ const PendingMembersList = () => {
                                     {selectedMember.profile?.home_group?.name || 'Not selected'}
                                     {selectedMember.profile?.home_group?.start_time && (
                                         <span className="block text-sm text-gray-500">
-                                            Meets at {selectedMember.profile.home_group.start_time}
+                                            Meets at {formatTime(selectedMember.profile.home_group.start_time)}
                                         </span>
                                     )}
                                 </p>

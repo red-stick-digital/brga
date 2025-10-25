@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import useMemberProfile from '../../hooks/useMemberProfile';
 
+const formatTime = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    return `${displayHour}:${minutes} ${ampm}`;
+};
+
 /**
  * ProfileForm Component
  * 
@@ -328,7 +337,7 @@ const ProfileForm = ({ profile, onCancel, onSuccess }) => {
                                 })
                                 .map(group => (
                                     <option key={group.id} value={group.id}>
-                                        {group.name} - {new Date(`2000-01-01T${group.start_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {group.name} - {formatTime(group.start_time)}
                                     </option>
                                 ))}
                         </select>
