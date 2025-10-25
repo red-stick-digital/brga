@@ -136,10 +136,10 @@ const useAuth = () => {
                 // Update member_profiles with verification info (if provided)
                 // Use RPC function to bypass RLS since user isn't fully authenticated yet
                 let profileCreated = true;
-                
+
                 if (verificationInfo && verificationInfo.trim()) {
                     console.log('📝 Adding verification info via RPC:', verificationInfo.trim().substring(0, 50) + '...');
-                    
+
                     const { data: rpcResult, error: rpcError } = await supabase.rpc(
                         'update_profile_verification_info',
                         {
@@ -147,7 +147,7 @@ const useAuth = () => {
                             verification_info_param: verificationInfo.trim()
                         }
                     );
-                    
+
                     if (rpcError) {
                         console.error('❌ Error updating verification info via RPC:', rpcError);
                         profileCreated = false;
@@ -157,7 +157,7 @@ const useAuth = () => {
                 } else {
                     console.log('ℹ️  No verification info to add');
                 }
-                
+
                 console.log(`✅ User created with status: ${approvalStatus}`, {
                     hasValidCode,
                     userId: newUser.id,
