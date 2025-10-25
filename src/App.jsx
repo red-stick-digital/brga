@@ -34,7 +34,6 @@ import AuthCallback from './pages/AuthCallback';
 
 // Admin Pages
 import AdminSetup from './components/Admin/AdminSetup';
-import InitialSetup from './pages/InitialSetup';
 
 /**
  * App Component - Main routing structure
@@ -112,7 +111,6 @@ const App = () => {
 
             {/* Admin Routes */}
             <Route path="/admin/setup" element={<AdminSetup />} />
-            <Route path="/initial-setup" element={<InitialSetup />} />
           </Routes>
         </main>
         <Footer />

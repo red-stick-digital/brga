@@ -1091,6 +1091,19 @@ oldString: `
 
 ## RECENT UPDATES
 
+### October 24, 2025 - Verification Field Anti-Spam Feature
+
+- ✅ Added verification text field to signup form to help identify legitimate users vs bots
+- ✅ Conditional validation: Required only when no approval code is provided
+- ✅ Anti-spam protection: Blocks URLs and suspicious patterns via validation utilities
+- ✅ Character limits: 500 character maximum with visual counter display
+- ✅ Admin interface enhancement: Verification info displayed in blue highlighted sections
+- ✅ Database schema update: Added `verification_info` TEXT column to `member_profiles`
+- ✅ RLS bypass solution: Created `update_profile_verification_info()` SECURITY DEFINER function
+- 📄 Components: `SignUp.jsx`, `PendingMembersList.jsx`, `verificationValidation.js`
+- 🗄️ Database: `member_portal_schema.sql`, `function_update_verification_info.sql`
+- 🎯 Result: Effective spam prevention with user-friendly conditional validation
+
 ### October 24, 2025 - MemberNav Architecture Improvement
 
 - ✅ Integrated MemberNav into Header component (was separate component)
