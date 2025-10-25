@@ -133,43 +133,36 @@ const useAuth = () => {
                     console.log('ℹ️  User role remains pending (no approval code)');
                 }
 
-                // Create/Update member_profiles entry 
-                // Use UPSERT to handle both trigger-created profiles and new ones
-                const profileData = {
-                    user_id: newUser.id,
-                    email: newUser.email,
-                    listed_in_directory: false,
-                    willing_to_sponsor: false,
-                    share_phone_in_directory: false,
-                    share_email_in_directory: false
-                };
-
-                // Add verification info if provided
+                // Update member_profiles with verification info (if provided)
+                // Use RPC function to bypass RLS since user isn't fully authenticated yet
+                let profileCreated = true;
+                
                 if (verificationInfo && verificationInfo.trim()) {
-                    profileData.verification_info = verificationInfo.trim();
-                    console.log('📝 Adding verification info to profile:', verificationInfo.trim().substring(0, 50) + '...');
-                }
-
-                console.log('🔄 About to upsert profile with data:', profileData);
-                console.log('🔄 User ID:', newUser.id);
-
-                const { data: profileResult, error: profileError } = await supabase
-                    .from('member_profiles')
-                    .upsert(profileData, {
-                        onConflict: 'user_id',
-                        ignoreDuplicates: false
-                    })
-                    .select();
-
-                if (profileError) {
-                    console.error('❌ Error upserting member profile:', profileError);
+                    console.log('📝 Adding verification info via RPC:', verificationInfo.trim().substring(0, 50) + '...');
+                    
+                    const { data: rpcResult, error: rpcError } = await supabase.rpc(
+                        'update_profile_verification_info',
+                        {
+                            user_id_param: newUser.id,
+                            verification_info_param: verificationInfo.trim()
+                        }
+                    );
+                    
+                    if (rpcError) {
+                        console.error('❌ Error updating verification info via RPC:', rpcError);
+                        profileCreated = false;
+                    } else {
+                        console.log('✅ Verification info updated via RPC:', rpcResult);
+                    }
                 } else {
-                    console.log('✅ Member profile upserted successfully:', profileResult);
-                } console.log(`✅ User created with status: ${approvalStatus}`, {
+                    console.log('ℹ️  No verification info to add');
+                }
+                
+                console.log(`✅ User created with status: ${approvalStatus}`, {
                     hasValidCode,
                     userId: newUser.id,
                     roleCreated: !roleError,
-                    profileCreated: !profileError,
+                    profileCreated: profileCreated,
                     hasVerificationInfo: !!(verificationInfo && verificationInfo.trim())
                 });
             }
